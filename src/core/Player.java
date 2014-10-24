@@ -7,17 +7,20 @@ public class Player {
 
 	private int centerX = 100;
 	private int centerY = 382;
-	private int width = 122;
-	private int height = 126;
 	private int speedX = 0;
 	private int speedY = 1;
 	private boolean jumped = false;
 	private boolean movingLeft = false;
 	private boolean movingRight = false;
 	private boolean ducked = false;
+	private MainClass mainClass;
 
 	private static Background bg1 = MainClass.getBg1();
 	private static Background bg2 = MainClass.getBg2();
+	
+	public Player(MainClass mainClass) {
+		this.mainClass = mainClass;
+	}
 
 	public void update() {
 		if (speedX < 0) {
@@ -56,8 +59,8 @@ public class Player {
 		}
 
 		// Prevents going beyond X coordinate of 0
-		if (centerX + speedX <= this.width/2) {
-			centerX = this.width/2+1;
+		if (centerX + speedX <= mainClass.getCurrentSprite().getWidth(mainClass)/2) {
+			centerX = mainClass.getCurrentSprite().getWidth(mainClass)/2+1;
 		}
 	}
 
@@ -104,14 +107,6 @@ public class Player {
 			jumped = true;
 		}
 
-	}
-
-	public int getWidth() {
-		return width;
-	}
-
-	public int getHeight() {
-		return height;
 	}
 
 	public int getCenterX() {

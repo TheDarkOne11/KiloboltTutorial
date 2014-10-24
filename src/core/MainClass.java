@@ -9,11 +9,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.URL;
 
+import enemy.Heliboy;
+
 /** Main class of the Applet. */
 public class MainClass extends Applet implements Runnable {
 	private int updatesPerSec = 60;
 	private Player player;
-	private Image image, background, currentSprite, character, characterDown, characterJumped;
+	private Heliboy hb, hb2;
+	private Image image, background, currentSprite, character, characterCover, characterJumped, heliboy;
 	private Graphics second;
 	private URL base;
 	private static Background bg1, bg2;
@@ -36,11 +39,11 @@ public class MainClass extends Applet implements Runnable {
 
 		// Image Setups
 		character = getImage(base, "data/character.png");
-		characterDown = getImage(base, "data/down.png");
+		characterCover = getImage(base, "data/cover.png");
 		characterJumped = getImage(base, "data/jumped.png");
 		currentSprite = character;
+		heliboy = getImage(base, "data/heliboy.png");
 		background = getImage(base, "data/background.png");
-
 	}
 
 	@Override
@@ -48,7 +51,10 @@ public class MainClass extends Applet implements Runnable {
 		bg1 = new Background(0, 0);
 		bg2 = new Background(2160, 0);
 		
-		player = new Player();
+		hb = new Heliboy(340, 360);
+		hb2 = new Heliboy(700, 360);
+		
+		player = new Player(this);
 		Thread mainThread = new Thread(this);
 		mainThread.start();
 	}
@@ -67,7 +73,9 @@ public class MainClass extends Applet implements Runnable {
 	public void paint(Graphics g) {
 		g.drawImage(background, bg1.getBgX(), bg1.getBgY(), this);
 		g.drawImage(background, bg2.getBgX(), bg2.getBgY(), this);
-		g.drawImage(currentSprite, player.getCenterX() - player.getWidth()/2, player.getCenterY() - player.getHeight()/2, this);
+		g.drawImage(currentSprite, player.getCenterX() - currentSprite.getWidth(this)/2, player.getCenterY() - currentSprite.getHeight(this)/2, this);
+		g.drawImage(heliboy, hb.getCenterX() - heliboy.getWidth(this)/2, hb.getCenterY() - heliboy.getHeight(this)/2, this);
+		g.drawImage(heliboy, hb2.getCenterX() - heliboy.getWidth(this)/2, hb2.getCenterY() - heliboy.getHeight(this)/2, this);
 	}
 	
 	@Override
@@ -76,7 +84,6 @@ public class MainClass extends Applet implements Runnable {
 			image = createImage(this.getWidth(), this.getHeight());
 			second = image.getGraphics();
 		}
-
 
 		second.setColor(getBackground());
 		second.fillRect(0, 0, getWidth(), getHeight());
@@ -96,6 +103,8 @@ public class MainClass extends Applet implements Runnable {
 			}else if (player.isJumped() == false && player.isDucked() == false){
 				currentSprite = character;
 			}
+			hb.update();
+			hb2.update();
 			bg1.update();
 			bg2.update();
 			repaint();
@@ -116,6 +125,10 @@ public class MainClass extends Applet implements Runnable {
 		return bg2;
 	}
 
+	public Image getCurrentSprite() {
+		return currentSprite;
+	}
+
 	class ClassKeyListener implements KeyListener {
 
 		@Override
@@ -126,7 +139,7 @@ public class MainClass extends Applet implements Runnable {
 	            break;
 
 	        case KeyEvent.VK_DOWN:
-	            currentSprite = characterDown;
+	            currentSprite = characterCover;
 	            if (player.isJumped() == false){
 	                player.setDucked(true);
 	                player.setSpeedX(0);
