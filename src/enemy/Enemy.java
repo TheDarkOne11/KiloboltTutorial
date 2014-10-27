@@ -1,17 +1,24 @@
 package enemy;
 
+import java.util.ArrayList;
+
+import projectile.Projectile;
 import core.Background;
 import core.MainClass;
 
 /** Super class for all enemies. */
 public class Enemy {
-	private int maxHp, damage;
-	private int currHp, speedX, centerX, centerY;
+	private int maxHp;
+	private int currHp, speedX, centerX, centerY, weaponX, weaponY;
+	/** Difference beetween center and weapon coordinates. */
+	private int weaponDiffX, weaponDiffY;
 	private Background bg = MainClass.getBg1();
+	protected ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
-	public Enemy(int maxHp, int damage) {
+	protected Enemy(int maxHp, int weaponDiffX, int weaponDiffY) {
 		this.maxHp = maxHp;
-		this.damage = damage;
+		this.weaponDiffX = weaponDiffX;
+		this.weaponDiffY = weaponDiffY;
 	}
 	
 	/**
@@ -27,12 +34,16 @@ public class Enemy {
 	public void update() {
 		centerX += speedX;
 		speedX = bg.getSpeedX();
+		this.weaponX = this.centerX + this.weaponDiffX;
+		this.weaponY = this.centerY + this.weaponDiffY;
 	}
 
 	public void die() {
 	}
 
-	public void attack() {
+	public void attack(Projectile p) {
+		p.spawnProjectile(this.weaponX, this.weaponY);
+		projectiles.add(p);
 	}
 
 	public int getCurrHp() {
@@ -73,5 +84,17 @@ public class Enemy {
 
 	public void setBg(Background bg) {
 		this.bg = bg;
+	}
+
+	public int getWeaponX() {
+		return weaponX;
+	}
+
+	public int getWeaponY() {
+		return weaponY;
+	}
+
+	public ArrayList<Projectile> getProjectiles() {
+		return projectiles;
 	}
 }

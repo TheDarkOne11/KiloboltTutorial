@@ -1,6 +1,9 @@
 package core;
 
+import java.awt.Color;
 import java.util.ArrayList;
+
+import projectile.Projectile;
 
 public class Player {
 	final int JUMPSPEED = -15;
@@ -9,6 +12,8 @@ public class Player {
 
 	private int centerX = 100;
 	private int centerY = 382;
+	private int weaponX = 50;
+	private int weaponY = -25;
 	private int speedX = 0;
 	private int speedY = 1;
 	private boolean jumped = false;
@@ -20,6 +25,7 @@ public class Player {
 	private static Background bg1 = MainClass.getBg1();
 	private static Background bg2 = MainClass.getBg2();
 	
+	/** Player shooting projectiles. */
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 	
 	public Player(MainClass mainClass) {
@@ -66,6 +72,9 @@ public class Player {
 		if (centerX + speedX <= mainClass.getCurrentSprite().getWidth(mainClass)/2) {
 			centerX = mainClass.getCurrentSprite().getWidth(mainClass)/2+1;
 		}
+		
+		this.weaponX = centerX + 50;
+		this.weaponY = centerY - 25;
 	}
 
 	public void moveRight() {
@@ -114,7 +123,8 @@ public class Player {
 	}
 	
 	public void shoot() {
-		Projectile p = new Projectile(centerX + 50, centerY - 25);
+		Projectile p = new Projectile(5, Color.green, 7);
+		p.spawnProjectile(weaponX, weaponY);
 		projectiles.add(p);
 	}
 
@@ -184,5 +194,13 @@ public class Player {
 
 	public ArrayList<Projectile> getProjectiles() {
 		return projectiles;
+	}
+
+	public int getWeaponX() {
+		return weaponX;
+	}
+
+	public int getWeaponY() {
+		return weaponY;
 	}
 }

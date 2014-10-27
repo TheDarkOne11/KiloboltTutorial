@@ -8,15 +8,15 @@ import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.URL;
-import java.util.ArrayList;
 
-import enemy.Heliboy;
+import projectile.Projectile;
+import enemy.Enemy_Heliboy;
 
 /** Main class of the Applet. */
 public class MainClass extends Applet implements Runnable {
 	private int updatesPerSec = 60;
 	private Player player;
-	private Heliboy hb, hb2;
+	private Enemy_Heliboy hb, hb2;
 	private Image image, background, currentSprite, character, characterCover,
 			characterJumped, heliboy;
 	private Graphics second;
@@ -53,8 +53,8 @@ public class MainClass extends Applet implements Runnable {
 		bg1 = new Background(0, 0);
 		bg2 = new Background(2160, 0);
 
-		hb = new Heliboy(340, 360);
-		hb2 = new Heliboy(700, 360);
+		hb = new Enemy_Heliboy(340, 360);
+		hb2 = new Enemy_Heliboy(700, 360);
 
 		player = new Player(this);
 		Thread mainThread = new Thread(this);
@@ -75,20 +75,17 @@ public class MainClass extends Applet implements Runnable {
 	public void paint(Graphics g) {
 		g.drawImage(background, bg1.getBgX(), bg1.getBgY(), this);
 		g.drawImage(background, bg2.getBgX(), bg2.getBgY(), this);
-		g.drawImage(currentSprite,
-				player.getCenterX() - currentSprite.getWidth(this) / 2,
+		g.drawImage(currentSprite, player.getCenterX() - currentSprite.getWidth(this) / 2,
 				player.getCenterY() - currentSprite.getHeight(this) / 2, this);
 		g.drawImage(heliboy, hb.getCenterX() - heliboy.getWidth(this) / 2,
 				hb.getCenterY() - heliboy.getHeight(this) / 2, this);
 		g.drawImage(heliboy, hb2.getCenterX() - heliboy.getWidth(this) / 2,
 				hb2.getCenterY() - heliboy.getHeight(this) / 2, this);
 
-		ArrayList<Projectile> projectiles = player.getProjectiles();
-		for (int i = 0; i < projectiles.size(); i++) {
-			Projectile p = (Projectile) projectiles.get(i);
-			g.setColor(Color.YELLOW);
-			g.fillRect(p.getX(), p.getY(), 10, 5);
-		}
+		Projectile.paint(g, player.getProjectiles());
+		//TODO Should add painting of all projectiles at once.
+		Projectile.paint(g, hb.getProjectiles());
+		Projectile.paint(g, hb2.getProjectiles());
 	}
 
 	@Override
@@ -116,16 +113,10 @@ public class MainClass extends Applet implements Runnable {
 				currentSprite = character;
 			}
 
-			ArrayList<Projectile> projectiles = player.getProjectiles();
-			for (int i = 0; i < projectiles.size(); i++) {
-				Projectile p = (Projectile) projectiles.get(i);
-				if (p.isVisible() == true) {
-					p.update();
-				} else {
-					projectiles.remove(i);
-				}
-			}
-
+			Projectile.update(player.getProjectiles());
+			//TODO Should add updating of all enemies at once.
+			Projectile.update(hb.getProjectiles());
+			Projectile.update(hb2.getProjectiles());
 			hb.update();
 			hb2.update();
 			bg1.update();
@@ -159,6 +150,9 @@ public class MainClass extends Applet implements Runnable {
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
 				System.out.println("Move up");
+				//TODO Tested enemie's attacks
+				hb.attack(hb.getProjectile());
+				hb2.attack(hb2.getProjectile());
 				break;
 
 			case KeyEvent.VK_DOWN:
