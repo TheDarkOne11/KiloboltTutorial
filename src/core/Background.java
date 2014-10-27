@@ -5,9 +5,9 @@ public class Background {
 	private int bgX, bgY;
 	private int speedX;
 
-	public Background(int x, int y) {
-		this.bgX = x;
-		this.bgY = y;
+	public Background(int bgX, int bgY) {
+		this.bgX = bgX;
+		this.bgY = bgY;
 		this.speedX = 0;
 	}
 

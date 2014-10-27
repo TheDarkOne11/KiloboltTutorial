@@ -1,5 +1,7 @@
 package core;
 
+import java.util.ArrayList;
+
 public class Player {
 	final int JUMPSPEED = -15;
 	final int MOVESPEED = 5;
@@ -17,6 +19,8 @@ public class Player {
 
 	private static Background bg1 = MainClass.getBg1();
 	private static Background bg2 = MainClass.getBg2();
+	
+	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 	
 	public Player(MainClass mainClass) {
 		this.mainClass = mainClass;
@@ -108,6 +112,11 @@ public class Player {
 		}
 
 	}
+	
+	public void shoot() {
+		Projectile p = new Projectile(centerX + 50, centerY - 25);
+		projectiles.add(p);
+	}
 
 	public int getCenterX() {
 		return centerX;
@@ -171,5 +180,9 @@ public class Player {
 
 	public void setMovingLeft(boolean movingLeft) {
 		this.movingLeft = movingLeft;
+	}
+
+	public ArrayList<Projectile> getProjectiles() {
+		return projectiles;
 	}
 }
