@@ -9,6 +9,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.URL;
 
+import Animation.Animation;
+
 import projectile.Projectile;
 import enemy.Enemy_Heliboy;
 

@@ -1,4 +1,4 @@
-package core;
+package Animation;
 
 import java.awt.Image;
 import java.util.ArrayList;
@@ -25,6 +25,12 @@ public class Animation {
 		frames.add(new AnimFrame(image, totalDuration));
 	}
 
+	/**
+	 * Updates currentFrame.
+	 * 
+	 * @param elapsedTime
+	 *            is time since last update.
+	 */
 	public synchronized void update(long elapsedTime) {
 		if (frames.size() > 1) {
 			animTime += elapsedTime;
@@ -34,7 +40,7 @@ public class Animation {
 
 			}
 
-			while (animTime > getFrame(currentFrame).endTime) {
+			if (animTime > getFrame(currentFrame).endTime) {
 				currentFrame++;
 
 			}
