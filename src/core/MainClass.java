@@ -17,11 +17,13 @@ public class MainClass extends Applet implements Runnable {
 	private int updatesPerSec = 60;
 	private Player player;
 	private Enemy_Heliboy hb, hb2;
-	private Image image, background, currentSprite, character, characterCover,
-			characterJumped, heliboy;
+	private Image image, currentSprite, character, character2, character3,
+			characterCover, characterJumped, background, heliboy, heliboy2,
+			heliboy3, heliboy4, heliboy5;
 	private Graphics second;
 	private URL base;
 	private static Background bg1, bg2;
+	private Animation anim, hanim;
 
 	@Override
 	public void init() {
@@ -41,11 +43,37 @@ public class MainClass extends Applet implements Runnable {
 
 		// Image Setups
 		character = getImage(base, "data/character.png");
+		character2 = getImage(base, "data/character2.png");
+		character3 = getImage(base, "data/character3.png");
+
 		characterCover = getImage(base, "data/cover.png");
 		characterJumped = getImage(base, "data/jumped.png");
-		currentSprite = character;
+
 		heliboy = getImage(base, "data/heliboy.png");
+		heliboy2 = getImage(base, "data/heliboy2.png");
+		heliboy3 = getImage(base, "data/heliboy3.png");
+		heliboy4 = getImage(base, "data/heliboy4.png");
+		heliboy5 = getImage(base, "data/heliboy5.png");
+
 		background = getImage(base, "data/background.png");
+
+		anim = new Animation();
+		anim.addFrame(character, 1250);
+		anim.addFrame(character2, 50);
+		anim.addFrame(character3, 50);
+		anim.addFrame(character2, 50);
+
+		hanim = new Animation();
+		hanim.addFrame(heliboy, 100);
+		hanim.addFrame(heliboy2, 100);
+		hanim.addFrame(heliboy3, 100);
+		hanim.addFrame(heliboy4, 100);
+		hanim.addFrame(heliboy5, 100);
+		hanim.addFrame(heliboy4, 100);
+		hanim.addFrame(heliboy3, 100);
+		hanim.addFrame(heliboy2, 100);
+
+		currentSprite = anim.getImage();
 	}
 
 	@Override
@@ -75,15 +103,16 @@ public class MainClass extends Applet implements Runnable {
 	public void paint(Graphics g) {
 		g.drawImage(background, bg1.getBgX(), bg1.getBgY(), this);
 		g.drawImage(background, bg2.getBgX(), bg2.getBgY(), this);
-		g.drawImage(currentSprite, player.getCenterX() - currentSprite.getWidth(this) / 2,
+		g.drawImage(currentSprite,
+				player.getCenterX() - currentSprite.getWidth(this) / 2,
 				player.getCenterY() - currentSprite.getHeight(this) / 2, this);
-		g.drawImage(heliboy, hb.getCenterX() - heliboy.getWidth(this) / 2,
+		g.drawImage(hanim.getImage(), hb.getCenterX() - heliboy.getWidth(this) / 2,
 				hb.getCenterY() - heliboy.getHeight(this) / 2, this);
-		g.drawImage(heliboy, hb2.getCenterX() - heliboy.getWidth(this) / 2,
+		g.drawImage(hanim.getImage(), hb2.getCenterX() - heliboy.getWidth(this) / 2,
 				hb2.getCenterY() - heliboy.getHeight(this) / 2, this);
 
 		Projectile.paint(g, player.getProjectiles());
-		//TODO Should add painting of all projectiles at once.
+		// TODO Should add painting of all projectiles at once.
 		Projectile.paint(g, hb.getProjectiles());
 		Projectile.paint(g, hb2.getProjectiles());
 	}
@@ -110,17 +139,18 @@ public class MainClass extends Applet implements Runnable {
 			if (player.isJumped()) {
 				currentSprite = characterJumped;
 			} else if (player.isJumped() == false && player.isDucked() == false) {
-				currentSprite = character;
+				currentSprite = anim.getImage();
 			}
 
 			Projectile.update(player.getProjectiles());
-			//TODO Should add updating of all enemies at once.
+			// TODO Should add updating of all enemies at once.
 			Projectile.update(hb.getProjectiles());
 			Projectile.update(hb2.getProjectiles());
 			hb.update();
 			hb2.update();
 			bg1.update();
 			bg2.update();
+			animate();
 			repaint();
 
 			try {
@@ -129,6 +159,11 @@ public class MainClass extends Applet implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void animate() {
+		anim.update(10);
+		hanim.update(50);
 	}
 
 	public static Background getBg1() {
@@ -150,7 +185,7 @@ public class MainClass extends Applet implements Runnable {
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
 				System.out.println("Move up");
-				//TODO Tested enemie's attacks
+				// TODO Tested enemie's attacks
 				hb.attack(hb.getProjectile());
 				hb2.attack(hb2.getProjectile());
 				break;
@@ -194,7 +229,7 @@ public class MainClass extends Applet implements Runnable {
 				break;
 
 			case KeyEvent.VK_DOWN:
-				currentSprite = character;
+				currentSprite = anim.getImage();
 				player.setDucked(false);
 				break;
 

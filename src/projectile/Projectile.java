@@ -18,7 +18,7 @@ public class Projectile {
 
 	public static void update(ArrayList<Projectile> projectiles) {
 		for (int i = 0; i < projectiles.size(); i++) {
-			Projectile p = (Projectile) projectiles.get(i);
+			Projectile p = projectiles.get(i);
 			if (p.isVisible() == true) {
 				p.update();
 			} else {
@@ -37,7 +37,7 @@ public class Projectile {
 
 	public static void paint(Graphics g, ArrayList<Projectile> projectiles) {
 		for (int i = 0; i < projectiles.size(); i++) {
-			Projectile p = (Projectile) projectiles.get(i);
+			Projectile p = projectiles.get(i);
 			g.setColor(p.getProjectileColor());
 			g.fillRect(p.getX(), p.getY(), 10, 5);
 		}

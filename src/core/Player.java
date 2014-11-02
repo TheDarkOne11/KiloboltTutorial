@@ -128,6 +128,22 @@ public class Player {
 		projectiles.add(p);
 	}
 
+	public boolean isMovingLeft() {
+		return movingLeft;
+	}
+
+	public boolean isMovingRight() {
+		return movingRight;
+	}
+
+	public void setMovingLeft(boolean movingLeft) {
+		this.movingLeft = movingLeft;
+	}
+
+	public void setMovingRight(boolean movingRight) {
+		this.movingRight = movingRight;
+	}
+
 	public int getCenterX() {
 		return centerX;
 	}
@@ -136,71 +152,27 @@ public class Player {
 		return centerY;
 	}
 
-	public boolean isJumped() {
-		return jumped;
+	public boolean isDucked() {
+		return ducked;
 	}
 
 	public int getSpeedX() {
 		return speedX;
 	}
 
-	public int getSpeedY() {
-		return speedY;
-	}
-
-	public void setCenterX(int centerX) {
-		this.centerX = centerX;
-	}
-
-	public void setCenterY(int centerY) {
-		this.centerY = centerY;
-	}
-
-	public void setJumped(boolean jumped) {
-		this.jumped = jumped;
+	public boolean isJumped() {
+		return jumped;
 	}
 
 	public void setSpeedX(int speedX) {
 		this.speedX = speedX;
 	}
 
-	public void setSpeedY(int speedY) {
-		this.speedY = speedY;
-	}
-
-	public boolean isDucked() {
-		return ducked;
-	}
-
 	public void setDucked(boolean ducked) {
 		this.ducked = ducked;
 	}
 
-	public boolean isMovingRight() {
-		return movingRight;
-	}
-
-	public void setMovingRight(boolean movingRight) {
-		this.movingRight = movingRight;
-	}
-
-	public boolean isMovingLeft() {
-		return movingLeft;
-	}
-
-	public void setMovingLeft(boolean movingLeft) {
-		this.movingLeft = movingLeft;
-	}
-
 	public ArrayList<Projectile> getProjectiles() {
 		return projectiles;
-	}
-
-	public int getWeaponX() {
-		return weaponX;
-	}
-
-	public int getWeaponY() {
-		return weaponY;
 	}
 }
