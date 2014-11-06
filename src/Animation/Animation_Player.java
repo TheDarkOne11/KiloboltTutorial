@@ -1,10 +1,14 @@
 package Animation;
 
 import java.awt.Image;
+
 import core.MainClass;
 
-/** Pokus s animací v jedné tøídì.
- *  Všechny animace týkající se hráèe budou zde. */
+/**
+ * All of player animations are here.
+ * @author Petr
+ *
+ */
 public class Animation_Player extends Animation {
 	private Image character_static, character_static2, character_static3;
 	private Image currentImage, characterCover, characterJumped;
@@ -19,6 +23,7 @@ public class Animation_Player extends Animation {
 	 * Initialization of all player animations.
 	 */
 	public void init() {
+		// Image init
 		character_static = mainClass.getImage(mainClass.getBase(), "data/character.png");
 		character_static2 = mainClass.getImage(mainClass.getBase(), "data/character2.png");
 		character_static3 = mainClass.getImage(mainClass.getBase(), "data/character3.png");
@@ -46,8 +51,8 @@ public class Animation_Player extends Animation {
 		} else if(mainClass.getPlayer().isJumped() == false && mainClass.getPlayer().isCovered() == false) {
 			currentImage = super.getCurrentImage();
 		}
-		
 		this.update(10);
+	
 	}
 
 	public Image getCurrentImage() {

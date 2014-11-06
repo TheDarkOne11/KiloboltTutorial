@@ -1,0 +1,42 @@
+package Animation;
+
+import java.awt.Image;
+
+import core.MainClass;
+
+/**
+ * All of heliboy animations are here.
+ * @author Petr
+ *
+ */
+public class Animation_Heliboy extends Animation {
+	private MainClass mainClass;
+	private Image heliboy, heliboy2, heliboy3, heliboy4, heliboy5;
+	
+	public Animation_Heliboy(MainClass mainClass) {
+		this.mainClass = mainClass;
+	}
+
+	public void init() {
+		// Image init
+		heliboy = mainClass.getImage(mainClass.getBase(), "data/heliboy.png");
+		heliboy2 = mainClass.getImage(mainClass.getBase(), "data/heliboy2.png");
+		heliboy3 = mainClass.getImage(mainClass.getBase(), "data/heliboy3.png");
+		heliboy4 = mainClass.getImage(mainClass.getBase(), "data/heliboy4.png");
+		heliboy5 = mainClass.getImage(mainClass.getBase(), "data/heliboy5.png");
+		
+		// Rotor spinning
+		this.addFrame(heliboy, 100);
+		this.addFrame(heliboy2, 100);
+		this.addFrame(heliboy3, 100);
+		this.addFrame(heliboy4, 100);
+		this.addFrame(heliboy5, 100);
+		this.addFrame(heliboy4, 100);
+		this.addFrame(heliboy3, 100);
+		this.addFrame(heliboy2, 100);
+	}
+
+	public void update() {
+		this.update(50);
+	}
+}

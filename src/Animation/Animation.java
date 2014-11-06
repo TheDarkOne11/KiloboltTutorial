@@ -4,7 +4,7 @@ import java.awt.Image;
 import java.util.ArrayList;
 
 /** Animations for characters. */
-public class Animation {
+public abstract class Animation {
 	private ArrayList<AnimFrame> frames;
 	private int currentFrame;
 	private long animTime; // How long does parts of animation take.
@@ -58,6 +58,9 @@ public class Animation {
 			return getFrame(currentFrame).image;
 		}
 	}
+	
+	public abstract void init();
+	public abstract void update();
 
 	private AnimFrame getFrame(int i) {
 		return frames.get(i);
