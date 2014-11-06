@@ -47,7 +47,11 @@ public class Animation {
 		}
 	}
 
-	public synchronized Image getImage() {
+	/**
+	 * Gets image that is currently animated.
+	 * @return
+	 */
+	public synchronized Image getCurrentImage() {
 		if (frames.size() == 0) {
 			return null;
 		} else {

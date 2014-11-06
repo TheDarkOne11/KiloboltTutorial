@@ -16,10 +16,10 @@ public class Player {
 	private int weaponY = -25;
 	private int speedX = 0;
 	private int speedY = 1;
-	private boolean jumped = false;
 	private boolean movingLeft = false;
 	private boolean movingRight = false;
-	private boolean ducked = false;
+	private boolean covered = false;
+	private boolean jumped = false;
 	private MainClass mainClass;
 
 	private static Background bg1 = MainClass.getBg1();
@@ -69,8 +69,8 @@ public class Player {
 		}
 
 		// Prevents going beyond X coordinate of 0
-		if (centerX + speedX <= mainClass.getCurrentSprite().getWidth(mainClass)/2) {
-			centerX = mainClass.getCurrentSprite().getWidth(mainClass)/2+1;
+		if (centerX + speedX <= mainClass.getAnim().getCurrentImage().getWidth(mainClass)/2) {
+			centerX = mainClass.getAnim().getCurrentImage().getWidth(mainClass)/2+1;
 		}
 		
 		this.weaponX = centerX + 50;
@@ -78,13 +78,13 @@ public class Player {
 	}
 
 	public void moveRight() {
-		if (ducked == false) {
+		if (covered == false) {
 			speedX = MOVESPEED;
 		}
 	}
 
 	public void moveLeft() {
-		if (ducked == false) {
+		if (covered == false) {
 			speedX = -MOVESPEED;
 		}
 	}
@@ -152,8 +152,8 @@ public class Player {
 		return centerY;
 	}
 
-	public boolean isDucked() {
-		return ducked;
+	public boolean isCovered() {
+		return covered;
 	}
 
 	public int getSpeedX() {
@@ -168,8 +168,8 @@ public class Player {
 		this.speedX = speedX;
 	}
 
-	public void setDucked(boolean ducked) {
-		this.ducked = ducked;
+	public void setCovered(boolean covered) {
+		this.covered = covered;
 	}
 
 	public ArrayList<Projectile> getProjectiles() {

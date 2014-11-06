@@ -10,6 +10,7 @@ import java.awt.event.KeyListener;
 import java.net.URL;
 
 import Animation.Animation;
+import Animation.Animation_Player;
 
 import projectile.Projectile;
 import enemy.Enemy_Heliboy;
@@ -19,13 +20,18 @@ public class MainClass extends Applet implements Runnable {
 	private int updatesPerSec = 60;
 	private Player player;
 	private Enemy_Heliboy hb, hb2;
-	private Image image, currentSprite, character, character2, character3,
-			characterCover, characterJumped, background, heliboy, heliboy2,
-			heliboy3, heliboy4, heliboy5;
+	private Image image;
+	private Image background;
+	private Image heliboy;
+	private Image heliboy2;
+	private Image heliboy3;
+	private Image heliboy4;
+	private Image heliboy5;
 	private Graphics second;
 	private URL base;
 	private static Background bg1, bg2;
-	private Animation anim, hanim;
+	private Animation_Player animPlayer;
+	private Animation animHeliboy;
 
 	@Override
 	public void init() {
@@ -42,40 +48,26 @@ public class MainClass extends Applet implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		// Image Setups
-		character = getImage(base, "data/character.png");
-		character2 = getImage(base, "data/character2.png");
-		character3 = getImage(base, "data/character3.png");
-
-		characterCover = getImage(base, "data/cover.png");
-		characterJumped = getImage(base, "data/jumped.png");
+		background = getImage(base, "data/background.png");
 
 		heliboy = getImage(base, "data/heliboy.png");
 		heliboy2 = getImage(base, "data/heliboy2.png");
 		heliboy3 = getImage(base, "data/heliboy3.png");
 		heliboy4 = getImage(base, "data/heliboy4.png");
 		heliboy5 = getImage(base, "data/heliboy5.png");
-
-		background = getImage(base, "data/background.png");
-
-		anim = new Animation();
-		anim.addFrame(character, 1250);
-		anim.addFrame(character2, 50);
-		anim.addFrame(character3, 50);
-		anim.addFrame(character2, 50);
-
-		hanim = new Animation();
-		hanim.addFrame(heliboy, 100);
-		hanim.addFrame(heliboy2, 100);
-		hanim.addFrame(heliboy3, 100);
-		hanim.addFrame(heliboy4, 100);
-		hanim.addFrame(heliboy5, 100);
-		hanim.addFrame(heliboy4, 100);
-		hanim.addFrame(heliboy3, 100);
-		hanim.addFrame(heliboy2, 100);
-
-		currentSprite = anim.getImage();
+		
+		animPlayer = new Animation_Player(this);
+		animPlayer.init();
+		
+		animHeliboy = new Animation();
+		animHeliboy.addFrame(heliboy, 100);
+		animHeliboy.addFrame(heliboy2, 100);
+		animHeliboy.addFrame(heliboy3, 100);
+		animHeliboy.addFrame(heliboy4, 100);
+		animHeliboy.addFrame(heliboy5, 100);
+		animHeliboy.addFrame(heliboy4, 100);
+		animHeliboy.addFrame(heliboy3, 100);
+		animHeliboy.addFrame(heliboy2, 100);
 	}
 
 	@Override
@@ -105,13 +97,11 @@ public class MainClass extends Applet implements Runnable {
 	public void paint(Graphics g) {
 		g.drawImage(background, bg1.getBgX(), bg1.getBgY(), this);
 		g.drawImage(background, bg2.getBgX(), bg2.getBgY(), this);
-		g.drawImage(currentSprite,
-				player.getCenterX() - currentSprite.getWidth(this) / 2,
-				player.getCenterY() - currentSprite.getHeight(this) / 2, this);
-		g.drawImage(hanim.getImage(), hb.getCenterX() - heliboy.getWidth(this) / 2,
-				hb.getCenterY() - heliboy.getHeight(this) / 2, this);
-		g.drawImage(hanim.getImage(), hb2.getCenterX() - heliboy.getWidth(this) / 2,
-				hb2.getCenterY() - heliboy.getHeight(this) / 2, this);
+		
+		g.drawImage(animPlayer.getCurrentImage(), player.getCenterX() - animPlayer.getCurrentImage().getWidth(this) / 2, player.getCenterY() - animPlayer.getCurrentImage().getHeight(this) / 2, this);
+		
+		g.drawImage(animHeliboy.getCurrentImage(), hb.getCenterX() - heliboy.getWidth(this) / 2, hb.getCenterY() - heliboy.getHeight(this) / 2, this);
+		g.drawImage(animHeliboy.getCurrentImage(), hb2.getCenterX() - heliboy.getWidth(this) / 2, hb2.getCenterY() - heliboy.getHeight(this) / 2, this);
 
 		Projectile.paint(g, player.getProjectiles());
 		// TODO Should add painting of all projectiles at once.
@@ -137,12 +127,8 @@ public class MainClass extends Applet implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
+			animPlayer.update();
 			player.update();
-			if (player.isJumped()) {
-				currentSprite = characterJumped;
-			} else if (player.isJumped() == false && player.isDucked() == false) {
-				currentSprite = anim.getImage();
-			}
 
 			Projectile.update(player.getProjectiles());
 			// TODO Should add updating of all enemies at once.
@@ -164,8 +150,8 @@ public class MainClass extends Applet implements Runnable {
 	}
 
 	public void animate() {
-		anim.update(10);
-		hanim.update(50);
+		//anim.update(10);
+		animHeliboy.update(50);
 	}
 
 	public static Background getBg1() {
@@ -176,8 +162,16 @@ public class MainClass extends Applet implements Runnable {
 		return bg2;
 	}
 
-	public Image getCurrentSprite() {
-		return currentSprite;
+	public URL getBase() {
+		return base;
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public Animation_Player getAnim() {
+		return animPlayer;
 	}
 
 	class ClassKeyListener implements KeyListener {
@@ -193,9 +187,8 @@ public class MainClass extends Applet implements Runnable {
 				break;
 
 			case KeyEvent.VK_DOWN:
-				currentSprite = characterCover;
 				if (player.isJumped() == false) {
-					player.setDucked(true);
+					player.setCovered(true);
 					player.setSpeedX(0);
 				}
 				break;
@@ -215,7 +208,7 @@ public class MainClass extends Applet implements Runnable {
 				break;
 
 			case KeyEvent.VK_CONTROL:
-				if (player.isDucked() == false && player.isJumped() == false) {
+				if (player.isCovered() == false && player.isJumped() == false) {
 					player.shoot();
 				}
 				break;
@@ -231,8 +224,7 @@ public class MainClass extends Applet implements Runnable {
 				break;
 
 			case KeyEvent.VK_DOWN:
-				currentSprite = anim.getImage();
-				player.setDucked(false);
+				player.setCovered(false);
 				break;
 
 			case KeyEvent.VK_LEFT:
