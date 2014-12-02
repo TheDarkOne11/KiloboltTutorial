@@ -1,4 +1,4 @@
-package Animation;
+package animation;
 
 import java.awt.Image;
 
@@ -10,8 +10,8 @@ import core.MainClass;
  *
  */
 public class Animation_Heliboy extends Animation {
-	private MainClass mainClass;
 	private Image heliboy, heliboy2, heliboy3, heliboy4, heliboy5;
+	private MainClass mainClass;
 	
 	public Animation_Heliboy(MainClass mainClass) {
 		this.mainClass = mainClass;
@@ -19,11 +19,11 @@ public class Animation_Heliboy extends Animation {
 
 	public void init() {
 		// Image init
-		heliboy = mainClass.getImage(mainClass.getBase(), "data/heliboy.png");
-		heliboy2 = mainClass.getImage(mainClass.getBase(), "data/heliboy2.png");
-		heliboy3 = mainClass.getImage(mainClass.getBase(), "data/heliboy3.png");
-		heliboy4 = mainClass.getImage(mainClass.getBase(), "data/heliboy4.png");
-		heliboy5 = mainClass.getImage(mainClass.getBase(), "data/heliboy5.png");
+		heliboy = mainClass.getImage(MainClass.getBase(), "data/heliboy.png");
+		heliboy2 = mainClass.getImage(MainClass.getBase(), "data/heliboy2.png");
+		heliboy3 = mainClass.getImage(MainClass.getBase(), "data/heliboy3.png");
+		heliboy4 = mainClass.getImage(MainClass.getBase(), "data/heliboy4.png");
+		heliboy5 = mainClass.getImage(MainClass.getBase(), "data/heliboy5.png");
 		
 		// Rotor spinning
 		this.addFrame(heliboy, 100);

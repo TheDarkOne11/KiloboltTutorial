@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 /** Superclass of all projectiles in the game. */
-public class Projectile {
+public class Projectile implements Cloneable{
 	private int x, y, speedX, distance, damage;
 	private boolean visible;
 	private Color projectileColor;
@@ -54,6 +54,18 @@ public class Projectile {
 		this.y = startY;
 		this.visible = true;
 		this.distance = 800;
+	}
+
+	/**
+	 * Potøeba, aby nevznikali projektily se stejnými souøadnicemi. 
+	 */
+	public Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public int getX() {

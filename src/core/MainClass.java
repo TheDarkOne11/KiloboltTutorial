@@ -10,23 +10,26 @@ import java.awt.event.KeyListener;
 import java.net.URL;
 
 import projectile.Projectile;
-import Animation.Animation;
-import Animation.Animation_Heliboy;
-import Animation.Animation_Player;
+import animation.Animation;
+import animation.Animation_Heliboy;
+import animation.Animation_Player;
+import enemy.Enemy;
 import enemy.Enemy_Heliboy;
 
 /** Main class of the Applet. */
 public class MainClass extends Applet implements Runnable {
 	private int updatesPerSec = 60;
 	private Player player;
-	private Enemy_Heliboy hb, hb2;
 	private Image image;
 	private Image background;
 	private Graphics second;
-	private URL base;
+	private static URL base;
 	private static Background bg1, bg2;
 	private Animation_Player animPlayer;
 	private Animation animHeliboy;
+	
+	// Enemy types
+	private Enemy_Heliboy heliboy;
 
 	@Override
 	public void init() {
@@ -50,6 +53,7 @@ public class MainClass extends Applet implements Runnable {
 		
 		animHeliboy = new Animation_Heliboy(this);
 		animHeliboy.init();
+		
 	}
 
 	@Override
@@ -57,8 +61,12 @@ public class MainClass extends Applet implements Runnable {
 		bg1 = new Background(0, 0);
 		bg2 = new Background(2160, 0);
 
-		hb = new Enemy_Heliboy(340, 360);
-		hb2 = new Enemy_Heliboy(700, 360);
+		/*hb = new Enemy_Heliboy(340, 360);
+		hb2 = new Enemy_Heliboy(700, 360);*/
+		
+		heliboy = new Enemy_Heliboy(this);
+		heliboy.add(340, 360);
+		heliboy.add(700, 300);
 
 		player = new Player(this);
 		Thread mainThread = new Thread(this);
@@ -82,13 +90,14 @@ public class MainClass extends Applet implements Runnable {
 		
 		g.drawImage(animPlayer.getCurrentImage(), player.getCenterX() - animPlayer.getCurrentImage().getWidth(this) / 2, player.getCenterY() - animPlayer.getCurrentImage().getHeight(this) / 2, this);
 		
-		g.drawImage(animHeliboy.getCurrentImage(), hb.getCenterX() - animHeliboy.getCurrentImage().getWidth(this) / 2, hb.getCenterY() - animHeliboy.getCurrentImage().getHeight(this) / 2, this);
-		g.drawImage(animHeliboy.getCurrentImage(), hb2.getCenterX() - animHeliboy.getCurrentImage().getWidth(this) / 2, hb2.getCenterY() - animHeliboy.getCurrentImage().getHeight(this) / 2, this);
-
 		Projectile.paint(g, player.getProjectiles());
-		// TODO Should add painting of all projectiles at once.
-		Projectile.paint(g, hb.getProjectiles());
-		Projectile.paint(g, hb2.getProjectiles());
+		
+		for(int i = 0; i < Enemy.allEnemies.size(); i++) {
+			//TODO Pøesunout animHeliboy do Enemy_Heliboy
+			// Všechny typy nepøátel musí mít správnou animaci!!!
+			Enemy.allEnemies.get(i).paint(g, animHeliboy.getCurrentImage(), this);
+			Projectile.paint(g, Enemy.allEnemies.get(i).getProjectiles());
+		}
 	}
 
 	@Override
@@ -105,7 +114,7 @@ public class MainClass extends Applet implements Runnable {
 
 		g.drawImage(image, 0, 0, this);
 	}
-
+	
 	@Override
 	public void run() {
 		while (true) {
@@ -113,12 +122,11 @@ public class MainClass extends Applet implements Runnable {
 			player.update();
 			Projectile.update(player.getProjectiles());
 			
-			// TODO Should add updating of all enemies at once.
-			Projectile.update(hb.getProjectiles());
-			Projectile.update(hb2.getProjectiles());
 			animHeliboy.update();
-			hb.update();
-			hb2.update();
+			for(int i = 0; i < Enemy.allEnemies.size(); i++) {
+				Projectile.update(Enemy.allEnemies.get(i).getProjectiles());
+				Enemy.allEnemies.get(i).update();
+			}
 			
 			bg1.update();
 			bg2.update();
@@ -140,7 +148,7 @@ public class MainClass extends Applet implements Runnable {
 		return bg2;
 	}
 
-	public URL getBase() {
+	public static URL getBase() {
 		return base;
 	}
 
@@ -160,8 +168,10 @@ public class MainClass extends Applet implements Runnable {
 			case KeyEvent.VK_UP:
 				System.out.println("Move up");
 				// TODO Tested enemie's attacks
-				hb.attack(hb.getProjectile());
-				hb2.attack(hb2.getProjectile());
+				for(int i = 0; i < Enemy.allEnemies.size(); i++) {
+					Enemy.allEnemies.get(i).attack(heliboy.getProjectile());
+				}
+				
 				break;
 
 			case KeyEvent.VK_DOWN:

@@ -123,7 +123,7 @@ public class Player {
 	}
 	
 	public void shoot() {
-		Projectile p = new Projectile(5, Color.green, 7);
+		Projectile p = (Projectile) new Projectile(5, Color.green, 7).clone();
 		p.spawnProjectile(weaponX, weaponY);
 		projectiles.add(p);
 	}
