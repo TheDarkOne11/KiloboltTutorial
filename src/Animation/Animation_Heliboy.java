@@ -19,6 +19,7 @@ public class Animation_Heliboy extends Animation {
 
 	public void init() {
 		// Image init
+		//TODO getImage potøebuje pøímou instanci mainClass, proto potøebuje Enemy_Heliboy instanci mainClass.
 		heliboy = mainClass.getImage(MainClass.getBase(), "data/heliboy.png");
 		heliboy2 = mainClass.getImage(MainClass.getBase(), "data/heliboy2.png");
 		heliboy3 = mainClass.getImage(MainClass.getBase(), "data/heliboy3.png");
