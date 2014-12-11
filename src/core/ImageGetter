@@ -1,0 +1,13 @@
+import core.MainClass;
+
+public class ImageGetter { 
+  private MainClass mainClass;
+  
+  public ImageGetter(MainClass mainClass) {
+    this.mainClass = mainClass;
+  }
+  
+  public Image getImage(String path) {
+    return mainClass.getImage(mainClass.getBase(), path);
+  }
+}
