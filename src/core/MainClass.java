@@ -9,11 +9,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.URL;
 
-import animation.Animation;
-import animation.Animation_Heliboy;
-import animation.Animation_Player;
-
-
 import projectile.Projectile;
 import enemy.Enemy;
 import enemy.Enemy_Heliboy;
@@ -27,7 +22,6 @@ public class MainClass extends Applet implements Runnable {
 	private Graphics second;
 	private static URL base;
 	private static Background bg1, bg2;
-	private Animation_Player animPlayer;
 	
 	// Enemy types
 	private Enemy_Heliboy heliboy;
@@ -49,10 +43,6 @@ public class MainClass extends Applet implements Runnable {
 		}
 		background = getImage(base, "data/background.png");
 		Enemy.setMainClass(this);
-		
-		animPlayer = new Animation_Player(this);
-		animPlayer.init();
-		
 	}
 
 	@Override
@@ -84,13 +74,18 @@ public class MainClass extends Applet implements Runnable {
 		g.drawImage(background, bg1.getBgX(), bg1.getBgY(), this);
 		g.drawImage(background, bg2.getBgX(), bg2.getBgY(), this);
 		
-		g.drawImage(animPlayer.getCurrentImage(), player.getCenterX() - animPlayer.getCurrentImage().getWidth(this) / 2, player.getCenterY() - animPlayer.getCurrentImage().getHeight(this) / 2, this);
+		player.paint(g);
 		
 		Projectile.paint(g, player.getProjectiles());
 		
 		for(int i = 0; i < Enemy.allEnemies.size(); i++) {
-			Enemy.allEnemies.get(i).paint(g);
-			Projectile.paint(g, Enemy.allEnemies.get(i).getProjectiles());
+			try {
+				Enemy.allEnemies.get(i).paint(g);
+				Projectile.paint(g, Enemy.allEnemies.get(i).getProjectiles());
+			} catch(NullPointerException e) {
+				e.printStackTrace();
+				System.out.println("Enemy " + Enemy.allEnemies.get(i).getClass().getName() + " doesn't probably have animation.");
+			}
 		}
 	}
 
@@ -112,7 +107,6 @@ public class MainClass extends Applet implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
-			animPlayer.update();
 			player.update();
 			Projectile.update(player.getProjectiles());
 			
@@ -147,10 +141,6 @@ public class MainClass extends Applet implements Runnable {
 
 	public Player getPlayer() {
 		return player;
-	}
-
-	public Animation_Player getAnim() {
-		return animPlayer;
 	}
 
 	class ClassKeyListener implements KeyListener {

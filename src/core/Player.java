@@ -1,9 +1,11 @@
 package core;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 
 import projectile.Projectile;
+import animation.Animation_Player;
 
 public class Player {
 	final int JUMPSPEED = -15;
@@ -21,6 +23,7 @@ public class Player {
 	private boolean covered = false;
 	private boolean jumped = false;
 	private MainClass mainClass;
+	private Animation_Player animPlayer;
 
 	private static Background bg1 = MainClass.getBg1();
 	private static Background bg2 = MainClass.getBg2();
@@ -30,6 +33,8 @@ public class Player {
 	
 	public Player(MainClass mainClass) {
 		this.mainClass = mainClass;
+		this.animPlayer = new Animation_Player(mainClass);
+		animPlayer.init();
 	}
 
 	public void update() {
@@ -69,12 +74,13 @@ public class Player {
 		}
 
 		// Prevents going beyond X coordinate of 0
-		if (centerX + speedX <= mainClass.getAnim().getCurrentImage().getWidth(mainClass)/2) {
-			centerX = mainClass.getAnim().getCurrentImage().getWidth(mainClass)/2+1;
+		if (centerX + speedX <= animPlayer.getCurrentImage().getWidth(mainClass)/2) {
+			centerX = animPlayer.getCurrentImage().getWidth(mainClass)/2+1;
 		}
 		
 		this.weaponX = centerX + 50;
 		this.weaponY = centerY - 25;
+		animPlayer.update();
 	}
 
 	public void moveRight() {
@@ -126,6 +132,10 @@ public class Player {
 		Projectile p = (Projectile) new Projectile(5, Color.green, 7).clone();
 		p.spawnProjectile(weaponX, weaponY);
 		projectiles.add(p);
+	}
+	
+	public void paint(Graphics g) {
+		g.drawImage(animPlayer.getCurrentImage(), this.getCenterX() - animPlayer.getCurrentImage().getWidth(mainClass) / 2, this.getCenterY() - animPlayer.getCurrentImage().getHeight(mainClass) / 2, mainClass);
 	}
 
 	public boolean isMovingLeft() {

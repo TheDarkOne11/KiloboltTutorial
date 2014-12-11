@@ -16,6 +16,7 @@ public class Enemy_Heliboy extends Enemy {
 	public Enemy_Heliboy() {
 		super(MAXHP, WEAPON_DIFF_X, WEAPON_DIFF_Y);
 		projectile = new Projectile(DAMAGE, Color.red, WEAPON_SPEED_X);
+		//TODO Možná se pokusit pøedávání animací mezi touto a rodièovskou tøídou udìlat trochu blbuvzdornìjší.
 		super.anim = new Animation_Heliboy(Enemy.mainClass);
 		super.anim.init();
 	}

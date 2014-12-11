@@ -19,7 +19,8 @@ public class Animation_Heliboy extends Animation {
 
 	public void init() {
 		// Image init
-		//TODO getImage potøebuje pøímou instanci mainClass, proto potøebuje Enemy_Heliboy instanci mainClass.
+		//TODO "Blikání" animace na zaèátku animace mùže být zpùsobené tím, že se obrázek se naète pøi paintu.
+		//TODO viz kniha str. 209
 		heliboy = mainClass.getImage(MainClass.getBase(), "data/heliboy.png");
 		heliboy2 = mainClass.getImage(MainClass.getBase(), "data/heliboy2.png");
 		heliboy3 = mainClass.getImage(MainClass.getBase(), "data/heliboy3.png");
