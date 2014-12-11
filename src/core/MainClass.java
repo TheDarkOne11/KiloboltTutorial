@@ -94,7 +94,7 @@ public class MainClass extends Applet implements Runnable {
 		
 		for(int i = 0; i < Enemy.allEnemies.size(); i++) {
 			//TODO Pøesunout animHeliboy do Enemy_Heliboy
-			// Všechny typy nepøátel musí mít správnou animaci!!!
+			// Všechny typy nepøátel musí mít správnou animaci!!!!
 			Enemy.allEnemies.get(i).paint(g, animHeliboy.getCurrentImage(), this);
 			Projectile.paint(g, Enemy.allEnemies.get(i).getProjectiles());
 		}
