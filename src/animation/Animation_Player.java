@@ -41,7 +41,7 @@ public class Animation_Player extends Animation {
 	}
 	
 	/**
-	 * Update of all player animations.
+	 * Checks what animation should be up and updates it.
 	 */
 	public void update() {
 		if (mainClass.getPlayer().isJumped()) {

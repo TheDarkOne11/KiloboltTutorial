@@ -3,8 +3,7 @@ package enemy;
 import java.awt.Color;
 
 import projectile.Projectile;
-import core.MainClass;
-
+import animation.Animation_Heliboy;
 
 public class Enemy_Heliboy extends Enemy {
 	final static int MAXHP = 10;
@@ -13,12 +12,17 @@ public class Enemy_Heliboy extends Enemy {
 	final static int WEAPON_DIFF_Y = 8;
 	final static int WEAPON_SPEED_X = -3;
 	Projectile projectile;
-	MainClass mainClass;
 
-	public Enemy_Heliboy(MainClass mainClass) {
+	public Enemy_Heliboy() {
 		super(MAXHP, WEAPON_DIFF_X, WEAPON_DIFF_Y);
-		this.mainClass = mainClass;
 		projectile = new Projectile(DAMAGE, Color.red, WEAPON_SPEED_X);
+		super.anim = new Animation_Heliboy(Enemy.mainClass);
+		super.anim.init();
+	}
+
+	public void update() {
+		super.update();
+		super.anim.update();
 	}
 
 	public static int getMaxhp() {

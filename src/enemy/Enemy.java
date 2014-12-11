@@ -1,15 +1,17 @@
 package enemy;
 
 import java.awt.Graphics;
-import java.awt.Image;
 import java.util.ArrayList;
 
 import projectile.Projectile;
+import animation.Animation;
 import core.Background;
 import core.MainClass;
 
 /** Super class for all enemies. */
 public class Enemy implements Cloneable{
+	protected static MainClass mainClass;
+	protected Animation anim;
 	private int maxHp;
 	private int currHp, speedX, centerX, centerY, weaponX, weaponY;
 	/** Difference between center and weapon coordinates. */
@@ -18,6 +20,10 @@ public class Enemy implements Cloneable{
 	protected ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 	/** Stores every enemy that has been added to the current game.*/
 	public static ArrayList<Enemy> allEnemies = new ArrayList<Enemy>();
+	
+	public Enemy(MainClass mainClass) {
+		Enemy.mainClass = mainClass;
+	}
 
 	protected Enemy(int maxHp, int weaponDiffX, int weaponDiffY) {
 		this.maxHp = maxHp;
@@ -51,10 +57,10 @@ public class Enemy implements Cloneable{
 	 * @param g
 	 * @param mainClass 
 	 */
-	public void paint(Graphics g, Image currentImage, MainClass mainClass) {
-		g.drawImage(currentImage, this.getCenterX() - currentImage.getWidth(mainClass) / 2, this.getCenterY() - currentImage.getHeight(mainClass) / 2, mainClass);
+	public void paint(Graphics g) {
+		g.drawImage(anim.getCurrentImage(), this.getCenterX() - anim.getCurrentImage().getWidth(mainClass) / 2, this.getCenterY() - anim.getCurrentImage().getHeight(mainClass) / 2, mainClass);
 	}
-
+	
 	public void die() {
 		Enemy.allEnemies.remove(this.clone());
 	}
@@ -126,5 +132,9 @@ public class Enemy implements Cloneable{
 
 	public ArrayList<Projectile> getProjectiles() {
 		return projectiles;
+	}
+
+	public static void setMainClass(MainClass mainClass) {
+		Enemy.mainClass = mainClass;
 	}
 }

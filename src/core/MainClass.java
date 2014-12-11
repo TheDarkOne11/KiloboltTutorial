@@ -28,7 +28,6 @@ public class MainClass extends Applet implements Runnable {
 	private static URL base;
 	private static Background bg1, bg2;
 	private Animation_Player animPlayer;
-	private Animation animHeliboy;
 	
 	// Enemy types
 	private Enemy_Heliboy heliboy;
@@ -49,12 +48,10 @@ public class MainClass extends Applet implements Runnable {
 			e.printStackTrace();
 		}
 		background = getImage(base, "data/background.png");
+		Enemy.setMainClass(this);
 		
 		animPlayer = new Animation_Player(this);
 		animPlayer.init();
-		
-		animHeliboy = new Animation_Heliboy(this);
-		animHeliboy.init();
 		
 	}
 
@@ -62,11 +59,8 @@ public class MainClass extends Applet implements Runnable {
 	public void start() {
 		bg1 = new Background(0, 0);
 		bg2 = new Background(2160, 0);
-
-		/*hb = new Enemy_Heliboy(340, 360);
-		hb2 = new Enemy_Heliboy(700, 360);*/
 		
-		heliboy = new Enemy_Heliboy(this);
+		heliboy = new Enemy_Heliboy();
 		heliboy.add(340, 360);
 		heliboy.add(700, 300);
 
@@ -95,9 +89,7 @@ public class MainClass extends Applet implements Runnable {
 		Projectile.paint(g, player.getProjectiles());
 		
 		for(int i = 0; i < Enemy.allEnemies.size(); i++) {
-			//TODO Pøesunout animHeliboy do Enemy_Heliboy
-			// Všechny typy nepøátel musí mít správnou animaci!!!!
-			Enemy.allEnemies.get(i).paint(g, animHeliboy.getCurrentImage(), this);
+			Enemy.allEnemies.get(i).paint(g);
 			Projectile.paint(g, Enemy.allEnemies.get(i).getProjectiles());
 		}
 	}
@@ -124,7 +116,6 @@ public class MainClass extends Applet implements Runnable {
 			player.update();
 			Projectile.update(player.getProjectiles());
 			
-			animHeliboy.update();
 			for(int i = 0; i < Enemy.allEnemies.size(); i++) {
 				Projectile.update(Enemy.allEnemies.get(i).getProjectiles());
 				Enemy.allEnemies.get(i).update();

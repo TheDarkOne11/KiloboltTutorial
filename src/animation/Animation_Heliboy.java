@@ -38,6 +38,6 @@ public class Animation_Heliboy extends Animation {
 	}
 
 	public void update() {
-		this.update(50);
+		this.update(25);
 	}
 }
