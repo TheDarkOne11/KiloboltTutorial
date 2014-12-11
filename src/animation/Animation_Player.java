@@ -1,4 +1,4 @@
-package REanimation;
+package animation;
 
 import java.awt.Image;
 

@@ -9,9 +9,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.URL;
 
-import REanimation.Animation;
-import REanimation.Animation_Heliboy;
-import REanimation.Animation_Player;
+import animation.Animation;
+import animation.Animation_Heliboy;
+import animation.Animation_Player;
+
 
 import projectile.Projectile;
 import enemy.Enemy;
