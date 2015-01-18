@@ -14,7 +14,6 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 import level.LevelReader;
-import level.Tile;
 import projectile.Projectile;
 import enemy.Enemy;
 import enemy.Enemy_Heliboy;
@@ -48,6 +47,7 @@ public class MainClass extends Applet implements Runnable {
 		}
 		background = getImage(base, "data/background.png");
 		Enemy.setMainClass(this);
+		LevelReader.readImage();
 	}
 
 	@Override
