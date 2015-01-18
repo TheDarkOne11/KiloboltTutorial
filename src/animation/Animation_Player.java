@@ -24,12 +24,12 @@ public class Animation_Player extends Animation {
 	 */
 	public void init() {
 		// Image init
-		character_static = mainClass.getImage(mainClass.getBase(), "data/character.png");
-		character_static2 = mainClass.getImage(mainClass.getBase(), "data/character2.png");
-		character_static3 = mainClass.getImage(mainClass.getBase(), "data/character3.png");
+		character_static = MainClass.getImage("data/character.png");
+		character_static2 = MainClass.getImage("data/character2.png");
+		character_static3 = MainClass.getImage("data/character3.png");
 		
-		characterCover = mainClass.getImage(mainClass.getBase(), "data/cover.png");
-		characterJumped = mainClass.getImage(mainClass.getBase(), "data/jumped.png");
+		characterCover = MainClass.getImage("data/cover.png");
+		characterJumped = MainClass.getImage("data/jumped.png");
 		
 		// Animated when static.
 		this.addFrame(character_static, 1250);

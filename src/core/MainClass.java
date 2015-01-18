@@ -7,8 +7,14 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.URL;
 
+import javax.imageio.ImageIO;
+
+import level.LevelReader;
+import level.Tile;
 import projectile.Projectile;
 import enemy.Enemy;
 import enemy.Enemy_Heliboy;
@@ -22,7 +28,6 @@ public class MainClass extends Applet implements Runnable {
 	private Graphics second;
 	private static URL base;
 	private static Background bg1, bg2;
-	
 	// Enemy types
 	private Enemy_Heliboy heliboy;
 
@@ -67,6 +72,15 @@ public class MainClass extends Applet implements Runnable {
 	@Override
 	public void destroy() {
 		super.destroy();
+	}
+	
+	public static BufferedImage getImage(String path) {
+		try {
+		    URL url = new URL(MainClass.getBase(), path);
+		    return ImageIO.read(url);
+		} catch (IOException e) {
+		}
+		return null;
 	}
 
 	@Override
