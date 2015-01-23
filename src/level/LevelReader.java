@@ -56,7 +56,15 @@ public class LevelReader {
 		
 	}
 
+	/**
+	 * Sets allTiles arraylist.
+	 * @param x
+	 * @param y
+	 * @param color
+	 */
 	public void setTiles(int x, int y, Color color) { 
+		/*TODO Pokusit se nìjak udìlat, abych sem nemusel pokaždì pøidávat if statement, když udìlám nový tile.
+		 *TODO tzn. udìlat tileTypes arraylist.*/
 		if(!color.equals(Color.white)) {
 			if(color.equals(TileGrass.color)) {
 				allTiles.add(new TileGrass(x, y));
@@ -68,6 +76,9 @@ public class LevelReader {
 		}
 	}
 	
+	/**
+	 * Updates tile movement and removal.
+	 */
 	public void update() {
 		for(int i = 0; i < allTiles.size(); i++) {
 			allTiles.get(i).setSpeedX(MainClass.getBg1().getSpeedX());

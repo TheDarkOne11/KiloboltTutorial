@@ -2,9 +2,6 @@ package level;
 
 import java.awt.Color;
 import java.awt.Image;
-import java.util.ArrayList;
-
-import core.MainClass;
 
 public abstract class Tile {
 	private int x;
