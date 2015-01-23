@@ -18,6 +18,7 @@ public class Player {
 	private int weaponY = -25;
 	private int speedX = 0;
 	private int speedY = 1;
+	private int backgroundStartMove = 200;
 	private boolean movingLeft = false;
 	private boolean movingRight = false;
 	private boolean covered = false;
@@ -46,11 +47,11 @@ public class Player {
 			bg1.setSpeedX(0);
 			bg2.setSpeedX(0);
 		}
-		if (centerX <= 200 && speedX > 0) {
+		if (centerX <= backgroundStartMove && speedX > 0) {
 			centerX += speedX;
 		}
 		// Scroolování pozadí je na opaènou stranu, než jde postava.
-		if (speedX > 0 && centerX > 200) {
+		if (speedX > 0 && centerX > backgroundStartMove) {
 			bg1.setSpeedX(-MOVESPEED);
 			bg2.setSpeedX(-MOVESPEED);
 		}
@@ -184,5 +185,9 @@ public class Player {
 
 	public ArrayList<Projectile> getProjectiles() {
 		return projectiles;
+	}
+
+	public int getBackgroundStartMove() {
+		return backgroundStartMove;
 	}
 }

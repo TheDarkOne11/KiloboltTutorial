@@ -60,8 +60,6 @@ public class LevelReader {
 		if(!color.equals(Color.white)) {
 			if(color.equals(TileGrass.color)) {
 				allTiles.add(new TileGrass(x, y));
-				//TODO Je tøeba je ještì namalovat, zjistit správnost umístìní v allTiles.
-				//TODO Poté si ujasnit, které metody mají být v Tile a které v nezávislém LevelReaderu.
 			} 
 			
 			else {
@@ -71,16 +69,20 @@ public class LevelReader {
 	}
 	
 	public void update() {
-		for(Tile i : allTiles) {
-			i.setSpeedX(MainClass.getBg1().getSpeedX());
-			i.update();
+		for(int i = 0; i < allTiles.size(); i++) {
+			allTiles.get(i).setSpeedX(MainClass.getBg1().getSpeedX());
+			allTiles.get(i).update();
+			
+			// Removes tiles that player already went past.
+			if(MainClass.getPlayer().getCenterX() - MainClass.getPlayer().getBackgroundStartMove() - Tile.getWidth() > allTiles.get(i).getX()) {
+				allTiles.remove(i);
+			}
 		}
 	}
 
 	public void paintTiles(Graphics g) {
 		for(Tile i : allTiles) {
 			g.drawImage(i.getTexture(), i.getX(), i.getY(), null);
-			//System.out.println("X/Y: " + i.getX() + "/ " + i.getY());
 		}
 	}
 

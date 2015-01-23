@@ -25,10 +25,6 @@ public abstract class Tile {
 	
 	public void update() {
 		this.x += this.speedX;
-		
-		if(MainClass.getPlayer().getCenterX() > this.x) {
-			
-		}
 	}
 
 	public Image getTexture() {
