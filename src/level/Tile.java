@@ -4,39 +4,31 @@ import java.awt.Color;
 import java.awt.Image;
 import java.util.ArrayList;
 
+import core.MainClass;
+
 public abstract class Tile {
-	private int x, y;
+	private int x;
+	private int y;
+	private int speedX;
 	private Image texture;
 	private Color color;
-	private static ArrayList<Tile> tileTypes = new ArrayList<Tile>();
-	private static ArrayList<Tile> allTiles = new ArrayList<Tile>();
 	
-	private final static int width = 64;
-	private final static int height = 64;
+	private final static int width = 32;
+	private final static int height = 32;
 	
 	public Tile(int x, int y, Image texture, Color color) {
-		this.x = x;
-		this.y = y;
+		this.x = x*width;
+		this.y = y*height;
 		this.texture = texture;
 		this.color = color;
 	}
-
-	public static void setTiles(int x, int y, Color color) { 
-		if(!color.equals(Color.white)) {
-			if(color.equals(TileGrass.color)) {
-				allTiles.add(new TileGrass(x*width, y*height));
-				//TODO Je tøeba je ještì namalovat, zjistit správnost umístìní v allTiles.
-				//TODO Poté si ujasnit, které metody mají být v Tile a které v nezávislém LevelReaderu.
-			} 
-			
-			else {
-				System.out.println("Unknown Tile, color: " + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue());
-			}
-		}
-	}
 	
-	public static void addTiles() {
+	public void update() {
+		this.x += this.speedX;
 		
+		if(MainClass.getPlayer().getCenterX() > this.x) {
+			
+		}
 	}
 
 	public Image getTexture() {
@@ -53,6 +45,30 @@ public abstract class Tile {
 
 	public void setColor(Color color) {
 		this.color = color;
+	}
+
+	public static int getWidth() {
+		return width;
+	}
+
+	public static int getHeight() {
+		return height;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public int getSpeedX() {
+		return speedX;
+	}
+
+	public void setSpeedX(int speedX) {
+		this.speedX = speedX;
 	}
 	
 }

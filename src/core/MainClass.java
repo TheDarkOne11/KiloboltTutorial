@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -21,12 +23,13 @@ import enemy.Enemy_Heliboy;
 /** Main class of the Applet. */
 public class MainClass extends Applet implements Runnable {
 	private int updatesPerSec = 60;
-	private Player player;
+	private static Player player;
 	private Image image;
 	private Image background;
 	private Graphics second;
 	private static URL base;
 	private static Background bg1, bg2;
+	private LevelReader lvl;
 	// Enemy types
 	private Enemy_Heliboy heliboy;
 
@@ -35,6 +38,11 @@ public class MainClass extends Applet implements Runnable {
 		Frame frame = (Frame) this.getParent().getParent();
 
 		this.addKeyListener(new ClassKeyListener());
+		this.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				System.out.println("X/Y: " + e.getXOnScreen() + "/ " + e.getYOnScreen());
+			}
+		});
 
 		frame.setTitle("KiloboltTutorial");
 		this.setSize(800, 480);
@@ -47,7 +55,8 @@ public class MainClass extends Applet implements Runnable {
 		}
 		background = getImage(base, "data/background.png");
 		Enemy.setMainClass(this);
-		LevelReader.readImage();
+		lvl = new LevelReader();
+		lvl.readImage();
 	}
 
 	@Override
@@ -87,6 +96,7 @@ public class MainClass extends Applet implements Runnable {
 	public void paint(Graphics g) {
 		g.drawImage(background, bg1.getBgX(), bg1.getBgY(), this);
 		g.drawImage(background, bg2.getBgX(), bg2.getBgY(), this);
+		lvl.paintTiles(g);
 		
 		player.paint(g);
 		
@@ -131,6 +141,8 @@ public class MainClass extends Applet implements Runnable {
 			
 			bg1.update();
 			bg2.update();
+			lvl.update();
+			
 			repaint();
 
 			try {
@@ -153,7 +165,7 @@ public class MainClass extends Applet implements Runnable {
 		return base;
 	}
 
-	public Player getPlayer() {
+	public static Player getPlayer() {
 		return player;
 	}
 
