@@ -56,7 +56,7 @@ public class MainClass extends Applet implements Runnable {
 		background = getImage(base, "data/background.png");
 		Enemy.setMainClass(this);
 		lvl = new LevelReader();
-		lvl.readImage();
+		lvl.init();
 	}
 
 	@Override

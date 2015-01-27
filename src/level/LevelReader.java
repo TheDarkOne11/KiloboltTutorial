@@ -18,13 +18,18 @@ public class LevelReader {
 	private static ArrayList<Tile> allTiles = new ArrayList<Tile>();
 	
 	public void init() {
+		// TileTypes array initialization
+		tileTypes.add(new TileBrick());
+		tileTypes.add(new TileGrass());
 		
+		// Programme
+		this.readImage();
 	}
 	
 	/**
 	 * Reads image RGB values.
 	 */
-	public void readImage() {
+	private void readImage() {
 		level = MainClass.getImage("data/level/demo.png");
 		
 		for(int x = 0; x < level.getWidth(); x++) {
@@ -34,7 +39,7 @@ public class LevelReader {
 				int green = (pixel >> 8) & 0xff;
 				int blue = (pixel) & 0xff;
 				
-				this.setTiles(x, y, new Color(red, green, blue));
+				this.setAllTiles(x, y, new Color(red, green, blue));
 				
 			}
 		}
@@ -43,7 +48,7 @@ public class LevelReader {
 	/**
 	 * Reads values from levelFile.
 	 */
-	public void readLevelFile() {
+	private void readLevelFile() {
 		
 	}
 	
@@ -52,7 +57,7 @@ public class LevelReader {
 	 * LevelFile is an alternative of image. Created after readImage values are read.
 	 * LevelFile has values from Image and last edit time of Image.
 	 */
-	public void setLevelFile() {
+	private void setLevelFile() {
 		
 	}
 
@@ -62,15 +67,16 @@ public class LevelReader {
 	 * @param y
 	 * @param color
 	 */
-	public void setTiles(int x, int y, Color color) { 
-		/*TODO Pokusit se nìjak udìlat, abych sem nemusel pokaždì pøidávat if statement, když udìlám nový tile.
-		 *TODO tzn. udìlat tileTypes arraylist.*/
+	private void setAllTiles(int x, int y, Color color) { 
 		if(!color.equals(Color.white)) {
-			if(color.equals(TileGrass.color)) {
-				allTiles.add(new TileGrass(x, y));
-			} 
-			
-			else {
+			NotFound: {
+				for(Tile e : tileTypes) {
+					if(color.equals(e.getColor())) {
+						allTiles.add((Tile) e.clone());
+						e.setPosition(x, y);
+						break NotFound;
+					} 
+				}
 				System.out.println("Unknown Tile, color: " + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue());
 			}
 		}
@@ -95,9 +101,5 @@ public class LevelReader {
 		for(Tile i : allTiles) {
 			g.drawImage(i.getTexture(), i.getX(), i.getY(), null);
 		}
-	}
-
-	public void setTileTypes(ArrayList<Tile> tileTypes) {
-		
 	}
 }

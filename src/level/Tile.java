@@ -3,7 +3,7 @@ package level;
 import java.awt.Color;
 import java.awt.Image;
 
-public abstract class Tile {
+public class Tile implements Cloneable {
 	private int x;
 	private int y;
 	private int speedX;
@@ -13,15 +13,27 @@ public abstract class Tile {
 	private final static int width = 32;
 	private final static int height = 32;
 	
-	public Tile(int x, int y, Image texture, Color color) {
-		this.x = x*width;
-		this.y = y*height;
+	public Tile(Image texture, Color color) {
 		this.texture = texture;
 		this.color = color;
 	}
 	
+	public void setPosition(int x, int y) {
+		this.x = x*width;
+		this.y = y*height;
+	}
+	
 	public void update() {
 		this.x += this.speedX;
+	}
+
+	public Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public Image getTexture() {
