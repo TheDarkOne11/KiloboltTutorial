@@ -16,13 +16,17 @@ public class LevelReader {
 	private static BufferedImage level;
 	private static ArrayList<Tile> tileTypes = new ArrayList<Tile>();
 	private static ArrayList<Tile> allTiles = new ArrayList<Tile>();
+	private String levelName;
 	
+	public LevelReader(String levelName) {
+		this.levelName = levelName;
+	}
+
 	public void init() {
 		// TileTypes array initialization
 		tileTypes.add(new TileBrick());
 		tileTypes.add(new TileGrass());
 		
-		// Programme
 		this.readImage();
 	}
 	
@@ -30,7 +34,7 @@ public class LevelReader {
 	 * Reads image RGB values.
 	 */
 	private void readImage() {
-		level = MainClass.getImage("data/level/demo.png");
+		level = MainClass.getImage("data/level/" + levelName + ".png");
 		
 		for(int x = 0; x < level.getWidth(); x++) {
 			for(int y = 0; y < level.getHeight(); y++) {
@@ -43,22 +47,6 @@ public class LevelReader {
 				
 			}
 		}
-	}
-	
-	/**
-	 * Reads values from levelFile.
-	 */
-	private void readLevelFile() {
-		
-	}
-	
-	/**
-	 * Sets levelFile. 
-	 * LevelFile is an alternative of image. Created after readImage values are read.
-	 * LevelFile has values from Image and last edit time of Image.
-	 */
-	private void setLevelFile() {
-		
 	}
 
 	/**

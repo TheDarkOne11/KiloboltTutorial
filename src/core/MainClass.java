@@ -55,7 +55,7 @@ public class MainClass extends Applet implements Runnable {
 		}
 		background = getImage(base, "data/background.png");
 		Enemy.setMainClass(this);
-		lvl = new LevelReader();
+		lvl = new LevelReader("demo");
 		lvl.init();
 	}
 
