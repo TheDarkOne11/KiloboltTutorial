@@ -58,6 +58,7 @@ public class LevelReader {
 	private void setAllTiles(int x, int y, Color color) { 
 		if(!color.equals(Color.white)) {
 			NotFound: {
+				// Projde všechny typy
 				for(Tile e : tileTypes) {
 					if(color.equals(e.getColor())) {
 						allTiles.add((Tile) e.clone());
@@ -67,7 +68,7 @@ public class LevelReader {
 				}
 				System.out.println("Unknown Tile, color: " + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue());
 			}
-		}
+		} 
 	}
 	
 	/**
@@ -75,7 +76,6 @@ public class LevelReader {
 	 */
 	public void update() {
 		for(int i = 0; i < allTiles.size(); i++) {
-			allTiles.get(i).setSpeedX(MainClass.getBg1().getSpeedX());
 			allTiles.get(i).update();
 			
 			// Removes tiles that player already went past.

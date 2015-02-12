@@ -2,17 +2,21 @@ package level;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.Rectangle;
+
+import core.MainClass;
 
 public class Tile implements Cloneable {
 	private int x;
 	private int y;
-	private int speedX;
 	private Image texture;
 	private Color color;
 	
+	private Rectangle collisionRec = new Rectangle();
+	
 	private final static int width = 32;
 	private final static int height = 32;
-	
+		
 	public Tile(Image texture, Color color) {
 		this.texture = texture;
 		this.color = color;
@@ -21,10 +25,12 @@ public class Tile implements Cloneable {
 	public void setPosition(int x, int y) {
 		this.x = x*width;
 		this.y = y*height;
+		this.collisionRec = new Rectangle(this.x, this.y, Tile.width, Tile.height);
 	}
 	
 	public void update() {
-		this.x += this.speedX;
+		this.x += MainClass.getBg1().getSpeedX();
+		this.collisionRec.setRect(this.x, this.y, Tile.width, Tile.height);
 	}
 
 	public Object clone() {
@@ -68,12 +74,8 @@ public class Tile implements Cloneable {
 		return y;
 	}
 
-	public int getSpeedX() {
-		return speedX;
-	}
-
-	public void setSpeedX(int speedX) {
-		this.speedX = speedX;
+	public Rectangle getCollisionRec() {
+		return collisionRec;
 	}
 	
 }

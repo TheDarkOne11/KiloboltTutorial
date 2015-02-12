@@ -2,6 +2,7 @@ package core;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import projectile.Projectile;
@@ -25,6 +26,16 @@ public class Player {
 	private boolean jumped = false;
 	private MainClass mainClass;
 	private Animation_Player animPlayer;
+	
+	// Collisions
+	/** Upper body collision rectangle. */
+	private Rectangle uBody = new Rectangle();	
+	/** Lower body collision rectangle. */
+	private Rectangle lBody = new Rectangle();
+	private Rectangle rHand = new Rectangle();
+	private Rectangle lHand = new Rectangle();
+	/** Rectangular radius where collisions are turned on. */
+	private Rectangle collisionRadius = new Rectangle();
 
 	private static Background bg1 = MainClass.getBg1();
 	private static Background bg2 = MainClass.getBg2();
@@ -81,6 +92,11 @@ public class Player {
 		
 		this.weaponX = centerX + 50;
 		this.weaponY = centerY - 25;
+		this.uBody.setRect(centerX - 37, centerY - 0, 74, 64);
+		this.lBody.setRect(centerX - 37, centerY, 71, 64);
+		this.rHand.setRect(centerX + 34, centerY - 32, 30, 20);
+		this.lHand.setRect(centerX - 64, centerY - 32, 30, 20);
+		this.collisionRadius.setRect(centerX - 112, centerY - 112, 224, 224);
 		animPlayer.update();
 	}
 
