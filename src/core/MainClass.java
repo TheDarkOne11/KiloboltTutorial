@@ -170,42 +170,39 @@ public class MainClass extends Applet implements Runnable {
 	}
 
 	class ClassKeyListener implements KeyListener {
-
 		@Override
 		public void keyPressed(KeyEvent e) {
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
-				System.out.println("Move up");
-				// TODO Tested enemie's attacks
-				for(int i = 0; i < Enemy.allEnemies.size(); i++) {
-					Enemy.allEnemies.get(i).attack(heliboy.getProjectile());
+				if(!player.isJumping()) {
+					player.setJumping(true);
+					player.setSpeedY(player.JUMPSPEED);
 				}
-				
 				break;
 
 			case KeyEvent.VK_DOWN:
-				if (player.isJumped() == false) {
-					player.setCovered(true);
-					player.setSpeedX(0);
-				}
+				player.setCovered(true);
 				break;
 
 			case KeyEvent.VK_LEFT:
-				player.moveLeft();
 				player.setMovingLeft(true);
+				player.setSpeedX(-player.MOVESPEED);
 				break;
 
 			case KeyEvent.VK_RIGHT:
-				player.moveRight();
 				player.setMovingRight(true);
+				player.setSpeedX(player.MOVESPEED);
 				break;
 
 			case KeyEvent.VK_SPACE:
-				player.jump();
+				// TODO Tested enemie's attacks
+				for(int i = 0; i < Enemy.allEnemies.size(); i++) {
+					Enemy.allEnemies.get(i).attack(heliboy.getProjectile());
+				} 
 				break;
 
 			case KeyEvent.VK_CONTROL:
-				if (player.isCovered() == false && player.isJumped() == false) {
+				if (player.isCovered() == false && player.isJumping() == false) {
 					player.shoot();
 				}
 				break;
@@ -217,7 +214,6 @@ public class MainClass extends Applet implements Runnable {
 		public void keyReleased(KeyEvent e) {
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
-				System.out.println("Stop moving up");
 				break;
 
 			case KeyEvent.VK_DOWN:
@@ -225,11 +221,13 @@ public class MainClass extends Applet implements Runnable {
 				break;
 
 			case KeyEvent.VK_LEFT:
-				player.stopLeft();
+				player.setMovingLeft(false);
+				player.setSpeedX(0);
 				break;
 
 			case KeyEvent.VK_RIGHT:
-				player.stopRight();
+				player.setMovingRight(false);
+				player.setSpeedX(0);
 				break;
 
 			case KeyEvent.VK_SPACE:

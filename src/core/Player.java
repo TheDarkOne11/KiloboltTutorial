@@ -5,41 +5,42 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
+import level.LevelReader;
+import level.Tile;
 import level.TileSpawn;
-
 import projectile.Projectile;
 import animation.Animation_Player;
 
 public class Player {
-	final int JUMPSPEED = -15;
-	final int MOVESPEED = 5;
-	final int GROUND = 382;
+	final float JUMPSPEED = -10f;
+	final float MOVESPEED = 5f;
+	final float MAXFALL = 5f;
 
-	//TODO Tyto honoty jsou zároveò centrum robota a souøadnice spawnpointu. Rozdìlit do 2 rùzných.
 	private int centerX;
 	private int centerY;
 	
 	private int weaponX = 50;
 	private int weaponY = -25;
-	private int speedX = 0;
-	private int speedY = 5;
+	private float speedX = 0f;
+	private float speedY = 0f;
 	private int backgroundStartMove = 200;
-	private boolean movingLeft = false;
-	private boolean movingRight = false;
-	private boolean covered = false;
-	private boolean jumped = false;
+	private boolean isMovingLeft = false;
+	private boolean isMovingRight = false;
+	private boolean isCovered = false;
+	private boolean isJumping = false;
+	private boolean isFalling = true;
 	private MainClass mainClass;
 	private Animation_Player animPlayer;
 	
 	// Collisions
 	/** Upper body collision rectangle. */
-	private Rectangle uBody = new Rectangle();	
+	private Rectangle recBodyU = new Rectangle();	
 	/** Lower body collision rectangle. */
-	private Rectangle lBody = new Rectangle();
-	private Rectangle rHand = new Rectangle();
-	private Rectangle lHand = new Rectangle();
+	private Rectangle recBodyL = new Rectangle();
+	private Rectangle recHandR = new Rectangle();
+	private Rectangle recHandL = new Rectangle();
 	/** Rectangular radius where collisions are turned on. */
-	private Rectangle collisionRadius = new Rectangle();
+	private Rectangle recRadius = new Rectangle();
 
 	private static Background bg1 = MainClass.getBg1();
 	private static Background bg2 = MainClass.getBg2();
@@ -51,106 +52,61 @@ public class Player {
 		this.centerX = TileSpawn.x;
 		this.centerY = TileSpawn.y;
 		this.mainClass = mainClass;
-		this.animPlayer = new Animation_Player(mainClass);
+		this.animPlayer = new Animation_Player();
 		animPlayer.init();
 	}
-
+	
 	public void update() {
-		if (speedX < 0) {
-			centerX += speedX;
-		}
-
-		if (speedX <= 0) {
-			bg1.setSpeedX(0);
-			bg2.setSpeedX(0);
-		}
-		if (centerX <= backgroundStartMove && speedX > 0) {
-			centerX += speedX;
-		}
-		// Scroolování pozadí je na opaènou stranu, než jde postava.
-		if (speedX > 0 && centerX > backgroundStartMove) {
-			bg1.setSpeedX(-MOVESPEED);
-			bg2.setSpeedX(-MOVESPEED);
-		}
-
-		// Updates Y Position
-		centerY += speedY;
-		if (centerY + speedY >= GROUND) {
-			centerY = GROUND;
-		}
-
-		// Handles Jumping
-		if (jumped == true) {
-			speedY += 1;
-
-			if (centerY + speedY >= GROUND) {
-				centerY = GROUND;
-				speedY = 0;
-				jumped = false;
-			}
-
-		}
-
-		// Prevents going beyond X coordinate of 0
-		if (centerX + speedX <= animPlayer.getCurrentImage().getWidth(mainClass)/2) {
-			centerX = animPlayer.getCurrentImage().getWidth(mainClass)/2+1;
+		collision();
+		this.centerX += this.speedX;
+		this.centerY += this.speedY;
+		
+		// Gravitace
+		if(isFalling || isJumping) {
+			if(speedY <= this.MAXFALL) speedY += 0.5f;
+			else speedY = this.MAXFALL;
 		}
 		
 		this.weaponX = centerX + 50;
 		this.weaponY = centerY - 25;
-		this.uBody.setRect(centerX - 37, centerY - 0, 74, 64);
-		this.lBody.setRect(centerX - 37, centerY, 71, 64);
-		this.rHand.setRect(centerX + 34, centerY - 32, 30, 20);
-		this.lHand.setRect(centerX - 64, centerY - 32, 30, 20);
-		this.collisionRadius.setRect(centerX - 112, centerY - 112, 224, 224);
+		this.recBodyU.setRect(centerX - 37, centerY - 64, 74, 64);
+		this.recBodyL.setRect(centerX - 37, centerY, 71, 64);
+		this.recHandR.setRect(centerX + 34, centerY - 32, 30, 20);
+		this.recHandL.setRect(centerX - 64, centerY - 32, 30, 20);
+		this.recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
 		animPlayer.update();
 	}
-
-	public void moveRight() {
-		if (covered == false) {
-			speedX = MOVESPEED;
-		}
-	}
-
-	public void moveLeft() {
-		if (covered == false) {
-			speedX = -MOVESPEED;
-		}
-	}
-
-	public void stopRight() {
-		setMovingRight(false);
-		stop();
-	}
-
-	public void stopLeft() {
-		setMovingLeft(false);
-		stop();
-	}
-
-	private void stop() {
-		if (isMovingRight() == false && isMovingLeft() == false) {
-			speedX = 0;
-		}
-
-		if (isMovingRight() == false && isMovingLeft() == true) {
-			moveLeft();
-		}
-
-		if (isMovingRight() == true && isMovingLeft() == false) {
-			moveRight();
-		}
-
-	}
-
-	public void jump() {
-		if (jumped == false) {
-			speedY = JUMPSPEED;
-			jumped = true;
-		}
-
-	}
 	
+	public void collision() {
+		for(Tile e : LevelReader.getAllTiles()) {
+			if(this.recRadius.intersects(e.getRecCollision())) {
+				
+				// Kolize s tøídou Tile
+				if(this.recBodyU.intersects(e.getRecCollision())) {
+					centerY = e.getY()+Tile.getHeight()+recBodyU.height;
+					this.setSpeedY(0);
+				} 
+				
+				if(this.recBodyL.intersects(e.getRecCollision())) {
+						speedY = 0f;
+						this.centerY = e.getY()-this.recBodyL.height;
+						this.isFalling = false;
+						this.isJumping = false;
+				} else {
+						isFalling = true;
+				}
+				
+				if(this.recHandL.intersects(e.getRecCollision())) {
+					this.centerX += 5;
+				}
+				
+				if(this.recHandR.intersects(e.getRecCollision())) {
+					this.centerX -= 5;
+				}
+			}
+		}
+	}
+
 	public void shoot() {
 		Projectile p = (Projectile) new Projectile(5, Color.green, 7).clone();
 		p.spawnProjectile(weaponX, weaponY);
@@ -162,19 +118,19 @@ public class Player {
 	}
 
 	public boolean isMovingLeft() {
-		return movingLeft;
+		return isMovingLeft;
 	}
 
 	public boolean isMovingRight() {
-		return movingRight;
+		return isMovingRight;
 	}
 
 	public void setMovingLeft(boolean movingLeft) {
-		this.movingLeft = movingLeft;
+		this.isMovingLeft = movingLeft;
 	}
 
 	public void setMovingRight(boolean movingRight) {
-		this.movingRight = movingRight;
+		this.isMovingRight = movingRight;
 	}
 
 	public int getCenterX() {
@@ -185,24 +141,12 @@ public class Player {
 		return centerY;
 	}
 
-	public boolean isCovered() {
-		return covered;
-	}
-
-	public int getSpeedX() {
-		return speedX;
-	}
-
-	public boolean isJumped() {
-		return jumped;
-	}
-
-	public void setSpeedX(int speedX) {
-		this.speedX = speedX;
-	}
-
 	public void setCovered(boolean covered) {
-		this.covered = covered;
+		this.isCovered = covered;
+	}
+
+	public boolean isCovered() {
+		return isCovered;
 	}
 
 	public ArrayList<Projectile> getProjectiles() {
@@ -211,5 +155,37 @@ public class Player {
 
 	public int getBackgroundStartMove() {
 		return backgroundStartMove;
+	}
+
+	public boolean isFalling() {
+		return isFalling;
+	}
+
+	public void setFalling(boolean falling) {
+		this.isFalling = falling;
+	}
+
+	public boolean isJumping() {
+		return isJumping;
+	}
+
+	public void setJumping(boolean jumping) {
+		this.isJumping = jumping;
+	}
+
+	public float getSpeedX() {
+		return speedX;
+	}
+
+	public float getSpeedY() {
+		return speedY;
+	}
+
+	public void setSpeedX(float speedX) {
+		this.speedX = speedX;
+	}
+
+	public void setSpeedY(float speedY) {
+		this.speedY = speedY;
 	}
 }

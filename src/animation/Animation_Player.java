@@ -12,12 +12,6 @@ import core.MainClass;
 public class Animation_Player extends Animation {
 	private Image character_static, character_static2, character_static3;
 	private Image currentImage, characterCover, characterJumped;
-	private Image character_walk;
-	private MainClass mainClass;
-	
-	public Animation_Player(MainClass mainclass) {
-		this.mainClass = mainclass;
-	}
 	
 	/**
 	 * Initialization of all player animations.
@@ -44,11 +38,11 @@ public class Animation_Player extends Animation {
 	 * Checks what animation should be up and updates it.
 	 */
 	public void update() {
-		if (mainClass.getPlayer().isJumped()) {
+		if (MainClass.getPlayer().isJumping()) {
 			currentImage = characterJumped;
-		} else if(mainClass.getPlayer().isCovered() == true) {
+		} else if(MainClass.getPlayer().isCovered() == true) {
 			currentImage = characterCover;
-		} else if(mainClass.getPlayer().isJumped() == false && mainClass.getPlayer().isCovered() == false) {
+		} else if(MainClass.getPlayer().isJumping() == false && MainClass.getPlayer().isCovered() == false) {
 			currentImage = super.getCurrentImage();
 		}
 		this.update(10);

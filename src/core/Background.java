@@ -1,5 +1,6 @@
 package core;
 
+//TODO Nahradit tuto celou tøídu za kameru.
 public class Background {
 	/** Coordinats of background's upper left corner. */
 	private int bgX, bgY;

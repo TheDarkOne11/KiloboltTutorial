@@ -95,4 +95,8 @@ public class LevelReader {
 			g.drawImage(i.getTexture(), i.getX(), i.getY(), null);
 		}
 	}
+
+	public static ArrayList<Tile> getAllTiles() {
+		return allTiles;
+	}
 }

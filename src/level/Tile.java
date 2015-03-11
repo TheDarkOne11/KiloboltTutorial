@@ -12,7 +12,7 @@ public class Tile implements Cloneable {
 	private Image texture;
 	private Color color;
 	
-	private Rectangle collisionRec = new Rectangle();
+	private Rectangle recCollision = new Rectangle();
 	
 	private final static int width = 32;
 	private final static int height = 32;
@@ -25,12 +25,12 @@ public class Tile implements Cloneable {
 	public void setPosition(int x, int y) {
 		this.x = x*width;
 		this.y = y*height;
-		this.collisionRec = new Rectangle(this.x, this.y, Tile.width, Tile.height);
+		this.recCollision = new Rectangle(this.x, this.y, Tile.width, Tile.height);
 	}
 	
 	public void update() {
 		this.x += MainClass.getBg1().getSpeedX();
-		this.collisionRec.setRect(this.x, this.y, Tile.width, Tile.height);
+		this.recCollision.setRect(this.x, this.y, Tile.width, Tile.height);
 	}
 
 	public Object clone() {
@@ -75,7 +75,11 @@ public class Tile implements Cloneable {
 	}
 
 	public Rectangle getCollisionRec() {
-		return collisionRec;
+		return recCollision;
+	}
+
+	public Rectangle getRecCollision() {
+		return recCollision;
 	}
 	
 }
