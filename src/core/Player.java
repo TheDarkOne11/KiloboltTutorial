@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
+import level.TileSpawn;
+
 import projectile.Projectile;
 import animation.Animation_Player;
 
@@ -13,12 +15,14 @@ public class Player {
 	final int MOVESPEED = 5;
 	final int GROUND = 382;
 
-	private int centerX = 100;
-	private int centerY = 382;
+	//TODO Tyto honoty jsou zároveò centrum robota a souøadnice spawnpointu. Rozdìlit do 2 rùzných.
+	private int centerX;
+	private int centerY;
+	
 	private int weaponX = 50;
 	private int weaponY = -25;
 	private int speedX = 0;
-	private int speedY = 1;
+	private int speedY = 5;
 	private int backgroundStartMove = 200;
 	private boolean movingLeft = false;
 	private boolean movingRight = false;
@@ -44,6 +48,8 @@ public class Player {
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 	
 	public Player(MainClass mainClass) {
+		this.centerX = TileSpawn.x;
+		this.centerY = TileSpawn.y;
 		this.mainClass = mainClass;
 		this.animPlayer = new Animation_Player(mainClass);
 		animPlayer.init();

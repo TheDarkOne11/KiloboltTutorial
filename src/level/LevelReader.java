@@ -26,6 +26,7 @@ public class LevelReader {
 		// TileTypes array initialization
 		tileTypes.add(new TileBrick());
 		tileTypes.add(new TileGrass());
+		tileTypes.add(new TileSpawn());
 		
 		this.readImage();
 	}
@@ -57,6 +58,10 @@ public class LevelReader {
 	 */
 	private void setAllTiles(int x, int y, Color color) { 
 		if(!color.equals(Color.white)) {
+			if(color.equals(Color.blue)) {
+				TileSpawn.x = x*TileSpawn.getWidth();
+				TileSpawn.y = y*TileSpawn.getHeight();
+			}
 			NotFound: {
 				// Projde všechny typy
 				for(Tile e : tileTypes) {
@@ -79,9 +84,9 @@ public class LevelReader {
 			allTiles.get(i).update();
 			
 			// Removes tiles that player already went past.
-			if(MainClass.getPlayer().getCenterX() - MainClass.getPlayer().getBackgroundStartMove() - Tile.getWidth() > allTiles.get(i).getX()) {
+			/*if(MainClass.getPlayer().getCenterX() - MainClass.getPlayer().getBackgroundStartMove() - Tile.getWidth() > allTiles.get(i).getX()) {
 				allTiles.remove(i);
-			}
+			}*/
 		}
 	}
 
