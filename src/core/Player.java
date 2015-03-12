@@ -11,6 +11,7 @@ import level.TileSpawn;
 import projectile.Projectile;
 import animation.Animation_Player;
 
+//TODO Pohrát si s velikostí nepøátel a hráèe vùèi Tile.
 public class Player {
 	final float JUMPSPEED = -10f;
 	final float MOVESPEED = 5f;
@@ -37,14 +38,13 @@ public class Player {
 	private Rectangle recBodyU = new Rectangle();	
 	/** Lower body collision rectangle. */
 	private Rectangle recBodyL = new Rectangle();
+	private Rectangle recFootR = new Rectangle();
+	private Rectangle recFootL = new Rectangle();
 	private Rectangle recHandR = new Rectangle();
 	private Rectangle recHandL = new Rectangle();
 	/** Rectangular radius where collisions are turned on. */
 	private Rectangle recRadius = new Rectangle();
 
-	private static Background bg1 = MainClass.getBg1();
-	private static Background bg2 = MainClass.getBg2();
-	
 	/** Player shooting projectiles. */
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 	
@@ -69,8 +69,14 @@ public class Player {
 		
 		this.weaponX = centerX + 50;
 		this.weaponY = centerY - 25;
+		
+		// Collision Rectangles
 		this.recBodyU.setRect(centerX - 37, centerY - 64, 74, 64);
-		this.recBodyL.setRect(centerX - 37, centerY, 71, 64);
+		this.recBodyL.setRect(centerX - 26, centerY, 53, 64);
+		
+		this.recFootR.setRect(recBodyL.x+recBodyL.width, recBodyL.y+50, 10, 10);
+		this.recFootL.setRect(recBodyL.x-10, recBodyL.y+50, 10, 10);
+		
 		this.recHandR.setRect(centerX + 34, centerY - 32, 30, 20);
 		this.recHandL.setRect(centerX - 64, centerY - 32, 30, 20);
 		this.recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
@@ -96,25 +102,41 @@ public class Player {
 						isFalling = true;
 				}
 				
+				if(this.recFootL.intersects(e.getRecCollision())) {
+					this.centerX += 20;
+					this.centerY -= 1;
+				}
+				
+				if(this.recFootR.intersects(e.getRecCollision())) {
+					this.centerX -= 20;
+					this.centerY -= 1;
+				}
+				
 				if(this.recHandL.intersects(e.getRecCollision())) {
 					this.centerX += 5;
+					this.centerY -= 1;
 				}
 				
 				if(this.recHandR.intersects(e.getRecCollision())) {
 					this.centerX -= 5;
+					this.centerY -= 1;
 				}
+				
 			}
 		}
+	}
+
+	public void paint(Graphics g) {
+		g.drawImage(animPlayer.getCurrentImage(), this.getCenterX() - animPlayer.getCurrentImage().getWidth(mainClass) / 2, this.getCenterY() - animPlayer.getCurrentImage().getHeight(mainClass) / 2, mainClass);
+		g.drawRect(this.recBodyL.x, this.recBodyL.y, this.recBodyL.width, this.recBodyL.height);
+		g.setColor(Color.red);
+		g.drawRect(this.recFootR.x, this.recFootR.y, this.recFootR.width, this.recFootR.height);
 	}
 
 	public void shoot() {
 		Projectile p = (Projectile) new Projectile(5, Color.green, 7).clone();
 		p.spawnProjectile(weaponX, weaponY);
 		projectiles.add(p);
-	}
-	
-	public void paint(Graphics g) {
-		g.drawImage(animPlayer.getCurrentImage(), this.getCenterX() - animPlayer.getCurrentImage().getWidth(mainClass) / 2, this.getCenterY() - animPlayer.getCurrentImage().getHeight(mainClass) / 2, mainClass);
 	}
 
 	public boolean isMovingLeft() {

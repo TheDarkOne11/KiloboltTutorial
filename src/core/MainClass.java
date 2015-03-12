@@ -4,6 +4,7 @@ import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -20,15 +21,22 @@ import projectile.Projectile;
 import enemy.Enemy;
 import enemy.Enemy_Heliboy;
 
+//TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
+
 /** Main class of the Applet. */
 public class MainClass extends Applet implements Runnable {
+	public static int WIDTH = 800;
+	public static int HEIGHT = 480;
+	
 	private int updatesPerSec = 60;
 	private static Player player;
 	private Image image;
 	private Image background;
 	private Graphics second;
+	private Graphics2D g2d;
 	private static URL base;
 	private static Background bg1, bg2;
+	private Camera cam;
 	private LevelReader lvl;
 	// Enemy types
 	private Enemy_Heliboy heliboy;
@@ -36,6 +44,7 @@ public class MainClass extends Applet implements Runnable {
 	@Override
 	public void init() {
 		Frame frame = (Frame) this.getParent().getParent();
+		cam = new Camera(0, 0);
 
 		this.addKeyListener(new ClassKeyListener());
 		this.addMouseListener(new MouseAdapter() {
@@ -45,14 +54,15 @@ public class MainClass extends Applet implements Runnable {
 		});
 
 		frame.setTitle("KiloboltTutorial");
-		this.setSize(800, 480);
-		this.setBackground(Color.black);
+		this.setSize(WIDTH, HEIGHT);
+		this.setBackground(new Color(102, 226, 255));
 		this.setFocusable(true);
 		try {
 			base = getDocumentBase();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		background = getImage(base, "data/background.png");
 		Enemy.setMainClass(this);
 		lvl = new LevelReader("demo");
@@ -94,6 +104,15 @@ public class MainClass extends Applet implements Runnable {
 
 	@Override
 	public void paint(Graphics g) {
+		if (image == null) {
+			image = createImage(this.getWidth(), this.getHeight());
+			second = image.getGraphics();
+			g2d = (Graphics2D) second;
+		}
+		
+		g2d.translate(cam.getX(), cam.getY());
+		//////////////////////////////////////////
+		// Místo na kreslení
 		g.drawImage(background, bg1.getBgX(), bg1.getBgY(), this);
 		g.drawImage(background, bg2.getBgX(), bg2.getBgY(), this);
 		lvl.paintTiles(g);
@@ -111,15 +130,13 @@ public class MainClass extends Applet implements Runnable {
 				System.out.println("Enemy " + Enemy.allEnemies.get(i).getClass().getName() + " doesn't probably have animation.");
 			}
 		}
+		
+		///////////////////////////////////////////
+		g2d.translate(-cam.getX(), -cam.getY());
 	}
 
 	@Override
 	public void update(Graphics g) {
-		if (image == null) {
-			image = createImage(this.getWidth(), this.getHeight());
-			second = image.getGraphics();
-		}
-
 		second.setColor(getBackground());
 		second.fillRect(0, 0, getWidth(), getHeight());
 		second.setColor(getForeground());
@@ -132,6 +149,7 @@ public class MainClass extends Applet implements Runnable {
 	public void run() {
 		while (true) {
 			player.update();
+			cam.update(player);
 			Projectile.update(player.getProjectiles());
 			
 			for(int i = 0; i < Enemy.allEnemies.size(); i++) {
@@ -142,6 +160,9 @@ public class MainClass extends Applet implements Runnable {
 			bg1.update();
 			bg2.update();
 			lvl.update();
+			
+			this.WIDTH = this.getWidth();
+			this.HEIGHT = this.getHeight();
 			
 			repaint();
 
