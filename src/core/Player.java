@@ -12,7 +12,7 @@ import projectile.Projectile;
 import animation.Animation_Player;
 
 //TODO Pohrát si s velikostí nepøátel a hráèe vùèi Tile.
-public class Player {
+public class Player extends Entity {
 	final float JUMPSPEED = -10f;
 	final float MOVESPEED = 5f;
 	final float MAXFALL = 10f;
@@ -75,7 +75,7 @@ public class Player {
 		this.weaponY = centerY - 25;
 		
 		// Collision Rectangles
-		this.recBodyU.setRect(centerX - 37, centerY - 64, 74, 64);
+		this.recBodyU.setRect(centerX - 28, centerY - 64, 56, 64);
 		this.recBodyL.setRect(centerX - 26, centerY, 53, 64);
 		
 		this.recFootR.setRect(recBodyL.x+recBodyL.width, recBodyL.y, 10, 55);
@@ -107,23 +107,19 @@ public class Player {
 				}
 				
 				if(this.recFootL.intersects(e.getRecCollision())) {
-					this.centerX += 20;
-					this.centerY -= 1;
+					this.centerX += 5;					
 				}
 				
 				if(this.recFootR.intersects(e.getRecCollision())) {
-					this.centerX -= 20;
-					this.centerY -= 1;
+					this.centerX -= 5;
 				}
 				
 				if(this.recHandL.intersects(e.getRecCollision())) {
 					this.centerX += 5;
-					this.centerY -= 1;
 				}
 				
 				if(this.recHandR.intersects(e.getRecCollision())) {
 					this.centerX -= 5;
-					this.centerY -= 1;
 				}
 				
 			}
@@ -132,14 +128,21 @@ public class Player {
 
 	public void paint(Graphics g) {
 		g.drawImage(animPlayer.getCurrentImage(), this.getCenterX() - animPlayer.getCurrentImage().getWidth(mainClass) / 2, this.getCenterY() - animPlayer.getCurrentImage().getHeight(mainClass) / 2, mainClass);
-		
+		/*
 		g.drawRect(this.recBodyL.x, this.recBodyL.y, this.recBodyL.width, this.recBodyL.height);
+		g.drawRect(this.recBodyU.x, this.recBodyU.y, this.recBodyU.width, this.recBodyU.height);
 		g.setColor(Color.red);
 		g.drawRect(this.recFootL.x, this.recFootL.y, this.recFootL.width, this.recFootL.height);
+		g.drawRect(this.recFootR.x, this.recFootR.y, this.recFootR.width, this.recFootR.height);
+		g.drawRect(this.recHandR.x, this.recHandR.y, this.recHandR.width, this.recHandR.height);
+		g.drawRect(this.recHandL.x, this.recHandL.y, this.recHandL.width, this.recHandL.height);*/
 	}
 
-	public void shoot() {
-		Projectile p = (Projectile) new Projectile(5, Color.green, 7).clone();
+	public void die() {		
+	}
+
+	public void attack() {
+		Projectile p = (Projectile) new Projectile(5, Color.black, 7).clone();
 		p.spawnProjectile(weaponX, weaponY);
 		projectiles.add(p);
 	}
