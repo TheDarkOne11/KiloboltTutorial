@@ -13,17 +13,12 @@ import animation.Animation_Player;
 
 //TODO Pohrát si s velikostí nepøátel a hráèe vùèi Tile.
 public class Player extends Entity {
-	final float JUMPSPEED = -10f;
-	final float MOVESPEED = 5f;
-	final float MAXFALL = 10f;
+	private final float JUMPSPEED = -10f;
+	private final float MOVESPEED = 5f;
+	private final float MAXFALL = 10f;
 
-	private int centerX;
-	private int centerY;
-	
 	private int weaponX = 50;
 	private int weaponY = -25;
-	private float speedX = 0f;
-	private float speedY = 0f;
 	private int backgroundStartMove = 200;
 	private boolean isMovingLeft = false;
 	private boolean isMovingRight = false;
@@ -52,74 +47,74 @@ public class Player extends Entity {
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 	
 	public Player(MainClass mainClass) {
-		this.centerX = TileSpawn.x;
-		this.centerY = TileSpawn.y;
+		centerX = TileSpawn.x;
+		centerY = TileSpawn.y;
 		this.mainClass = mainClass;
-		this.animPlayer = new Animation_Player();
+		animPlayer = new Animation_Player();
 		animPlayer.init();
 	}
 	
 	public void update() {
 		collision();
-		this.centerX += this.speedX;
-		this.centerY += this.speedY;
+		centerX += speedX;
+		centerY += speedY;
 
 		// Gravitace
 		if(isFalling || jumped) {
 			jumped = false;
-			if(speedY <= this.MAXFALL) speedY += 0.5f;
-			else speedY = this.MAXFALL;
+			if(speedY <= MAXFALL) speedY += 0.5f;
+			else speedY = MAXFALL;
 		}
 		
-		this.weaponX = centerX + 50;
-		this.weaponY = centerY - 25;
+		weaponX = centerX + 50;
+		weaponY = centerY - 25;
 		
 		// Collision Rectangles
-		this.recBodyU.setRect(centerX - 28, centerY - 64, 56, 64);
-		this.recBodyL.setRect(centerX - 26, centerY, 53, 64);
+		recBodyU.setRect(centerX - 28, centerY - 64, 56, 64);
+		recBodyL.setRect(centerX - 26, centerY, 53, 64);
 		
-		this.recFootR.setRect(recBodyL.x+recBodyL.width, recBodyL.y, 10, 55);
-		this.recFootL.setRect(recBodyL.x-10, recBodyL.y, 10, 55);
+		recFootR.setRect(recBodyL.x+recBodyL.width, recBodyL.y, 10, 55);
+		recFootL.setRect(recBodyL.x-10, recBodyL.y, 10, 55);
 		
-		this.recHandR.setRect(centerX + 34, centerY - 32, 30, 20);
-		this.recHandL.setRect(centerX - 64, centerY - 32, 30, 20);
-		this.recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
+		recHandR.setRect(centerX + 34, centerY - 32, 30, 20);
+		recHandL.setRect(centerX - 64, centerY - 32, 30, 20);
+		recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
 		animPlayer.update();
 	}
 
 	public void  collision() {
 		for(Tile e : LevelReader.getAllTiles()) {
-			if(this.recRadius.intersects(e.getRecCollision())) {
+			if(recRadius.intersects(e.getRecCollision())) {
 				
 				// Kolize s tøídou Tile
-				if(this.recBodyU.intersects(e.getRecCollision())) {
+				if(recBodyU.intersects(e.getRecCollision())) {
 					centerY = e.getY()+Tile.getHeight()+recBodyU.height;
-					this.setSpeedY(0);
+					speedY = 0;
 				} 
 				
-				if(this.recBodyL.intersects(e.getRecCollision()) && !jumped) {
+				if(recBodyL.intersects(e.getRecCollision()) && !jumped) {
 						speedY = 0f;
-						this.centerY = e.getY()-this.recBodyL.height+1;
-						this.isFalling = false;
-						this.isJumping = false;
+						centerY = e.getY()-recBodyL.height+1;
+						isFalling = false;
+						isJumping = false;
 				} else {
 						isFalling = true;
 				}
 				
-				if(this.recFootL.intersects(e.getRecCollision())) {
-					this.centerX += 5;					
+				if(recFootL.intersects(e.getRecCollision())) {
+					centerX += 5;					
 				}
 				
-				if(this.recFootR.intersects(e.getRecCollision())) {
-					this.centerX -= 5;
+				if(recFootR.intersects(e.getRecCollision())) {
+					centerX -= 5;
 				}
 				
-				if(this.recHandL.intersects(e.getRecCollision())) {
-					this.centerX += 5;
+				if(recHandL.intersects(e.getRecCollision())) {
+					centerX += 5;
 				}
 				
-				if(this.recHandR.intersects(e.getRecCollision())) {
-					this.centerX -= 5;
+				if(recHandR.intersects(e.getRecCollision())) {
+					centerX -= 5;
 				}
 				
 			}
@@ -127,15 +122,15 @@ public class Player extends Entity {
 	}
 
 	public void paint(Graphics g) {
-		g.drawImage(animPlayer.getCurrentImage(), this.getCenterX() - animPlayer.getCurrentImage().getWidth(mainClass) / 2, this.getCenterY() - animPlayer.getCurrentImage().getHeight(mainClass) / 2, mainClass);
+		g.drawImage(animPlayer.getCurrentImage(), getCenterX() - animPlayer.getCurrentImage().getWidth(mainClass) / 2, getCenterY() - animPlayer.getCurrentImage().getHeight(mainClass) / 2, mainClass);
 		/*
-		g.drawRect(this.recBodyL.x, this.recBodyL.y, this.recBodyL.width, this.recBodyL.height);
-		g.drawRect(this.recBodyU.x, this.recBodyU.y, this.recBodyU.width, this.recBodyU.height);
+		g.drawRect(recBodyL.x, recBodyL.y, recBodyL.width, recBodyL.height);
+		g.drawRect(recBodyU.x, recBodyU.y, recBodyU.width, recBodyU.height);
 		g.setColor(Color.red);
-		g.drawRect(this.recFootL.x, this.recFootL.y, this.recFootL.width, this.recFootL.height);
-		g.drawRect(this.recFootR.x, this.recFootR.y, this.recFootR.width, this.recFootR.height);
-		g.drawRect(this.recHandR.x, this.recHandR.y, this.recHandR.width, this.recHandR.height);
-		g.drawRect(this.recHandL.x, this.recHandL.y, this.recHandL.width, this.recHandL.height);*/
+		g.drawRect(recFootL.x, recFootL.y, recFootL.width, recFootL.height);
+		g.drawRect(recFootR.x, recFootR.y, recFootR.width, recFootR.height);
+		g.drawRect(recHandR.x, recHandR.y, recHandR.width, recHandR.height);
+		g.drawRect(recHandL.x, recHandL.y, recHandL.width, recHandL.height);*/
 	}
 
 	public void die() {		
@@ -143,8 +138,20 @@ public class Player extends Entity {
 
 	public void attack() {
 		Projectile p = (Projectile) new Projectile(5, Color.black, 7).clone();
-		p.spawnProjectile(weaponX, weaponY);
+		p.spawnProjectile(this);
 		projectiles.add(p);
+	}
+
+	public int getWeaponX() {
+		return weaponX;
+	}
+
+	public int getWeaponY() {
+		return weaponY;
+	}
+
+	public int getBackgroundStartMove() {
+		return backgroundStartMove;
 	}
 
 	public boolean isMovingLeft() {
@@ -155,75 +162,75 @@ public class Player extends Entity {
 		return isMovingRight;
 	}
 
-	public void setMovingLeft(boolean movingLeft) {
-		this.isMovingLeft = movingLeft;
-	}
-
-	public void setMovingRight(boolean movingRight) {
-		this.isMovingRight = movingRight;
-	}
-
-	public int getCenterX() {
-		return centerX;
-	}
-
-	public int getCenterY() {
-		return centerY;
-	}
-
-	public void setCovered(boolean covered) {
-		this.isCovered = covered;
-	}
-
-	public boolean isCovered() {
-		return isCovered;
-	}
-
-	public ArrayList<Projectile> getProjectiles() {
-		return projectiles;
-	}
-
-	public int getBackgroundStartMove() {
-		return backgroundStartMove;
-	}
-
 	public boolean isFalling() {
 		return isFalling;
-	}
-
-	public void setFalling(boolean falling) {
-		this.isFalling = falling;
 	}
 
 	public boolean isJumping() {
 		return isJumping;
 	}
 
-	public void setJumping(boolean jumping) {
-		this.isJumping = jumping;
+	public void setWeaponX(int weaponX) {
+		this.weaponX = weaponX;
 	}
 
-	public float getSpeedX() {
-		return speedX;
+	public void setWeaponY(int weaponY) {
+		this.weaponY = weaponY;
 	}
 
-	public float getSpeedY() {
-		return speedY;
+	public void setBackgroundStartMove(int backgroundStartMove) {
+		this.backgroundStartMove = backgroundStartMove;
 	}
 
-	public void setSpeedX(float speedX) {
-		this.speedX = speedX;
+	public void setMovingLeft(boolean isMovingLeft) {
+		this.isMovingLeft = isMovingLeft;
 	}
 
-	public void setSpeedY(float speedY) {
-		this.speedY = speedY;
+	public void setMovingRight(boolean isMovingRight) {
+		this.isMovingRight = isMovingRight;
+	}
+
+	public void setFalling(boolean isFalling) {
+		this.isFalling = isFalling;
+	}
+
+	public void setJumping(boolean isJumping) {
+		this.isJumping = isJumping;
+	}
+
+	public boolean isCovered() {
+		return isCovered;
+	}
+
+	public void setCovered(boolean isCovered) {
+		this.isCovered = isCovered;
+	}
+
+	public boolean isJumped() {
+		return jumped;
+	}
+
+	public ArrayList<Projectile> getProjectiles() {
+		return projectiles;
 	}
 
 	public void setJumped(boolean jumped) {
 		this.jumped = jumped;
 	}
 
-	public boolean isJumped() {
-		return jumped;
+	public void setProjectiles(ArrayList<Projectile> projectiles) {
+		this.projectiles = projectiles;
+	}
+
+	public float getJUMPSPEED() {
+		return JUMPSPEED;
+	}
+
+	public float getMOVESPEED() {
+		return MOVESPEED;
+	}
+
+	public float getMAXFALL() {
+		return MAXFALL;
 	}
 }

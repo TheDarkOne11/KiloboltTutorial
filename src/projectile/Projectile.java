@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import core.Entity;
+
 /** Superclass of all projectiles in the game. */
 public class Projectile implements Cloneable{
 	private int x, y, speedX, distance, damage;
@@ -49,11 +51,11 @@ public class Projectile implements Cloneable{
 	 * @param startY
 	 * @param speedX
 	 */
-	public void spawnProjectile(int startX, int startY) {
-		this.x = startX;
-		this.y = startY;
+	public void spawnProjectile(Entity entity) {
+		this.x = entity.getWeaponX();
+		this.y = entity.getWeaponY();
 		this.visible = true;
-		this.distance = 800;
+		this.distance = entity.getCenterX() + 800;
 	}
 
 	/**

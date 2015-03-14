@@ -29,7 +29,7 @@ public class MainClass extends Applet implements Runnable {
 	public static int HEIGHT = 480;
 	
 	private int updatesPerSec = 60;
-	private static Player player;
+	private static Entity player;
 	private Image image;
 	private Image background;
 	private Graphics second;
@@ -119,7 +119,7 @@ public class MainClass extends Applet implements Runnable {
 		
 		player.paint(g);
 		
-		Projectile.paint(g, player.getProjectiles());
+		Projectile.paint(g, ((Player) player).getProjectiles());
 		
 		for(int i = 0; i < Enemy.allEnemies.size(); i++) {
 			try {
@@ -149,8 +149,8 @@ public class MainClass extends Applet implements Runnable {
 	public void run() {
 		while (true) {
 			player.update();
-			cam.update(player);
-			Projectile.update(player.getProjectiles());
+			cam.update((Player) player);
+			Projectile.update(((Player) player).getProjectiles());
 			
 			for(int i = 0; i < Enemy.allEnemies.size(); i++) {
 				Projectile.update(Enemy.allEnemies.get(i).getProjectiles());
@@ -187,7 +187,7 @@ public class MainClass extends Applet implements Runnable {
 	}
 
 	public static Player getPlayer() {
-		return player;
+		return (Player) player;
 	}
 
 	class ClassKeyListener implements KeyListener {
@@ -195,37 +195,37 @@ public class MainClass extends Applet implements Runnable {
 		public void keyPressed(KeyEvent e) {
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
-				if(!player.isJumping()) {
-					player.setJumping(true);
-					player.setSpeedY(player.JUMPSPEED);
-					player.setJumped(true);
+				if(!((Player) player).isJumping()) {
+					((Player) player).setJumping(true);
+					player.setSpeedY(((Player) player).getJUMPSPEED());
+					((Player) player).setJumped(true);
 				}
 				break;
 
 			case KeyEvent.VK_DOWN:
-				player.setCovered(true);
+				((Player) player).setCovered(true);
 				break;
 
 			case KeyEvent.VK_LEFT:
-				player.setMovingLeft(true);
-				player.setSpeedX(-player.MOVESPEED);
+				((Player) player).setMovingLeft(true);
+				player.setSpeedX(-((Player) player).getMOVESPEED());
 				break;
 
 			case KeyEvent.VK_RIGHT:
-				player.setMovingRight(true);
-				player.setSpeedX(player.MOVESPEED);
+				((Player) player).setMovingRight(true);
+				player.setSpeedX(((Player) player).getMOVESPEED());
 				break;
 
 			case KeyEvent.VK_SPACE:
 				// TODO Tested enemie's attacks
 				for(int i = 0; i < Enemy.allEnemies.size(); i++) {
-					Enemy.allEnemies.get(i).attack(heliboy.getProjectile());
+					Enemy.allEnemies.get(i).attack();
 				} 
 				break;
 
 			case KeyEvent.VK_CONTROL:
-				if (player.isCovered() == false && player.isJumped() == false) {
-					player.shoot();
+				if (((Player) player).isCovered() == false && ((Player) player).isJumped() == false) {
+					player.attack();
 				}
 				break;
 
@@ -239,16 +239,16 @@ public class MainClass extends Applet implements Runnable {
 				break;
 
 			case KeyEvent.VK_DOWN:
-				player.setCovered(false);
+				((Player) player).setCovered(false);
 				break;
 
 			case KeyEvent.VK_LEFT:
-				player.setMovingLeft(false);
+				((Player) player).setMovingLeft(false);
 				player.setSpeedX(0);
 				break;
 
 			case KeyEvent.VK_RIGHT:
-				player.setMovingRight(false);
+				((Player) player).setMovingRight(false);
 				player.setSpeedX(0);
 				break;
 
@@ -258,9 +258,7 @@ public class MainClass extends Applet implements Runnable {
 			}
 		}
 
-		@Override
 		public void keyTyped(KeyEvent e) {
-			// TODO Auto-generated method stub
 			
 		}
 

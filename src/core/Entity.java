@@ -1,0 +1,68 @@
+package core;
+
+import java.awt.Graphics;
+
+/**
+ * Parent class for all entities.
+ * @author Petr
+ *
+ */
+public abstract class Entity {
+	protected int maxHp, currHp, centerX, centerY, weaponX, weaponY;
+	protected float speedX, speedY;
+	
+	public abstract void update();
+	public abstract void paint(Graphics g);
+	public abstract void die();
+	public abstract void attack();
+	public abstract void collision();
+	
+	public int getMaxHp() {
+		return maxHp;
+	}
+	public int getCurrHp() {
+		return currHp;
+	}
+	public int getCenterX() {
+		return centerX;
+	}
+	public int getCenterY() {
+		return centerY;
+	}
+	public int getWeaponX() {
+		return weaponX;
+	}
+	public int getWeaponY() {
+		return weaponY;
+	}
+	public float getSpeedX() {
+		return speedX;
+	}
+	public float getSpeedY() {
+		return speedY;
+	}
+	public void setMaxHp(int maxHp) {
+		this.maxHp = maxHp;
+	}
+	public void setCurrHp(int currHp) {
+		this.currHp = currHp;
+	}
+	public void setCenterX(int centerX) {
+		this.centerX = centerX;
+	}
+	public void setCenterY(int centerY) {
+		this.centerY = centerY;
+	}
+	public void setWeaponX(int weaponX) {
+		this.weaponX = weaponX;
+	}
+	public void setWeaponY(int weaponY) {
+		this.weaponY = weaponY;
+	}
+	public void setSpeedX(float speedX) {
+		this.speedX = speedX;
+	}
+	public void setSpeedY(float speedY) {
+		this.speedY = speedY;
+	}
+}

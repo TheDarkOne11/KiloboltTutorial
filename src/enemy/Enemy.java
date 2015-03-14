@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import projectile.Projectile;
 import animation.Animation;
 import core.Background;
+import core.Entity;
 import core.MainClass;
 
 /** Super class for all enemies. */
-public class Enemy implements Cloneable{
+public class Enemy extends Entity implements Cloneable{
 	protected static MainClass mainClass;
 	protected Animation anim;
-	private int maxHp;
-	private int currHp, speedX, centerX, centerY, weaponX, weaponY;
+	private Projectile projectile;
 	/** Difference between center and weapon coordinates. */
 	private int weaponDiffX, weaponDiffY;
 	private Background bg = MainClass.getBg1();
@@ -25,8 +25,9 @@ public class Enemy implements Cloneable{
 		Enemy.mainClass = mainClass;
 	}
 
-	protected Enemy(int maxHp, int weaponDiffX, int weaponDiffY) {
+	protected Enemy(int maxHp, Projectile projectile, int weaponDiffX, int weaponDiffY) {
 		this.maxHp = maxHp;
+		this.projectile = projectile;
 		this.weaponDiffX = weaponDiffX;
 		this.weaponDiffY = weaponDiffY;
 	}
@@ -65,10 +66,13 @@ public class Enemy implements Cloneable{
 		Enemy.allEnemies.remove(this.clone());
 	}
 
-	public void attack(Projectile p) {
-		p.spawnProjectile(this.weaponX, this.weaponY);
-		projectiles.add((Projectile) p.clone());
-	}	
+	public void attack() {
+		this.projectile.spawnProjectile(this);
+		projectiles.add((Projectile) this.projectile.clone());
+	}
+
+	public void collision() {
+	}
 
 	/**
 	 * Potøeba, jinak by nepøátelé sdíleli souøadnice.
@@ -80,54 +84,6 @@ public class Enemy implements Cloneable{
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	public int getCurrHp() {
-		return currHp;
-	}
-
-	public int getSpeedX() {
-		return speedX;
-	}
-
-	public int getCenterX() {
-		return centerX;
-	}
-
-	public int getCenterY() {
-		return centerY;
-	}
-
-	public Background getBg() {
-		return bg;
-	}
-
-	public void setCurrHp(int currHp) {
-		this.currHp = currHp;
-	}
-
-	public void setSpeedX(int speedX) {
-		this.speedX = speedX;
-	}
-
-	public void setCenterX(int centerX) {
-		this.centerX = centerX;
-	}
-
-	public void setCenterY(int centerY) {
-		this.centerY = centerY;
-	}
-
-	public void setBg(Background bg) {
-		this.bg = bg;
-	}
-
-	public int getWeaponX() {
-		return weaponX;
-	}
-
-	public int getWeaponY() {
-		return weaponY;
 	}
 
 	public ArrayList<Projectile> getProjectiles() {
