@@ -75,7 +75,7 @@ public class MainClass extends Applet implements Runnable {
 		bg2 = new Background(2160, 0);
 		
 		heliboy = new Enemy_Heliboy();
-		heliboy.add(340, 360);
+		heliboy.add(400, 360);
 		heliboy.add(700, 300);
 
 		player = new Player(this);
@@ -198,6 +198,7 @@ public class MainClass extends Applet implements Runnable {
 				if(!player.isJumping()) {
 					player.setJumping(true);
 					player.setSpeedY(player.JUMPSPEED);
+					player.setJumped(true);
 				}
 				break;
 
@@ -223,7 +224,7 @@ public class MainClass extends Applet implements Runnable {
 				break;
 
 			case KeyEvent.VK_CONTROL:
-				if (player.isCovered() == false && player.isJumping() == false) {
+				if (player.isCovered() == false && player.isJumped() == false) {
 					player.shoot();
 				}
 				break;
@@ -259,7 +260,8 @@ public class MainClass extends Applet implements Runnable {
 
 		@Override
 		public void keyTyped(KeyEvent e) {
-
+			// TODO Auto-generated method stub
+			
 		}
 
 	}

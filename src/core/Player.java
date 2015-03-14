@@ -15,7 +15,7 @@ import animation.Animation_Player;
 public class Player {
 	final float JUMPSPEED = -10f;
 	final float MOVESPEED = 5f;
-	final float MAXFALL = 5f;
+	final float MAXFALL = 10f;
 
 	private int centerX;
 	private int centerY;
@@ -28,8 +28,11 @@ public class Player {
 	private boolean isMovingLeft = false;
 	private boolean isMovingRight = false;
 	private boolean isCovered = false;
-	private boolean isJumping = false;
 	private boolean isFalling = true;
+	/** Used for animations.*/
+	private boolean isJumping = false;
+	/** Used to correct collision. Otherwise he wouldn't jump. */
+	private boolean jumped = false;
 	private MainClass mainClass;
 	private Animation_Player animPlayer;
 	
@@ -60,9 +63,10 @@ public class Player {
 		collision();
 		this.centerX += this.speedX;
 		this.centerY += this.speedY;
-		
+
 		// Gravitace
-		if(isFalling || isJumping) {
+		if(isFalling || jumped) {
+			jumped = false;
 			if(speedY <= this.MAXFALL) speedY += 0.5f;
 			else speedY = this.MAXFALL;
 		}
@@ -74,16 +78,16 @@ public class Player {
 		this.recBodyU.setRect(centerX - 37, centerY - 64, 74, 64);
 		this.recBodyL.setRect(centerX - 26, centerY, 53, 64);
 		
-		this.recFootR.setRect(recBodyL.x+recBodyL.width, recBodyL.y+50, 10, 10);
-		this.recFootL.setRect(recBodyL.x-10, recBodyL.y+50, 10, 10);
+		this.recFootR.setRect(recBodyL.x+recBodyL.width, recBodyL.y, 10, 55);
+		this.recFootL.setRect(recBodyL.x-10, recBodyL.y, 10, 55);
 		
 		this.recHandR.setRect(centerX + 34, centerY - 32, 30, 20);
 		this.recHandL.setRect(centerX - 64, centerY - 32, 30, 20);
 		this.recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
 		animPlayer.update();
 	}
-	
-	public void collision() {
+
+	public void  collision() {
 		for(Tile e : LevelReader.getAllTiles()) {
 			if(this.recRadius.intersects(e.getRecCollision())) {
 				
@@ -93,9 +97,9 @@ public class Player {
 					this.setSpeedY(0);
 				} 
 				
-				if(this.recBodyL.intersects(e.getRecCollision())) {
+				if(this.recBodyL.intersects(e.getRecCollision()) && !jumped) {
 						speedY = 0f;
-						this.centerY = e.getY()-this.recBodyL.height;
+						this.centerY = e.getY()-this.recBodyL.height+1;
 						this.isFalling = false;
 						this.isJumping = false;
 				} else {
@@ -128,9 +132,10 @@ public class Player {
 
 	public void paint(Graphics g) {
 		g.drawImage(animPlayer.getCurrentImage(), this.getCenterX() - animPlayer.getCurrentImage().getWidth(mainClass) / 2, this.getCenterY() - animPlayer.getCurrentImage().getHeight(mainClass) / 2, mainClass);
+		
 		g.drawRect(this.recBodyL.x, this.recBodyL.y, this.recBodyL.width, this.recBodyL.height);
 		g.setColor(Color.red);
-		g.drawRect(this.recFootR.x, this.recFootR.y, this.recFootR.width, this.recFootR.height);
+		g.drawRect(this.recFootL.x, this.recFootL.y, this.recFootL.width, this.recFootL.height);
 	}
 
 	public void shoot() {
@@ -209,5 +214,13 @@ public class Player {
 
 	public void setSpeedY(float speedY) {
 		this.speedY = speedY;
+	}
+
+	public void setJumped(boolean jumped) {
+		this.jumped = jumped;
+	}
+
+	public boolean isJumped() {
+		return jumped;
 	}
 }
