@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -38,6 +39,9 @@ public class MainClass extends Applet implements Runnable {
 	private static Background bg1, bg2;
 	private Camera cam;
 	private LevelReader lvl;
+	/** Stores all projectiles. */
+	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+	
 	// Enemy types
 	private Enemy_Heliboy heliboy;
 
@@ -119,12 +123,11 @@ public class MainClass extends Applet implements Runnable {
 		
 		player.paint(g);
 		
-		Projectile.paint(g, ((Player) player).getProjectiles());
+		Projectile.paint(g, projectiles);
 		
 		for(int i = 0; i < Enemy.allEnemies.size(); i++) {
 			try {
 				Enemy.allEnemies.get(i).paint(g);
-				Projectile.paint(g, Enemy.allEnemies.get(i).getProjectiles());
 			} catch(NullPointerException e) {
 				e.printStackTrace();
 				System.out.println("Enemy " + Enemy.allEnemies.get(i).getClass().getName() + " doesn't probably have animation.");
@@ -150,12 +153,12 @@ public class MainClass extends Applet implements Runnable {
 		while (true) {
 			player.update();
 			cam.update((Player) player);
-			Projectile.update(((Player) player).getProjectiles());
 			
 			for(int i = 0; i < Enemy.allEnemies.size(); i++) {
-				Projectile.update(Enemy.allEnemies.get(i).getProjectiles());
 				Enemy.allEnemies.get(i).update();
 			}
+			
+			Projectile.update(projectiles);
 			
 			bg1.update();
 			bg2.update();
@@ -188,6 +191,10 @@ public class MainClass extends Applet implements Runnable {
 
 	public static Player getPlayer() {
 		return (Player) player;
+	}
+
+	public ArrayList<Projectile> getProjectiles() {
+		return projectiles;
 	}
 
 	class ClassKeyListener implements KeyListener {

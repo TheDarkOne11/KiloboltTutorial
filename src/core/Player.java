@@ -3,7 +3,6 @@ package core;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.util.ArrayList;
 
 import level.LevelReader;
 import level.Tile;
@@ -16,9 +15,7 @@ public class Player extends Entity {
 	private final float JUMPSPEED = -10f;
 	private final float MOVESPEED = 5f;
 	private final float MAXFALL = 10f;
-
-	private int weaponX = 50;
-	private int weaponY = -25;
+	
 	private int backgroundStartMove = 200;
 	private boolean isMovingLeft = false;
 	private boolean isMovingRight = false;
@@ -41,13 +38,12 @@ public class Player extends Entity {
 	private Rectangle recHandL = new Rectangle();
 	/** Rectangular radius where collisions are turned on. */
 	private Rectangle recRadius = new Rectangle();
-
-	/** Player shooting projectiles. */
-	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 	
 	public Player(MainClass mainClass) {
 		centerX = TileSpawn.x;
 		centerY = TileSpawn.y;
+		weaponX = 50;
+		weaponY = -25;
 		this.mainClass = mainClass;
 		this.anim = new Animation_Player();
 		this.projectile = new Projectile(5, Color.black, 7);
@@ -138,7 +134,7 @@ public class Player extends Entity {
 
 	public void attack() {
 		projectile.spawnProjectile(this);
-		projectiles.add((Projectile) projectile.clone());
+		mainClass.getProjectiles().add((Projectile) projectile.clone());
 	}
 
 	public int getWeaponX() {
@@ -209,16 +205,8 @@ public class Player extends Entity {
 		return jumped;
 	}
 
-	public ArrayList<Projectile> getProjectiles() {
-		return projectiles;
-	}
-
 	public void setJumped(boolean jumped) {
 		this.jumped = jumped;
-	}
-
-	public void setProjectiles(ArrayList<Projectile> projectiles) {
-		this.projectiles = projectiles;
 	}
 
 	public float getJUMPSPEED() {

@@ -12,11 +12,9 @@ import core.MainClass;
 /** Super class for all enemies. */
 public class Enemy extends Entity implements Cloneable{
 	protected static MainClass mainClass;
-	private Projectile projectile;
 	/** Difference between center and weapon coordinates. */
 	private int weaponDiffX, weaponDiffY;
 	private Background bg = MainClass.getBg1();
-	protected ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 	/** Stores every enemy that has been added to the current game.*/
 	public static ArrayList<Enemy> allEnemies = new ArrayList<Enemy>();
 	
@@ -71,7 +69,7 @@ public class Enemy extends Entity implements Cloneable{
 
 	public void attack() {
 		this.projectile.spawnProjectile(this);
-		projectiles.add((Projectile) this.projectile.clone());
+		mainClass.getProjectiles().add((Projectile) this.projectile.clone());
 	}
 
 	public void collision() {
@@ -87,10 +85,6 @@ public class Enemy extends Entity implements Cloneable{
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	public ArrayList<Projectile> getProjectiles() {
-		return projectiles;
 	}
 
 	public static void setMainClass(MainClass mainClass) {

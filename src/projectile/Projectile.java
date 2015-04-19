@@ -38,8 +38,7 @@ public class Projectile implements Cloneable{
 	}
 
 	public static void paint(Graphics g, ArrayList<Projectile> projectiles) {
-		for (int i = 0; i < projectiles.size(); i++) {
-			Projectile p = projectiles.get(i);
+		for (Projectile p : projectiles) {
 			g.setColor(p.getProjectileColor());
 			g.fillRect(p.getX(), p.getY(), 10, 5);
 		}
