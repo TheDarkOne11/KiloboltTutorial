@@ -29,7 +29,6 @@ public class Player extends Entity {
 	/** Used to correct collision. Otherwise he wouldn't jump. */
 	private boolean jumped = false;
 	private MainClass mainClass;
-	private Animation_Player animPlayer;
 	
 	// Collisions
 	/** Upper body collision rectangle. */
@@ -50,8 +49,9 @@ public class Player extends Entity {
 		centerX = TileSpawn.x;
 		centerY = TileSpawn.y;
 		this.mainClass = mainClass;
-		animPlayer = new Animation_Player();
-		animPlayer.init();
+		this.anim = new Animation_Player();
+		this.projectile = new Projectile(5, Color.black, 7);
+		anim.init();
 	}
 	
 	public void update() {
@@ -79,7 +79,7 @@ public class Player extends Entity {
 		recHandR.setRect(centerX + 34, centerY - 32, 30, 20);
 		recHandL.setRect(centerX - 64, centerY - 32, 30, 20);
 		recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
-		animPlayer.update();
+		anim.update();
 	}
 
 	public void  collision() {
@@ -122,7 +122,7 @@ public class Player extends Entity {
 	}
 
 	public void paint(Graphics g) {
-		g.drawImage(animPlayer.getCurrentImage(), getCenterX() - animPlayer.getCurrentImage().getWidth(mainClass) / 2, getCenterY() - animPlayer.getCurrentImage().getHeight(mainClass) / 2, mainClass);
+		g.drawImage(anim.getCurrentImage(), getCenterX() - anim.getCurrentImage().getWidth(mainClass) / 2, getCenterY() - anim.getCurrentImage().getHeight(mainClass) / 2, mainClass);
 		/*
 		g.drawRect(recBodyL.x, recBodyL.y, recBodyL.width, recBodyL.height);
 		g.drawRect(recBodyU.x, recBodyU.y, recBodyU.width, recBodyU.height);
@@ -137,9 +137,8 @@ public class Player extends Entity {
 	}
 
 	public void attack() {
-		Projectile p = (Projectile) new Projectile(5, Color.black, 7).clone();
-		p.spawnProjectile(this);
-		projectiles.add(p);
+		projectile.spawnProjectile(this);
+		projectiles.add((Projectile) projectile.clone());
 	}
 
 	public int getWeaponX() {

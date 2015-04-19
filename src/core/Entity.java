@@ -2,6 +2,9 @@ package core;
 
 import java.awt.Graphics;
 
+import projectile.Projectile;
+import animation.Animation;
+
 /**
  * Parent class for all entities.
  * @author Petr
@@ -10,6 +13,8 @@ import java.awt.Graphics;
 public abstract class Entity {
 	protected int maxHp, currHp, centerX, centerY, weaponX, weaponY;
 	protected float speedX, speedY;
+	protected Animation anim;
+	protected Projectile projectile;
 	
 	public abstract void update();
 	public abstract void paint(Graphics g);

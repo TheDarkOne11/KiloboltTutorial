@@ -12,7 +12,6 @@ import core.MainClass;
 /** Super class for all enemies. */
 public class Enemy extends Entity implements Cloneable{
 	protected static MainClass mainClass;
-	protected Animation anim;
 	private Projectile projectile;
 	/** Difference between center and weapon coordinates. */
 	private int weaponDiffX, weaponDiffY;
@@ -25,11 +24,14 @@ public class Enemy extends Entity implements Cloneable{
 		Enemy.mainClass = mainClass;
 	}
 
-	protected Enemy(int maxHp, Projectile projectile, int weaponDiffX, int weaponDiffY) {
+	protected Enemy(int maxHp, Projectile projectile, Animation anim, int weaponDiffX, int weaponDiffY) {
 		this.maxHp = maxHp;
 		this.projectile = projectile;
+		this.anim = anim;
 		this.weaponDiffX = weaponDiffX;
 		this.weaponDiffY = weaponDiffY;
+		
+		anim.init();
 	}
 	
 	/**
@@ -51,6 +53,7 @@ public class Enemy extends Entity implements Cloneable{
 		speedX = bg.getSpeedX();
 		this.weaponX = this.centerX + this.weaponDiffX;
 		this.weaponY = this.centerY + this.weaponDiffY;
+		anim.update();
 	}
 	
 	/**
