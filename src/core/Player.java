@@ -79,6 +79,12 @@ public class Player extends Entity {
 	}
 
 	public void  collision() {
+		// Projectile collision
+		/*for(Projectile p : MainClass.getProjectiles()) {
+			
+		}*/
+		
+		// Terrain collision
 		for(Tile e : LevelReader.getAllTiles()) {
 			if(recRadius.intersects(e.getRecCollision())) {
 				
@@ -134,7 +140,6 @@ public class Player extends Entity {
 
 	public void attack() {
 		projectile.spawnProjectile(this);
-		mainClass.getProjectiles().add((Projectile) projectile.clone());
 	}
 
 	public int getWeaponX() {

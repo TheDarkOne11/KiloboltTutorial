@@ -40,7 +40,7 @@ public class MainClass extends Applet implements Runnable {
 	private Camera cam;
 	private LevelReader lvl;
 	/** Stores all projectiles. */
-	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+	private static ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 	
 	// Enemy types
 	private Enemy_Heliboy heliboy;
@@ -193,7 +193,7 @@ public class MainClass extends Applet implements Runnable {
 		return (Player) player;
 	}
 
-	public ArrayList<Projectile> getProjectiles() {
+	public static ArrayList<Projectile> getProjectiles() {
 		return projectiles;
 	}
 

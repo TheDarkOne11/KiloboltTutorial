@@ -69,7 +69,6 @@ public class Enemy extends Entity implements Cloneable{
 
 	public void attack() {
 		this.projectile.spawnProjectile(this);
-		mainClass.getProjectiles().add((Projectile) this.projectile.clone());
 	}
 
 	public void collision() {
