@@ -44,6 +44,8 @@ public class Player extends Entity {
 		centerY = TileSpawn.y;
 		weaponX = 50;
 		weaponY = -25;
+		maxHp = 100;
+		currHp = maxHp;
 		this.mainClass = mainClass;
 		this.anim = new Animation_Player();
 		this.projectile = new Projectile(5, Color.black, 7);
@@ -80,9 +82,16 @@ public class Player extends Entity {
 
 	public void  collision() {
 		// Projectile collision
-		/*for(Projectile p : MainClass.getProjectiles()) {
-			
-		}*/
+		for(Projectile p : MainClass.getProjectiles()) {
+			if(!p.entity.equals(this)) {
+				if(p.getRec().intersects(recRadius)) {
+					// If projectile hits any rectangle
+					if(p.getRec().intersects(recBodyL) || p.getRec().intersects(recBodyU) || p.getRec().intersects(recFootL) || p.getRec().intersects(recFootR) || p.getRec().intersects(recHandL) || p.getRec().intersects(recHandR)) {
+						this.hit(p);
+					}
+				}
+			}
+		}
 		
 		// Terrain collision
 		for(Tile e : LevelReader.getAllTiles()) {
@@ -125,17 +134,19 @@ public class Player extends Entity {
 
 	public void paint(Graphics g) {
 		g.drawImage(anim.getCurrentImage(), getCenterX() - anim.getCurrentImage().getWidth(mainClass) / 2, getCenterY() - anim.getCurrentImage().getHeight(mainClass) / 2, mainClass);
-		/*
+		
 		g.drawRect(recBodyL.x, recBodyL.y, recBodyL.width, recBodyL.height);
 		g.drawRect(recBodyU.x, recBodyU.y, recBodyU.width, recBodyU.height);
 		g.setColor(Color.red);
 		g.drawRect(recFootL.x, recFootL.y, recFootL.width, recFootL.height);
 		g.drawRect(recFootR.x, recFootR.y, recFootR.width, recFootR.height);
 		g.drawRect(recHandR.x, recHandR.y, recHandR.width, recHandR.height);
-		g.drawRect(recHandL.x, recHandL.y, recHandL.width, recHandL.height);*/
+		g.drawRect(recHandL.x, recHandL.y, recHandL.width, recHandL.height);
+		g.drawRect(recRadius.x, recRadius.y, recRadius.width, recRadius.height);
 	}
 
-	public void die() {		
+	public void die() {	
+		System.out.println("Player dead");
 	}
 
 	public void attack() {

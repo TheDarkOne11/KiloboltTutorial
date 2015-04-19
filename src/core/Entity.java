@@ -22,6 +22,15 @@ public abstract class Entity {
 	public abstract void attack();
 	public abstract void collision();
 	
+	public void hit(Projectile p) {
+		this.currHp -= p.getDamage();
+		p.setVisible(false);
+		System.out.println(this.getClass().getSimpleName() + " hit for " + p.getDamage() + " HP. Remaining HP: " + this.currHp);
+		if(this.currHp < 0) {
+			die();
+		}
+	}
+	
 	public int getMaxHp() {
 		return maxHp;
 	}

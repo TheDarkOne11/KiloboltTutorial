@@ -1,6 +1,7 @@
 package enemy;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import projectile.Projectile;
@@ -17,6 +18,9 @@ public class Enemy extends Entity implements Cloneable{
 	private Background bg = MainClass.getBg1();
 	/** Stores every enemy that has been added to the current game.*/
 	public static ArrayList<Enemy> allEnemies = new ArrayList<Enemy>();
+	
+	/** Rectangular radius where collisions are turned on. */
+	private Rectangle recRadius = new Rectangle();
 	
 	public Enemy(MainClass mainClass) {
 		Enemy.mainClass = mainClass;
@@ -51,6 +55,7 @@ public class Enemy extends Entity implements Cloneable{
 		speedX = bg.getSpeedX();
 		this.weaponX = this.centerX + this.weaponDiffX;
 		this.weaponY = this.centerY + this.weaponDiffY;
+		recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
 		anim.update();
 	}
 	
@@ -72,6 +77,16 @@ public class Enemy extends Entity implements Cloneable{
 	}
 
 	public void collision() {
+		// Projectile collision
+		//TODO Vytvoøit zpùsob, jak získat kolizní rectangle od rozdílných typù nepøátel.
+		/*for(Projectile p : MainClass.getProjectiles()) {
+			if(p.entity.equals(MainClass.getPlayer())) {
+				if(p.getRec().intersects(recRadius)) {
+					// If projectile hits any rectangle
+					this.hit(p);
+				}
+			}
+		}*/
 	}
 
 	/**

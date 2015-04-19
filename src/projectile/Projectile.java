@@ -2,6 +2,7 @@ package projectile;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import core.Entity;
@@ -10,14 +11,16 @@ import core.MainClass;
 /** Superclass of all projectiles in the game. */
 public class Projectile implements Cloneable{
 	private int x, y, speedX, distance, damage;
+	private Rectangle rec;
 	private boolean visible;
 	private Color projectileColor;
-	private Entity entity;
+	public Entity entity;
 	
 	public Projectile(int damage, Color projectileColor, int speedX) {
 		this.damage = damage;
 		this.projectileColor = projectileColor;
 		this.speedX = speedX;
+		this.rec = new Rectangle(x, y, 10, 5);
 	}
 
 	public static void update(ArrayList<Projectile> projectiles) {
@@ -34,15 +37,16 @@ public class Projectile implements Cloneable{
 	
 	private void update() {
 		x += speedX;
+		this.rec = new Rectangle(x, y, 10, 5);
 		if (x > this.distance || x < 0) {
 		   visible = false;
-		}
+		} 
 	}
 
 	public static void paint(Graphics g, ArrayList<Projectile> projectiles) {
 		for (Projectile p : projectiles) {
 			g.setColor(p.getProjectileColor());
-			g.fillRect(p.getX(), p.getY(), 10, 5);
+			g.fillRect(p.getX(), p.getY(), p.getRec().width, p.getRec().height);
 		}
 	}
 	
@@ -107,6 +111,14 @@ public class Projectile implements Cloneable{
 
 	public Color getProjectileColor() {
 		return projectileColor;
+	}
+
+	public Rectangle getRec() {
+		return rec;
+	}
+
+	public int getDamage() {
+		return damage;
 	}
 
 }

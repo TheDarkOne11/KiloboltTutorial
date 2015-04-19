@@ -79,8 +79,8 @@ public class MainClass extends Applet implements Runnable {
 		bg2 = new Background(2160, 0);
 		
 		heliboy = new Enemy_Heliboy();
-		heliboy.add(400, 360);
-		heliboy.add(700, 300);
+		//heliboy.add(400, 360);
+		heliboy.add(700, 340);
 
 		player = new Player(this);
 		Thread mainThread = new Thread(this);
