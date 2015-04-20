@@ -40,12 +40,11 @@ public class Player extends Entity {
 	private Rectangle recRadius = new Rectangle();
 	
 	public Player(MainClass mainClass) {
+		super(100);
 		centerX = TileSpawn.x;
 		centerY = TileSpawn.y;
 		weaponX = 50;
 		weaponY = -25;
-		maxHp = 100;
-		currHp = maxHp;
 		this.mainClass = mainClass;
 		this.anim = new Animation_Player();
 		this.projectile = new Projectile(5, Color.black, 7);
@@ -134,7 +133,7 @@ public class Player extends Entity {
 
 	public void paint(Graphics g) {
 		g.drawImage(anim.getCurrentImage(), getCenterX() - anim.getCurrentImage().getWidth(mainClass) / 2, getCenterY() - anim.getCurrentImage().getHeight(mainClass) / 2, mainClass);
-		
+		/*
 		g.drawRect(recBodyL.x, recBodyL.y, recBodyL.width, recBodyL.height);
 		g.drawRect(recBodyU.x, recBodyU.y, recBodyU.width, recBodyU.height);
 		g.setColor(Color.red);
@@ -142,7 +141,7 @@ public class Player extends Entity {
 		g.drawRect(recFootR.x, recFootR.y, recFootR.width, recFootR.height);
 		g.drawRect(recHandR.x, recHandR.y, recHandR.width, recHandR.height);
 		g.drawRect(recHandL.x, recHandL.y, recHandL.width, recHandL.height);
-		g.drawRect(recRadius.x, recRadius.y, recRadius.width, recRadius.height);
+		g.drawRect(recRadius.x, recRadius.y, recRadius.width, recRadius.height);*/
 	}
 
 	public void die() {	

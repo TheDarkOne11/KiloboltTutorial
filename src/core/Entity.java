@@ -16,6 +16,11 @@ public abstract class Entity {
 	protected Animation anim;
 	protected Projectile projectile;
 	
+	public Entity(int maxHp) {
+		this.maxHp = maxHp;
+		this.currHp = maxHp;
+	}
+	
 	public abstract void update();
 	public abstract void paint(Graphics g);
 	public abstract void die();
@@ -26,7 +31,7 @@ public abstract class Entity {
 		this.currHp -= p.getDamage();
 		p.setVisible(false);
 		System.out.println(this.getClass().getSimpleName() + " hit for " + p.getDamage() + " HP. Remaining HP: " + this.currHp);
-		if(this.currHp < 0) {
+		if(this.currHp <= 0) {
 			die();
 		}
 	}

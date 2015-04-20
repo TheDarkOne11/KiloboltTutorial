@@ -11,7 +11,7 @@ import core.Entity;
 import core.MainClass;
 
 /** Super class for all enemies. */
-public class Enemy extends Entity implements Cloneable{
+public abstract class Enemy extends Entity implements Cloneable{
 	protected static MainClass mainClass;
 	/** Difference between center and weapon coordinates. */
 	private int weaponDiffX, weaponDiffY;
@@ -20,13 +20,10 @@ public class Enemy extends Entity implements Cloneable{
 	public static ArrayList<Enemy> allEnemies = new ArrayList<Enemy>();
 	
 	/** Rectangular radius where collisions are turned on. */
-	private Rectangle recRadius = new Rectangle();
-	
-	public Enemy(MainClass mainClass) {
-		Enemy.mainClass = mainClass;
-	}
+	protected Rectangle recRadius = new Rectangle();
 
 	protected Enemy(int maxHp, Projectile projectile, Animation anim, int weaponDiffX, int weaponDiffY) {
+		super(maxHp);
 		this.maxHp = maxHp;
 		this.projectile = projectile;
 		this.anim = anim;
@@ -57,7 +54,14 @@ public class Enemy extends Entity implements Cloneable{
 		this.weaponY = this.centerY + this.weaponDiffY;
 		recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
 		anim.update();
+		updateRec();
+		collision();
 	}
+	
+	/**
+	 * Updates collision rectangles.
+	 */
+	public abstract void updateRec();
 	
 	/**
 	 * Paints all enemies that have been added.
@@ -69,24 +73,12 @@ public class Enemy extends Entity implements Cloneable{
 	}
 	
 	public void die() {
-		Enemy.allEnemies.remove(this.clone());
+		Enemy.allEnemies.remove(this);
+		System.out.println("DEAD");
 	}
 
 	public void attack() {
 		this.projectile.spawnProjectile(this);
-	}
-
-	public void collision() {
-		// Projectile collision
-		//TODO Vytvoøit zpùsob, jak získat kolizní rectangle od rozdílných typù nepøátel.
-		/*for(Projectile p : MainClass.getProjectiles()) {
-			if(p.entity.equals(MainClass.getPlayer())) {
-				if(p.getRec().intersects(recRadius)) {
-					// If projectile hits any rectangle
-					this.hit(p);
-				}
-			}
-		}*/
 	}
 
 	/**
