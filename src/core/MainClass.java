@@ -23,7 +23,6 @@ import enemy.Enemy;
 import enemy.Enemy_Heliboy;
 
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
-//TODO Automatické pøedávání promìnných, které jsou nezbytné pro chod, do Entity
 //TODO Umìlou inteligenci - létání, palba po hráèi.
 
 /** Main class of the Applet. */

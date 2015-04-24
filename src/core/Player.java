@@ -42,14 +42,10 @@ public class Player extends Entity {
 	private Rectangle recRadius = new Rectangle();
 	
 	public Player(MainClass mainClass) {
-		super(100);
+		super(100, 20, new Animation_Player(), new Projectile(5, Color.black, 7));
 		centerX = TileSpawn.x;
 		centerY = TileSpawn.y;
-		this.rateOfFire = 20;
 		this.mainClass = mainClass;
-		this.anim = new Animation_Player();
-		this.projectile = new Projectile(5, Color.black, 7);
-		anim.init();
 	}
 	
 	public void update() {

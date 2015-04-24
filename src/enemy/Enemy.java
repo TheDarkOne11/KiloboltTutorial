@@ -25,15 +25,9 @@ public abstract class Enemy extends Entity implements Cloneable{
 	protected Rectangle recRadius = new Rectangle();
 
 	protected Enemy(int maxHp, double rateOfFire, Projectile projectile, Animation anim, int weaponDiffX, int weaponDiffY) {
-		super(maxHp);
-		this.maxHp = maxHp;
-		this.rateOfFire = rateOfFire;
-		this.projectile = projectile;
-		this.anim = anim;
+		super(maxHp, rateOfFire, anim, projectile);
 		this.weaponDiffX = weaponDiffX;
 		this.weaponDiffY = weaponDiffY;
-		
-		anim.init();
 	}
 	
 	/**

@@ -12,14 +12,18 @@ import animation.Animation;
  */
 public abstract class Entity {
 	protected int maxHp, currHp, centerX, centerY, weaponX, weaponY;
-	protected float speedX, speedY;
 	protected double rateOfFire;
+	protected float speedX, speedY;
 	protected Animation anim;
 	protected Projectile projectile;
 	
-	public Entity(int maxHp) {
+	public Entity(int maxHp, double rateOfFire, Animation anim, Projectile projectile) {
 		this.maxHp = maxHp;
 		this.currHp = maxHp;
+		this.rateOfFire = rateOfFire;
+		this.anim = anim;
+		this.projectile = projectile;
+		anim.init();
 	}
 	
 	public abstract void update();
