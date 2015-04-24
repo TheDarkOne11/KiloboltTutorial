@@ -13,6 +13,7 @@ import animation.Animation;
 public abstract class Entity {
 	protected int maxHp, currHp, centerX, centerY, weaponX, weaponY;
 	protected float speedX, speedY;
+	protected double rateOfFire;
 	protected Animation anim;
 	protected Projectile projectile;
 	

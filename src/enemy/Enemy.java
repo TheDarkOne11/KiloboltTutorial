@@ -16,15 +16,18 @@ public abstract class Enemy extends Entity implements Cloneable{
 	/** Difference between center and weapon coordinates. */
 	private int weaponDiffX, weaponDiffY;
 	private Background bg = MainClass.getBg1();
+	/** Stores time of shooting projectile. */
+	private long time;
 	/** Stores every enemy that has been added to the current game.*/
 	public static ArrayList<Enemy> allEnemies = new ArrayList<Enemy>();
 	
 	/** Rectangular radius where collisions are turned on. */
 	protected Rectangle recRadius = new Rectangle();
 
-	protected Enemy(int maxHp, Projectile projectile, Animation anim, int weaponDiffX, int weaponDiffY) {
+	protected Enemy(int maxHp, double rateOfFire, Projectile projectile, Animation anim, int weaponDiffX, int weaponDiffY) {
 		super(maxHp);
 		this.maxHp = maxHp;
+		this.rateOfFire = rateOfFire;
 		this.projectile = projectile;
 		this.anim = anim;
 		this.weaponDiffX = weaponDiffX;
@@ -78,7 +81,10 @@ public abstract class Enemy extends Entity implements Cloneable{
 	}
 
 	public void attack() {
-		this.projectile.spawnProjectile(this);
+		if((this.time + (60*1000)/this.rateOfFire) < System.currentTimeMillis() | this.time == 0) {
+			this.projectile.spawnProjectile(this);
+			time = System.currentTimeMillis();
+		}
 	}
 
 	/**

@@ -11,6 +11,7 @@ import core.MainClass;
 public class Enemy_Heliboy extends Enemy {
 	final static int MAXHP = 20;
 	final static int DAMAGE = 2;
+	final static double RATE_OF_FIRE = 30;
 	final static int WEAPON_DIFF_X = -42;
 	final static int WEAPON_DIFF_Y = 8;
 	final static int WEAPON_SPEED_X = -3;
@@ -21,7 +22,7 @@ public class Enemy_Heliboy extends Enemy {
 	private Rectangle recCollision;
 
 	public Enemy_Heliboy() {
-		super(MAXHP, PROJECTILE, ANIM, WEAPON_DIFF_X, WEAPON_DIFF_Y);
+		super(MAXHP, RATE_OF_FIRE, PROJECTILE, ANIM, WEAPON_DIFF_X, WEAPON_DIFF_Y);
 		recCollision = new Rectangle(this.centerX - 38, this.centerY - 28, 63, 68);
 	}
 
@@ -39,7 +40,7 @@ public class Enemy_Heliboy extends Enemy {
 		}
 		
 	}
-
+	
 	public void updateRec() {
 		recCollision.x = this.centerX - 38;
 		recCollision.y = this.centerY - 28;

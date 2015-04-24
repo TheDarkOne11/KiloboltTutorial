@@ -26,6 +26,8 @@ public class Player extends Entity {
 	/** Used to correct collision. Otherwise he wouldn't jump. */
 	private boolean jumped = false;
 	private MainClass mainClass;
+	/** Stores time of shooting projectile. */
+	private long time;
 	
 	// Collisions
 	/** Upper body collision rectangle. */
@@ -43,8 +45,7 @@ public class Player extends Entity {
 		super(100);
 		centerX = TileSpawn.x;
 		centerY = TileSpawn.y;
-		weaponX = 50;
-		weaponY = -25;
+		this.rateOfFire = 20;
 		this.mainClass = mainClass;
 		this.anim = new Animation_Player();
 		this.projectile = new Projectile(5, Color.black, 7);
@@ -149,7 +150,10 @@ public class Player extends Entity {
 	}
 
 	public void attack() {
-		projectile.spawnProjectile(this);
+		if((this.time + (60*1000)/this.rateOfFire) < System.currentTimeMillis() | this.time == 0) {
+			projectile.spawnProjectile(this);
+			time = System.currentTimeMillis();
+		}
 	}
 
 	public int getWeaponX() {
