@@ -56,11 +56,7 @@ public class MainClass extends Applet implements Runnable {
 		cam = new Camera(0, 0);
 
 		this.addKeyListener(new ClassKeyListener());
-		this.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				System.out.println("X/Y: " + e.getXOnScreen() + "/ " + e.getYOnScreen());
-			}
-		});
+		this.addMouseListener(new ClassMouseListener());
 
 		frame.setTitle("KiloboltTutorial");
 		this.setSize(WIDTH, HEIGHT);
@@ -201,7 +197,7 @@ public class MainClass extends Applet implements Runnable {
 	public static ArrayList<Projectile> getProjectiles() {
 		return projectiles;
 	}
-
+	
 	class ClassKeyListener implements KeyListener {
 		@Override
 		public void keyPressed(KeyEvent e) {
@@ -213,67 +209,83 @@ public class MainClass extends Applet implements Runnable {
 					((Player) player).setJumped(true);
 				}
 				break;
-
+	
 			case KeyEvent.VK_DOWN:
 				((Player) player).setCovered(true);
 				break;
-
+	
 			case KeyEvent.VK_LEFT:
 				((Player) player).setMovingLeft(true);
 				player.setSpeedX(-((Player) player).getMovespeed());
 				break;
-
+	
 			case KeyEvent.VK_RIGHT:
 				((Player) player).setMovingRight(true);
 				player.setSpeedX(((Player) player).getMovespeed());
 				break;
-
+	
 			case KeyEvent.VK_SPACE:
 				// TODO Tested enemie's attacks
 				for(int i = 0; i < Enemy.allEnemies.size(); i++) {
 					Enemy.allEnemies.get(i).attack();
 				} 
 				break;
-
+	
 			case KeyEvent.VK_CONTROL:
 				if (((Player) player).isCovered() == false && ((Player) player).isJumped() == false) {
 					player.attack();
 				}
 				break;
-
+	
 			}
 		}
-
+	
 		@Override
 		public void keyReleased(KeyEvent e) {
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
 				break;
-
+	
 			case KeyEvent.VK_DOWN:
 				((Player) player).setCovered(false);
 				break;
-
+	
 			case KeyEvent.VK_LEFT:
 				((Player) player).setMovingLeft(false);
 				player.setSpeedX(0);
 				break;
-
+	
 			case KeyEvent.VK_RIGHT:
 				((Player) player).setMovingRight(false);
 				player.setSpeedX(0);
 				break;
-
+	
 			case KeyEvent.VK_SPACE:
 				break;
-
+	
 			}
 		}
-
+	
 		public void keyTyped(KeyEvent e) {
 			
 		}
-
+	
+	}
+	
+	/**
+	 * No Ingame use. Set for testing the game only.
+	 * @author Petr
+	 *
+	 */
+	class ClassMouseListener extends MouseAdapter {
+		public void mousePressed(MouseEvent e) {
+			int tmpX = player.getCenterX() - MainClass.WIDTH/2 + e.getX();
+			int tmpY = player.getCenterY() - 3*MainClass.HEIGHT/4 + e.getY();
+			System.out.println("X/Y: " + tmpX + "/ " + tmpY);
+			player.setCenterX(tmpX);
+			player.setCenterY(tmpY);
+		}
+		
 	}
 
 }
