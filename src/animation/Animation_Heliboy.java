@@ -24,13 +24,13 @@ public class Animation_Heliboy extends Animation {
 		
 		// Rotor spinning
 		this.addFrame(heliboy, 100);
-		this.addFrame(heliboy2, 100);
+		this.addFrame(heliboy2, 50);
 		this.addFrame(heliboy3, 100);
-		this.addFrame(heliboy4, 100);
+		this.addFrame(heliboy4, 50);
 		this.addFrame(heliboy5, 100);
-		this.addFrame(heliboy4, 100);
+		this.addFrame(heliboy4, 50);
 		this.addFrame(heliboy3, 100);
-		this.addFrame(heliboy2, 100);
+		this.addFrame(heliboy2, 50);
 	}
 
 	public void update() {

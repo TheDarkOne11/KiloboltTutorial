@@ -23,7 +23,11 @@ import enemy.Enemy;
 import enemy.Enemy_Heliboy;
 
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
-//TODO Umìlou inteligenci - létání, palba po hráèi.
+
+//TODO Otáèení obrázku nepøítele.
+//TODO Umìlá inteligence - létání, palba po hráèi.
+//TODO Funkènost štítù hráèe, vytvoøení samostatného objektu a obrázku pro štít.
+//TODO Menu, ukládání a naèítání levelù. Pokusit se využít Enum.
 
 /** Main class of the Applet. */
 public class MainClass extends Applet implements Runnable {
@@ -78,12 +82,12 @@ public class MainClass extends Applet implements Runnable {
 	public void start() {
 		bg1 = new Background(0, 0);
 		bg2 = new Background(2160, 0);
+		player = new Player(this);
 		
 		heliboy = new Enemy_Heliboy();
 		//heliboy.add(400, 360);
 		heliboy.add(700, 340);
 
-		player = new Player(this);
 		Thread mainThread = new Thread(this);
 		mainThread.start();
 	}
@@ -165,8 +169,8 @@ public class MainClass extends Applet implements Runnable {
 			bg2.update();
 			lvl.update();
 			
-			this.WIDTH = this.getWidth();
-			this.HEIGHT = this.getHeight();
+			MainClass.WIDTH = this.getWidth();
+			MainClass.HEIGHT = this.getHeight();
 			
 			repaint();
 
@@ -205,7 +209,7 @@ public class MainClass extends Applet implements Runnable {
 			case KeyEvent.VK_UP:
 				if(!((Player) player).isJumping()) {
 					((Player) player).setJumping(true);
-					player.setSpeedY(((Player) player).getJUMPSPEED());
+					player.setSpeedY(Player.getJumpspeed());
 					((Player) player).setJumped(true);
 				}
 				break;
@@ -216,12 +220,12 @@ public class MainClass extends Applet implements Runnable {
 
 			case KeyEvent.VK_LEFT:
 				((Player) player).setMovingLeft(true);
-				player.setSpeedX(-((Player) player).getMOVESPEED());
+				player.setSpeedX(-((Player) player).getMovespeed());
 				break;
 
 			case KeyEvent.VK_RIGHT:
 				((Player) player).setMovingRight(true);
-				player.setSpeedX(((Player) player).getMOVESPEED());
+				player.setSpeedX(((Player) player).getMovespeed());
 				break;
 
 			case KeyEvent.VK_SPACE:

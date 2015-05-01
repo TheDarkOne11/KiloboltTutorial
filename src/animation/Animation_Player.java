@@ -3,6 +3,7 @@ package animation;
 import java.awt.Image;
 
 import core.MainClass;
+import core.Player;
 
 /**
  * All of player animations are here.
@@ -39,6 +40,8 @@ public class Animation_Player extends Animation {
 	 */
 	public void update() {
 		if (MainClass.getPlayer().isJumping()) {
+			currentImage = characterJumped;
+		} else if(Math.abs(MainClass.getPlayer().getSpeedY()) > Player.getFallspeed() ) {
 			currentImage = characterJumped;
 		} else if(MainClass.getPlayer().isCovered() == true) {
 			currentImage = characterCover;

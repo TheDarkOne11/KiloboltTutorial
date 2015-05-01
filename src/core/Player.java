@@ -12,11 +12,13 @@ import animation.Animation_Player;
 
 //TODO Pohrát si s velikostí nepøátel a hráèe vùèi Tile.
 public class Player extends Entity {
-	private final float JUMPSPEED = -10f;
-	private final float MOVESPEED = 5f;
-	private final float MAXFALL = 10f;
+	private final static float JUMPSPEED = -10f;
+	private final static float MOVESPEED = 5f;
+	private final static float MAXFALLSPEED = 10f;
+	private final static float FALLSPEED = 0.5f;
 	
 	private int backgroundStartMove = 200;
+	private int height;
 	private boolean isMovingLeft = false;
 	private boolean isMovingRight = false;
 	private boolean isCovered = false;
@@ -42,10 +44,11 @@ public class Player extends Entity {
 	private Rectangle recRadius = new Rectangle();
 	
 	public Player(MainClass mainClass) {
-		super(100, 20, new Animation_Player(), new Projectile(5, Color.black, 7));
+		super(100, 100, MOVESPEED, new Animation_Player(), new Projectile(5, Color.black, 7));
 		centerX = TileSpawn.x;
 		centerY = TileSpawn.y;
 		this.mainClass = mainClass;
+		this.height = 128;
 	}
 	
 	public void update() {
@@ -56,8 +59,8 @@ public class Player extends Entity {
 		// Gravitace
 		if(isFalling || jumped) {
 			jumped = false;
-			if(speedY <= MAXFALL) speedY += 0.5f;
-			else speedY = MAXFALL;
+			if(speedY <= MAXFALLSPEED) speedY += FALLSPEED;
+			else speedY = MAXFALLSPEED;
 		}
 		
 		weaponX = centerX + 50;
@@ -75,7 +78,7 @@ public class Player extends Entity {
 		recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
 		anim.update();
 	}
-
+	
 	public void  collision() {
 		// Projectile collision
 		for(Projectile p : MainClass.getProjectiles()) {
@@ -100,12 +103,12 @@ public class Player extends Entity {
 				} 
 				
 				if(recBodyL.intersects(e.getRecCollision()) && !jumped) {
-						speedY = 0f;
-						centerY = e.getY()-recBodyL.height+1;
-						isFalling = false;
-						isJumping = false;
+					speedY = 0f;
+					//centerY = e.getY()-recBodyL.height+1;
+					isFalling = false;
+					isJumping = false;
 				} else {
-						isFalling = true;
+					isFalling = true;
 				}
 				
 				if(recFootL.intersects(e.getRecCollision())) {
@@ -147,17 +150,9 @@ public class Player extends Entity {
 
 	public void attack() {
 		if((this.time + (60*1000)/this.rateOfFire) < System.currentTimeMillis() | this.time == 0) {
-			projectile.spawnProjectile(this);
+			projectile.spawnProjectile(this, true);
 			time = System.currentTimeMillis();
 		}
-	}
-
-	public int getWeaponX() {
-		return weaponX;
-	}
-
-	public int getWeaponY() {
-		return weaponY;
 	}
 
 	public int getBackgroundStartMove() {
@@ -178,14 +173,6 @@ public class Player extends Entity {
 
 	public boolean isJumping() {
 		return isJumping;
-	}
-
-	public void setWeaponX(int weaponX) {
-		this.weaponX = weaponX;
-	}
-
-	public void setWeaponY(int weaponY) {
-		this.weaponY = weaponY;
 	}
 
 	public void setBackgroundStartMove(int backgroundStartMove) {
@@ -224,15 +211,15 @@ public class Player extends Entity {
 		this.jumped = jumped;
 	}
 
-	public float getJUMPSPEED() {
+	public static float getJumpspeed() {
 		return JUMPSPEED;
 	}
 
-	public float getMOVESPEED() {
-		return MOVESPEED;
+	public int getHeight() {
+		return height;
 	}
 
-	public float getMAXFALL() {
-		return MAXFALL;
+	public static float getFallspeed() {
+		return FALLSPEED;
 	}
 }

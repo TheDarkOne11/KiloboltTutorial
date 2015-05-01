@@ -7,23 +7,59 @@ import projectile.Projectile;
 import animation.Animation;
 import animation.Animation_Heliboy;
 import core.MainClass;
+import core.Player;
 
 public class Enemy_Heliboy extends Enemy {
 	final static int MAXHP = 20;
 	final static int DAMAGE = 2;
 	final static double RATE_OF_FIRE = 30;
+	private static float MOVESPEED = 3f;
 	final static int WEAPON_DIFF_X = -42;
 	final static int WEAPON_DIFF_Y = 8;
-	final static int WEAPON_SPEED_X = -3;
+	final static int WEAPON_SPEED_X = 3;
 	final static Projectile PROJECTILE = new Projectile(DAMAGE, Color.red, WEAPON_SPEED_X);
 	final static Animation ANIM = new Animation_Heliboy();
+	
+	private Player player = MainClass.getPlayer();
 	
 	// Collision rectangles
 	private Rectangle recCollision;
 
 	public Enemy_Heliboy() {
-		super(MAXHP, RATE_OF_FIRE, PROJECTILE, ANIM, WEAPON_DIFF_X, WEAPON_DIFF_Y);
+		super(MAXHP, RATE_OF_FIRE, MOVESPEED, PROJECTILE, ANIM, WEAPON_DIFF_X, WEAPON_DIFF_Y);
 		recCollision = new Rectangle(this.centerX - 38, this.centerY - 28, 63, 68);
+	}
+	
+	public void ai() {
+		// Pohyb k hr·Ëi.
+			int distance = 100;
+			if(this.centerX < player.getCenterX() - distance) {
+				this.centerX += this.movespeed;
+			} else if(this.centerX > player.getCenterX() + distance) {
+				this.centerX -= this.movespeed;
+			}
+			
+			if(this.centerY < player.getCenterY()) {
+				this.centerY += this.movespeed;
+			} else if(this.centerY > player.getCenterY()) {
+				this.centerY -= this.movespeed;
+			}
+			
+			// Pokud jsou p¯Ìmo u hr·Ëe.
+			if(!player.isMovingLeft()&!player.isMovingRight()&!player.isJumping()) {
+				if(this.movespeed >= Math.abs(player.getCenterX() -this.centerX)){
+					this.centerX = player.getCenterX();
+				}
+				
+				if(this.movespeed >= Math.abs(player.getCenterY() - this.centerY)) {
+					this.centerY = player.getCenterY();
+				}
+			}
+			
+			//Palba
+			if(centerY > player.getCenterY() - player.getHeight()/2 && centerY < player.getCenterY() + player.getHeight()/2) {
+				attack();
+			}
 	}
 
 	public void collision() {
@@ -44,5 +80,6 @@ public class Enemy_Heliboy extends Enemy {
 	public void updateRec() {
 		recCollision.x = this.centerX - 38;
 		recCollision.y = this.centerY - 28;
+		ai();
 	}
 }

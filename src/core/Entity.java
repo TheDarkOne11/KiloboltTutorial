@@ -13,14 +13,15 @@ import animation.Animation;
 public abstract class Entity {
 	protected int maxHp, currHp, centerX, centerY, weaponX, weaponY;
 	protected double rateOfFire;
-	protected float speedX, speedY;
+	protected float speedX, speedY, movespeed;
 	protected Animation anim;
 	protected Projectile projectile;
 	
-	public Entity(int maxHp, double rateOfFire, Animation anim, Projectile projectile) {
+	public Entity(int maxHp, double rateOfFire, float movespeed, Animation anim, Projectile projectile) {
 		this.maxHp = maxHp;
 		this.currHp = maxHp;
 		this.rateOfFire = rateOfFire;
+		this.movespeed = movespeed;
 		this.anim = anim;
 		this.projectile = projectile;
 		anim.init();
@@ -35,7 +36,7 @@ public abstract class Entity {
 	public void hit(Projectile p) {
 		this.currHp -= p.getDamage();
 		p.setVisible(false);
-		System.out.println(this.getClass().getSimpleName() + " hit for " + p.getDamage() + " HP. Remaining HP: " + this.currHp);
+		//System.out.println(this.getClass().getSimpleName() + " hit for " + p.getDamage() + " HP. Remaining HP: " + this.currHp);
 		if(this.currHp <= 0) {
 			die();
 		}
@@ -88,5 +89,13 @@ public abstract class Entity {
 	}
 	public void setSpeedY(float speedY) {
 		this.speedY = speedY;
+	}
+
+	public float getMovespeed() {
+		return movespeed;
+	}
+
+	public void setMovespeed(float movespeed) {
+		this.movespeed = movespeed;
 	}
 }

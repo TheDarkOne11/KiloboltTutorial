@@ -16,7 +16,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 	/** Difference between center and weapon coordinates. */
 	private int weaponDiffX, weaponDiffY;
 	private Background bg = MainClass.getBg1();
-	/** Stores time of shooting projectile. */
+	/** Stores time of a projectile shooting. */
 	private long time;
 	/** Stores every enemy that has been added to the current game.*/
 	public static ArrayList<Enemy> allEnemies = new ArrayList<Enemy>();
@@ -24,8 +24,8 @@ public abstract class Enemy extends Entity implements Cloneable{
 	/** Rectangular radius where collisions are turned on. */
 	protected Rectangle recRadius = new Rectangle();
 
-	protected Enemy(int maxHp, double rateOfFire, Projectile projectile, Animation anim, int weaponDiffX, int weaponDiffY) {
-		super(maxHp, rateOfFire, anim, projectile);
+	protected Enemy(int maxHp, double rateOfFire, float movespeed, Projectile projectile, Animation anim, int weaponDiffX, int weaponDiffY) {
+		super(maxHp, rateOfFire, movespeed, anim, projectile);
 		this.weaponDiffX = weaponDiffX;
 		this.weaponDiffY = weaponDiffY;
 	}
@@ -71,12 +71,17 @@ public abstract class Enemy extends Entity implements Cloneable{
 	
 	public void die() {
 		Enemy.allEnemies.remove(this);
-		System.out.println("DEAD");
+		System.out.println(this.getClass().getSimpleName() + ": DEAD");
 	}
 
 	public void attack() {
 		if((this.time + (60*1000)/this.rateOfFire) < System.currentTimeMillis() | this.time == 0) {
-			this.projectile.spawnProjectile(this);
+			if(this.centerX < MainClass.getPlayer().getCenterX()) {
+				this.projectile.spawnProjectile(this, true);
+			} else {
+				this.projectile.spawnProjectile(this, false);
+			}
+			
 			time = System.currentTimeMillis();
 		}
 	}

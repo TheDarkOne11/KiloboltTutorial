@@ -19,7 +19,7 @@ public class Projectile implements Cloneable{
 	public Projectile(int damage, Color projectileColor, int speedX) {
 		this.damage = damage;
 		this.projectileColor = projectileColor;
-		this.speedX = speedX;
+		this.speedX = Math.abs(speedX);
 		this.rec = new Rectangle(x, y, 10, 5);
 	}
 
@@ -52,17 +52,18 @@ public class Projectile implements Cloneable{
 	
 	/**
 	 * Creates projectile in game.
-	 * @param startX
-	 * @param startY
-	 * @param speedX
+	 * @param entity Entity which released this projectile.
+	 * @param facingRight True if entity wants to shoot right.
 	 */
-	public void spawnProjectile(Entity entity) {
-		this.entity = entity;
-		this.x = entity.getWeaponX();
-		this.y = entity.getWeaponY();
-		this.visible = true;
-		this.distance = entity.getCenterX() + 800;
-		MainClass.getProjectiles().add((Projectile) this.clone());
+	public void spawnProjectile(Entity entity, boolean facingRight) {
+		Projectile tmp = (Projectile) this.clone();
+		tmp.entity = entity;
+		tmp.x = entity.getWeaponX();
+		tmp.y = entity.getWeaponY();
+		tmp.visible = true;
+		tmp.distance = entity.getCenterX() + 800;
+		tmp.speedX = facingRight ? speedX : -speedX;
+		MainClass.getProjectiles().add(tmp);
 	}
 
 	/**
