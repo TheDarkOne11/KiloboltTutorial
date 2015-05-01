@@ -1,6 +1,8 @@
 package core;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 import projectile.Projectile;
 import animation.Animation;
@@ -11,20 +13,42 @@ import animation.Animation;
  *
  */
 public abstract class Entity {
-	protected int maxHp, currHp, centerX, centerY, weaponX, weaponY;
+	protected int maxHp, currHp, centerX, centerY, width, height, weaponX, weaponY;
 	protected double rateOfFire;
 	protected float speedX, speedY, movespeed;
+	protected String hpCount;
+	protected Rectangle hpBar;
 	protected Animation anim;
 	protected Projectile projectile;
 	
-	public Entity(int maxHp, double rateOfFire, float movespeed, Animation anim, Projectile projectile) {
+	public Entity(int maxHp, int width, int height, double rateOfFire, float movespeed, Animation anim, Projectile projectile) {
 		this.maxHp = maxHp;
+		this.width = width;
+		this.height = height;
 		this.currHp = maxHp;
 		this.rateOfFire = rateOfFire;
 		this.movespeed = movespeed;
 		this.anim = anim;
 		this.projectile = projectile;
+		
 		anim.init();
+	}
+	
+	public void paintHpBar(Graphics g) {
+		hpCount = currHp + " HP";
+		hpBar = new Rectangle(this.centerX - width/2, this.centerY + 10 - 4*height/5, width, 20);
+		g.setColor(Color.black);
+		g.drawString(hpCount, hpBar.x+hpBar.width/2 - g.getFontMetrics().stringWidth(hpCount)/2, hpBar.y + 2*hpBar.height/3);
+		
+		if(currHp*100/maxHp <= 25){
+			g.setColor(new Color(255, 0, 0, 99));
+		} else if(currHp*100/maxHp <= 50) {
+			g.setColor(new Color(255, 106, 0, 99));
+		} else {
+			g.setColor(new Color(0, 255, 0, 99));
+		}
+		
+		g.fillRect(hpBar.x, hpBar.y, hpBar.width, hpBar.height);		
 	}
 	
 	public abstract void update();

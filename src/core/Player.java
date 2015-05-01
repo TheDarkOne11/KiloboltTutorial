@@ -16,9 +16,10 @@ public class Player extends Entity {
 	private final static float MOVESPEED = 5f;
 	private final static float MAXFALLSPEED = 10f;
 	private final static float FALLSPEED = 0.5f;
+	private final static int WIDTH = 128;
+	private final static int HEIGHT = 128;
 	
 	private int backgroundStartMove = 200;
-	private int height;
 	private boolean isMovingLeft = false;
 	private boolean isMovingRight = false;
 	private boolean isCovered = false;
@@ -44,7 +45,7 @@ public class Player extends Entity {
 	private Rectangle recRadius = new Rectangle();
 	
 	public Player(MainClass mainClass) {
-		super(100, 100, MOVESPEED, new Animation_Player(), new Projectile(5, Color.black, 7));
+		super(100, WIDTH, HEIGHT, 60, MOVESPEED, new Animation_Player(), new Projectile(5, Color.black, 7));
 		centerX = TileSpawn.x;
 		centerY = TileSpawn.y;
 		this.mainClass = mainClass;
@@ -133,6 +134,7 @@ public class Player extends Entity {
 
 	public void paint(Graphics g) {
 		g.drawImage(anim.getCurrentImage(), getCenterX() - anim.getCurrentImage().getWidth(mainClass) / 2, getCenterY() - anim.getCurrentImage().getHeight(mainClass) / 2, mainClass);
+		super.paintHpBar(g);
 		/*
 		g.drawRect(recBodyL.x, recBodyL.y, recBodyL.width, recBodyL.height);
 		g.drawRect(recBodyU.x, recBodyU.y, recBodyU.width, recBodyU.height);

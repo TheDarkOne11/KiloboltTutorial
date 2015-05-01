@@ -24,8 +24,8 @@ public abstract class Enemy extends Entity implements Cloneable{
 	/** Rectangular radius where collisions are turned on. */
 	protected Rectangle recRadius = new Rectangle();
 
-	protected Enemy(int maxHp, double rateOfFire, float movespeed, Projectile projectile, Animation anim, int weaponDiffX, int weaponDiffY) {
-		super(maxHp, rateOfFire, movespeed, anim, projectile);
+	protected Enemy(int maxHp, int width, int height, double rateOfFire, float movespeed, Projectile projectile, Animation anim, int weaponDiffX, int weaponDiffY) {
+		super(maxHp, width, height, rateOfFire, movespeed, anim, projectile);
 		this.weaponDiffX = weaponDiffX;
 		this.weaponDiffY = weaponDiffY;
 	}
@@ -56,16 +56,12 @@ public abstract class Enemy extends Entity implements Cloneable{
 	}
 	
 	/**
-	 * Updates collision rectangles.
-	 */
-	public abstract void updateRec();
-	
-	/**
 	 * Paints all enemies that have been added.
 	 * @param g
 	 * @param mainClass 
 	 */
 	public void paint(Graphics g) {
+		super.paintHpBar(g);
 		g.drawImage(anim.getCurrentImage(), this.getCenterX() - anim.getCurrentImage().getWidth(mainClass) / 2, this.getCenterY() - anim.getCurrentImage().getHeight(mainClass) / 2, mainClass);
 	}
 	
@@ -87,6 +83,16 @@ public abstract class Enemy extends Entity implements Cloneable{
 	}
 
 	/**
+	 * Updates collision rectangles.
+	 */
+	public abstract void updateRec();
+
+	/**
+	 * Artificial Intelligence
+	 */
+	public abstract void AI();
+
+	/**
 	 * Potøeba, jinak by nepøátelé sdíleli souøadnice.
 	 */
 	protected Object clone() {
@@ -101,4 +107,5 @@ public abstract class Enemy extends Entity implements Cloneable{
 	public static void setMainClass(MainClass mainClass) {
 		Enemy.mainClass = mainClass;
 	}
+	
 }

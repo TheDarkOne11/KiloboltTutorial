@@ -13,10 +13,12 @@ public class Enemy_Heliboy extends Enemy {
 	final static int MAXHP = 20;
 	final static int DAMAGE = 2;
 	final static double RATE_OF_FIRE = 30;
-	private static float MOVESPEED = 3f;
+	final static float MOVESPEED = 3f;
 	final static int WEAPON_DIFF_X = -42;
 	final static int WEAPON_DIFF_Y = 8;
 	final static int WEAPON_SPEED_X = 3;
+	final static int WIDTH = 96;
+	final static int HEIGHT = 96;
 	final static Projectile PROJECTILE = new Projectile(DAMAGE, Color.red, WEAPON_SPEED_X);
 	final static Animation ANIM = new Animation_Heliboy();
 	
@@ -26,13 +28,13 @@ public class Enemy_Heliboy extends Enemy {
 	private Rectangle recCollision;
 
 	public Enemy_Heliboy() {
-		super(MAXHP, RATE_OF_FIRE, MOVESPEED, PROJECTILE, ANIM, WEAPON_DIFF_X, WEAPON_DIFF_Y);
+		super(MAXHP, WIDTH, HEIGHT, RATE_OF_FIRE, MOVESPEED, PROJECTILE, ANIM, WEAPON_DIFF_X, WEAPON_DIFF_Y);
 		recCollision = new Rectangle(this.centerX - 38, this.centerY - 28, 63, 68);
 	}
 	
-	public void ai() {
+	public void AI() {
 		// Pohyb k hr·Ëi.
-			int distance = 100;
+			int distance = 200;
 			if(this.centerX < player.getCenterX() - distance) {
 				this.centerX += this.movespeed;
 			} else if(this.centerX > player.getCenterX() + distance) {
@@ -80,6 +82,6 @@ public class Enemy_Heliboy extends Enemy {
 	public void updateRec() {
 		recCollision.x = this.centerX - 38;
 		recCollision.y = this.centerY - 28;
-		ai();
+		AI();
 	}
 }

@@ -25,7 +25,8 @@ import enemy.Enemy_Heliboy;
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
 
 //TODO Otáèení obrázku nepøítele.
-//TODO Umìlá inteligence - létání, palba po hráèi.
+//TODO Dávání nepøátel do hry pomocí Tile systému.
+//TODO Umìlá inteligence v samostatném (možná vnoøeném) objektu - létání, palba po hráèi.
 //TODO Funkènost štítù hráèe, vytvoøení samostatného objektu a obrázku pro štít.
 //TODO Menu, ukládání a naèítání levelù. Pokusit se využít Enum.
 
@@ -215,20 +216,17 @@ public class MainClass extends Applet implements Runnable {
 				break;
 	
 			case KeyEvent.VK_LEFT:
-				((Player) player).setMovingLeft(true);
-				player.setSpeedX(-((Player) player).getMovespeed());
+				if(!((Player) player).isCovered()) {
+					((Player) player).setMovingLeft(true);
+					player.setSpeedX(-((Player) player).getMovespeed());
+				}
 				break;
 	
 			case KeyEvent.VK_RIGHT:
-				((Player) player).setMovingRight(true);
-				player.setSpeedX(((Player) player).getMovespeed());
-				break;
-	
-			case KeyEvent.VK_SPACE:
-				// TODO Tested enemie's attacks
-				for(int i = 0; i < Enemy.allEnemies.size(); i++) {
-					Enemy.allEnemies.get(i).attack();
-				} 
+				if(!((Player) player).isCovered()) {
+					((Player) player).setMovingRight(true);
+					player.setSpeedX(((Player) player).getMovespeed());
+				}
 				break;
 	
 			case KeyEvent.VK_CONTROL:
