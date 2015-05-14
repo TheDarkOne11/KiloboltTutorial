@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import level.LevelReader;
+import level.TileSpawn;
 import projectile.Projectile;
 import enemy.Enemy;
 import enemy.Enemy_Heliboy;
@@ -25,7 +26,7 @@ import enemy.Enemy_Heliboy;
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
 
 //TODO Otáèení obrázku nepøítele.
-//TODO Dávání nepøátel do hry pomocí Tile systému.
+//TODO Dávání nepøátel do hry pomocí Tile systému - enum bude pøiøazen každému Tilu pro rozlišení Entity a Tile.
 //TODO Umìlá inteligence v samostatném (možná vnoøeném) objektu - létání, palba po hráèi.
 //TODO Funkènost štítù hráèe, vytvoøení samostatného objektu a obrázku pro štít.
 //TODO Menu, ukládání a naèítání levelù. Pokusit se využít Enum.
@@ -47,9 +48,6 @@ public class MainClass extends Applet implements Runnable {
 	private LevelReader lvl;
 	/** Stores all projectiles. */
 	private static ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
-	
-	// Enemy types
-	private Enemy_Heliboy heliboy;
 
 	@Override
 	public void init() {
@@ -70,21 +68,17 @@ public class MainClass extends Applet implements Runnable {
 		}
 		
 		background = getImage(base, "data/background.png");
+		bg1 = new Background(0, 0);
+		bg2 = new Background(2160, 0);
+		player = new Player(this);
 		Enemy.setMainClass(this);
 		lvl = new LevelReader("demo");
 		lvl.init();
+		((Player) player).addPlayer();	// Player init must be before lvl.init and adding Player must be behind it.
 	}
 
 	@Override
 	public void start() {
-		bg1 = new Background(0, 0);
-		bg2 = new Background(2160, 0);
-		player = new Player(this);
-		
-		heliboy = new Enemy_Heliboy();
-		//heliboy.add(400, 360);
-		heliboy.add(700, 340);
-
 		Thread mainThread = new Thread(this);
 		mainThread.start();
 	}
@@ -156,15 +150,15 @@ public class MainClass extends Applet implements Runnable {
 			player.update();
 			cam.update((Player) player);
 			
-			for(int i = 0; i < Enemy.allEnemies.size(); i++) {
-				Enemy.allEnemies.get(i).update();
-			}
-			
 			Projectile.update(projectiles);
 			
 			bg1.update();
 			bg2.update();
 			lvl.update();
+			
+			for(int i = 0; i < Enemy.allEnemies.size(); i++) {
+				Enemy.allEnemies.get(i).update();
+			}
 			
 			MainClass.WIDTH = this.getWidth();
 			MainClass.HEIGHT = this.getHeight();

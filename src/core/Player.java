@@ -46,10 +46,13 @@ public class Player extends Entity {
 	
 	public Player(MainClass mainClass) {
 		super(100, WIDTH, HEIGHT, 60, MOVESPEED, new Animation_Player(), new Projectile(5, Color.black, 7));
-		centerX = TileSpawn.x;
-		centerY = TileSpawn.y;
 		this.mainClass = mainClass;
 		this.height = 128;
+	}
+	
+	public void addPlayer() {
+		centerX = TileSpawn.x;
+		centerY = TileSpawn.y;
 	}
 	
 	public void update() {

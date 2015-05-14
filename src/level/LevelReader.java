@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import core.MainClass;
+import enemy.Enemy_Heliboy;
 
 /**
  * Reads data from image and creates level according to it.
@@ -27,6 +28,7 @@ public class LevelReader {
 		tileTypes.add(new TileBrick());
 		tileTypes.add(new TileGrass());
 		tileTypes.add(new TileSpawn());
+		tileTypes.add(new TileHeliboy());
 		
 		this.readImage();
 	}
@@ -58,9 +60,11 @@ public class LevelReader {
 	 */
 	private void setAllTiles(int x, int y, Color color) { 
 		if(!color.equals(Color.white)) {
-			if(color.equals(Color.blue)) {
+			if(color.equals(TileSpawn.color)) {
 				TileSpawn.x = x*TileSpawn.getWidth();
 				TileSpawn.y = y*TileSpawn.getHeight();
+			} else if (color.equals(TileHeliboy.color)) {
+				new Enemy_Heliboy().add(x*TileSpawn.getWidth(), y*TileSpawn.getHeight());
 			}
 			NotFound: {
 				// Projde všechny typy
