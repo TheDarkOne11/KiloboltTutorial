@@ -11,6 +11,6 @@ public class TileGrass extends Tile {
 	public final static Image texture = MainClass.getImage("data/grass.png");
 	
 	public TileGrass() {
-		super(texture, color);
+		super(texture, color, TileType.TERRAIN);
 	}
 }

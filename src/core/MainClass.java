@@ -18,15 +18,12 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import level.LevelReader;
-import level.TileSpawn;
 import projectile.Projectile;
 import enemy.Enemy;
-import enemy.Enemy_Heliboy;
 
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
 
-//TODO Otáèení obrázku nepøítele.
-//TODO Dávání nepøátel do hry pomocí Tile systému - enum bude pøiøazen každému Tilu pro rozlišení Entity a Tile.
+//TODO Základní umìlá inteligence, spoleèná pro všechny nepøátele (napø. chození k hráèi, otáèení se)
 //TODO Umìlá inteligence v samostatném (možná vnoøeném) objektu - létání, palba po hráèi.
 //TODO Funkènost štítù hráèe, vytvoøení samostatného objektu a obrázku pro štít.
 //TODO Menu, ukládání a naèítání levelù. Pokusit se využít Enum.

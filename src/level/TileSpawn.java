@@ -9,7 +9,7 @@ public class TileSpawn extends Tile {
 	public final static Image texture = null;
 	
 	public TileSpawn() {
-		super(texture, color);
+		super(texture, color, TileType.PLAYER);
 	}
 	
 	

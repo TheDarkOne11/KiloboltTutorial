@@ -42,8 +42,8 @@ public abstract class Entity {
 		
 		if(currHp*100/maxHp <= 25){
 			g.setColor(new Color(255, 0, 0, 99));
-		} else if(currHp*100/maxHp <= 50) {
-			g.setColor(new Color(255, 106, 0, 99));
+		} else if(currHp*100/maxHp <= 75) {
+			g.setColor(new Color(255, 140, 0, 99));
 		} else {
 			g.setColor(new Color(0, 255, 0, 99));
 		}

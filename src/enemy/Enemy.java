@@ -1,6 +1,8 @@
 package enemy;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
@@ -20,6 +22,8 @@ public abstract class Enemy extends Entity implements Cloneable{
 	private long time;
 	/** Stores every enemy that has been added to the current game.*/
 	public static ArrayList<Enemy> allEnemies = new ArrayList<Enemy>();
+	/** For flipping images.*/
+	protected boolean movingRight = false;
 	
 	/** Rectangular radius where collisions are turned on. */
 	protected Rectangle recRadius = new Rectangle();
@@ -47,9 +51,11 @@ public abstract class Enemy extends Entity implements Cloneable{
 	public void update() {
 		centerX += speedX;
 		speedX = bg.getSpeedX();
-		this.weaponX = this.centerX + this.weaponDiffX;
-		this.weaponY = this.centerY + this.weaponDiffY;
 		recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
+		
+		this.weaponX = movingRight ? this.centerX - this.weaponDiffX : this.centerX + this.weaponDiffX;
+		this.weaponY = this.centerY + this.weaponDiffY;
+		
 		anim.update();
 		updateRec();
 		collision();
@@ -62,7 +68,17 @@ public abstract class Enemy extends Entity implements Cloneable{
 	 */
 	public void paint(Graphics g) {
 		super.paintHpBar(g);
-		g.drawImage(anim.getCurrentImage(), this.getCenterX() - anim.getCurrentImage().getWidth(mainClass) / 2, this.getCenterY() - anim.getCurrentImage().getHeight(mainClass) / 2, mainClass);
+		
+		Graphics2D g2d = (Graphics2D) g;
+		Image tmpImage = anim.getCurrentImage();
+		
+		if(movingRight) {
+			int tmpX = this.getCenterX() - tmpImage.getWidth(mainClass) / 2;
+			int tmpY = this.getCenterY() - tmpImage.getHeight(mainClass) / 2;
+			g2d.drawImage(tmpImage, tmpX+tmpImage.getWidth(mainClass), tmpY, -tmpImage.getWidth(mainClass), tmpImage.getHeight(mainClass), mainClass);
+		} else {
+			g2d.drawImage(tmpImage, this.getCenterX() - tmpImage.getWidth(mainClass) / 2, this.getCenterY() - tmpImage.getHeight(mainClass) / 2, mainClass);
+		}
 	}
 	
 	public void die() {

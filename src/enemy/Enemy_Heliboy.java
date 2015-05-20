@@ -37,8 +37,10 @@ public class Enemy_Heliboy extends Enemy {
 			int distance = 200;
 			if(this.centerX < player.getCenterX() - distance) {
 				this.centerX += this.movespeed;
+				movingRight = true;
 			} else if(this.centerX > player.getCenterX() + distance) {
 				this.centerX -= this.movespeed;
+				movingRight = false;
 			}
 			
 			if(this.centerY < player.getCenterY()) {

@@ -5,21 +5,43 @@ import java.awt.Image;
 import java.awt.Rectangle;
 
 import core.MainClass;
+import enemy.Enemy;
 
 public class Tile implements Cloneable {
 	private int x;
 	private int y;
 	private Image texture;
 	private Color color;
+	private TileType tileType;
+	private Enemy enemyType;
 	
 	private Rectangle recCollision = new Rectangle();
+	
 	
 	private final static int width = 32;
 	private final static int height = 32;
 		
-	public Tile(Image texture, Color color) {
+	/**
+	 * 
+	 * @param texture is a texture of the tile.
+	 * @param color is the identificator of the tile.
+	 * @param tileType is used to distinguish between enemy, terrain and player.
+	 */
+	public Tile(Image texture, Color color, TileType tileType) {
 		this.texture = texture;
 		this.color = color;
+		this.tileType = tileType;
+	}
+	
+	/**
+	 * 
+	 * @param color is the identificator of the tile.
+	 * @param tileType is used to distinguish between enemy, terrain and player.
+	 * @param enemyType is the object of Enemy which is tied to this tile.
+	 */
+	public Tile(Color color, TileType tileType, Enemy enemyType) {
+		this(null, color, tileType);
+		this.enemyType = enemyType;
 	}
 	
 	public void setPosition(int x, int y) {
@@ -80,6 +102,14 @@ public class Tile implements Cloneable {
 
 	public Rectangle getRecCollision() {
 		return recCollision;
+	}
+
+	public TileType getTileType() {
+		return tileType;
+	}
+
+	public Enemy getEnemyType() {
+		return enemyType;
 	}
 	
 }

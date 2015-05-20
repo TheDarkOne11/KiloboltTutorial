@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import core.MainClass;
-import enemy.Enemy_Heliboy;
 
 /**
  * Reads data from image and creates level according to it.
@@ -15,7 +14,9 @@ import enemy.Enemy_Heliboy;
  */
 public class LevelReader {
 	private static BufferedImage level;
-	private static ArrayList<Tile> tileTypes = new ArrayList<Tile>();
+	/** Stores all subclasses of Tile (TileGrass). */
+	private static ArrayList<Tile> tileClasses = new ArrayList<Tile>();
+	/** Stores all tiles in the map. */
 	private static ArrayList<Tile> allTiles = new ArrayList<Tile>();
 	private String levelName;
 	
@@ -25,10 +26,10 @@ public class LevelReader {
 
 	public void init() {
 		// TileTypes array initialization
-		tileTypes.add(new TileBrick());
-		tileTypes.add(new TileGrass());
-		tileTypes.add(new TileSpawn());
-		tileTypes.add(new TileHeliboy());
+		tileClasses.add(new TileBrick());
+		tileClasses.add(new TileGrass());
+		tileClasses.add(new TileSpawn());
+		tileClasses.add(new TileHeliboy());
 		
 		this.readImage();
 	}
@@ -60,18 +61,20 @@ public class LevelReader {
 	 */
 	private void setAllTiles(int x, int y, Color color) { 
 		if(!color.equals(Color.white)) {
-			if(color.equals(TileSpawn.color)) {
-				TileSpawn.x = x*TileSpawn.getWidth();
-				TileSpawn.y = y*TileSpawn.getHeight();
-			} else if (color.equals(TileHeliboy.color)) {
-				new Enemy_Heliboy().add(x*TileSpawn.getWidth(), y*TileSpawn.getHeight());
-			}
 			NotFound: {
 				// Projde všechny typy
-				for(Tile e : tileTypes) {
+				for(Tile e : tileClasses) {
 					if(color.equals(e.getColor())) {
-						allTiles.add((Tile) e.clone());
-						e.setPosition(x, y);
+						if(e.getTileType() == TileType.TERRAIN) {
+							allTiles.add((Tile) e.clone());
+							e.setPosition(x, y);
+						} else if(e.getTileType() == TileType.ENEMY) {
+							e.getEnemyType().add(x*Tile.getWidth(), y*Tile.getHeight());
+							
+						} else if(e.getTileType() == TileType.PLAYER) {
+							TileSpawn.x = x*Tile.getWidth();
+							TileSpawn.y = y*Tile.getHeight();
+						}
 						break NotFound;
 					} 
 				}
