@@ -21,17 +21,14 @@ public abstract class Entity {
 	protected Animation anim;
 	protected Projectile projectile;
 	
-	public Entity(int maxHp, int width, int height, double rateOfFire, float movespeed, Animation anim, Projectile projectile) {
+	public Entity(int maxHp, int width, int height, double rateOfFire, float movespeed, Projectile projectile) {
 		this.maxHp = maxHp;
 		this.width = width;
 		this.height = height;
 		this.currHp = maxHp;
 		this.rateOfFire = rateOfFire;
 		this.movespeed = movespeed;
-		this.anim = anim;
 		this.projectile = projectile;
-		
-		anim.init();
 	}
 	
 	public void paintHpBar(Graphics g) {

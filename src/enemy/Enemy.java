@@ -29,9 +29,10 @@ public abstract class Enemy extends Entity implements Cloneable{
 	protected Rectangle recRadius = new Rectangle();
 
 	protected Enemy(int maxHp, int width, int height, double rateOfFire, float movespeed, Projectile projectile, Animation anim, int weaponDiffX, int weaponDiffY) {
-		super(maxHp, width, height, rateOfFire, movespeed, anim, projectile);
+		super(maxHp, width, height, rateOfFire, movespeed, projectile);
 		this.weaponDiffX = weaponDiffX;
 		this.weaponDiffY = weaponDiffY;
+		this.anim = anim;
 	}
 	
 	/**
@@ -42,6 +43,8 @@ public abstract class Enemy extends Entity implements Cloneable{
 	public void add(int centerX, int centerY) {
 		this.setCenterX(centerX);
 		this.setCenterY(centerY);
+		this.anim = (Animation) anim.clone();
+		this.anim.init();
 		Enemy.allEnemies.add((Enemy) this.clone());
 	}
 
@@ -107,7 +110,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 	 * Artificial Intelligence
 	 */
 	public abstract void AI();
-
+	
 	/**
 	 * Potøeba, jinak by nepøátelé sdíleli souøadnice.
 	 */

@@ -4,7 +4,7 @@ import java.awt.Image;
 import java.util.ArrayList;
 
 /** Animations for characters. */
-public abstract class Animation {
+public abstract class Animation implements Cloneable {
 	private ArrayList<AnimFrame> frames;
 	private int currentFrame;
 	private long animTime; // How long does parts of animation take.
@@ -20,11 +20,16 @@ public abstract class Animation {
 		}
 	}
 
+	/**
+	 * Adds animation image.
+	 * @param image
+	 * @param duration is how long will this frame stay on screen.
+	 */
 	public synchronized void addFrame(Image image, long duration) {
 		totalDuration += duration;
 		frames.add(new AnimFrame(image, totalDuration));
 	}
-
+	
 	/**
 	 * Updates currentFrame.
 	 * 
@@ -34,6 +39,7 @@ public abstract class Animation {
 	public synchronized void update(long elapsedTime) {
 		if (frames.size() > 1) {
 			animTime += elapsedTime;
+			
 			if (animTime >= totalDuration) {
 				animTime = animTime % totalDuration;
 				currentFrame = 0;
@@ -59,6 +65,16 @@ public abstract class Animation {
 		}
 	}
 	
+	@Override
+	public Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public abstract void init();
 	public abstract void update();
 

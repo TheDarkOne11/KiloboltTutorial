@@ -27,9 +27,9 @@ public class Animation_Player extends Animation {
 		characterJumped = MainClass.getImage("data/jumped.png");
 		
 		// Animated when static.
-		this.addFrame(character_static, 1250);
+		this.addFrame(character_static, 2000);
 		this.addFrame(character_static2, 50);
-		this.addFrame(character_static3, 50);
+		this.addFrame(character_static3, 100);
 		this.addFrame(character_static2, 50);
 		
 		this.currentImage = super.getCurrentImage();
@@ -48,7 +48,7 @@ public class Animation_Player extends Animation {
 		} else if(MainClass.getPlayer().isJumping() == false && MainClass.getPlayer().isCovered() == false) {
 			currentImage = super.getCurrentImage();
 		}
-		this.update(10);
+		this.update(25);
 	
 	}
 
