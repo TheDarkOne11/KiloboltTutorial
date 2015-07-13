@@ -33,6 +33,7 @@ public class Enemy_Heliboy extends Enemy {
 	}
 	
 	public void AI() {
+		/*
 		// Pohyb k hr·Ëi.
 			int distance = 200;
 			if(this.centerX < player.getCenterX() - distance) {
@@ -64,6 +65,7 @@ public class Enemy_Heliboy extends Enemy {
 			if(centerY > player.getCenterY() - player.getHeight()/2 && centerY < player.getCenterY() + player.getHeight()/2) {
 				attack();
 			}
+			*/
 	}
 
 	public void collision() {

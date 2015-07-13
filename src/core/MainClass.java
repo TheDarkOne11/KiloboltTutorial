@@ -1,25 +1,25 @@
 package core;
 
-import java.applet.Applet;
 import java.awt.Color;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Panel;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
+import enemy.Enemy;
 import level.LevelReader;
 import projectile.Projectile;
-import enemy.Enemy;
 
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
 
@@ -29,42 +29,34 @@ import enemy.Enemy;
 //TODO Menu, ukládání a naèítání levelù. Pokusit se využít Enum.
 
 /** Main class of the Applet. */
-public class MainClass extends Applet implements Runnable {
+public class MainClass extends Panel implements Runnable {
 	public static int WIDTH = 800;
 	public static int HEIGHT = 480;
 	
+	private boolean resized = true;
 	private int updatesPerSec = 60;
 	private static Entity player;
+	public static String gamePath;
 	private Image image;
 	private Image background;
 	private Graphics second;
 	private Graphics2D g2d;
-	private static URL base;
 	private static Background bg1, bg2;
 	private Camera cam;
 	private LevelReader lvl;
 	/** Stores all projectiles. */
 	private static ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
-	@Override
-	public void init() {
-		Frame frame = (Frame) this.getParent().getParent();
-		cam = new Camera(0, 0);
-
-		this.addKeyListener(new ClassKeyListener());
-		this.addMouseListener(new ClassMouseListener());
-
-		frame.setTitle("KiloboltTutorial");
-		this.setSize(WIDTH, HEIGHT);
-		this.setBackground(new Color(102, 226, 255));
-		this.setFocusable(true);
-		try {
-			base = getDocumentBase();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public MainClass(FrameClass frameClass) {
+		frameClass.setSize(WIDTH, HEIGHT);
+		frameClass.addComponentListener(new ClassComponentListener());
+		frameClass.addKeyListener(new ClassKeyListener());
+		frameClass.addMouseListener(new ClassMouseListener());
+		frameClass.setBackground(new Color(102, 226, 255));
 		
-		background = getImage(base, "data/background.png");
+		cam = new Camera(0, 0);
+		gamePath = System.getProperty("user.dir") + "\\src";
+		background = new ImageIcon(gamePath + "\\data\\background.png").getImage();
 		bg1 = new Background(0, 0);
 		bg2 = new Background(2160, 0);
 		player = new Player(this);
@@ -72,39 +64,43 @@ public class MainClass extends Applet implements Runnable {
 		lvl = new LevelReader("demo");
 		lvl.init();
 		((Player) player).addPlayer();	// Player init must be before lvl.init and adding Player must be behind it.
-	}
-
-	@Override
-	public void start() {
+		
 		Thread mainThread = new Thread(this);
 		mainThread.start();
 	}
+	
+	public static BufferedImage toBufferedImage(Image img)
+	{
+	    if (img instanceof BufferedImage)
+	    {
+	        return (BufferedImage) img;
+	    }
 
-	@Override
-	public void stop() {
-		super.stop();
-	}
+	    // Create a buffered image with transparency
+	    BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 
-	@Override
-	public void destroy() {
-		super.destroy();
+	    // Draw the image on to the buffered image
+	    Graphics2D bGr = bimage.createGraphics();
+	    bGr.drawImage(img, 0, 0, null);
+	    bGr.dispose();
+
+	    // Return the buffered image
+	    return bimage;
 	}
 	
 	public static BufferedImage getImage(String path) {
-		try {
-		    URL url = new URL(MainClass.getBase(), path);
-		    return ImageIO.read(url);
-		} catch (IOException e) {
-		}
-		return null;
+		BufferedImage buff = toBufferedImage(new ImageIcon(gamePath + path).getImage());
+		return buff;
 	}
 
 	@Override
 	public void paint(Graphics g) {
-		if (image == null) {
+		if (resized) {
+			System.out.println(this.getWidth() + ", " +  this.getHeight());
 			image = createImage(this.getWidth(), this.getHeight());
 			second = image.getGraphics();
 			g2d = (Graphics2D) second;
+			resized = false;
 		}
 		
 		g2d.translate(cam.getX(), cam.getY());
@@ -157,9 +153,6 @@ public class MainClass extends Applet implements Runnable {
 				Enemy.allEnemies.get(i).update();
 			}
 			
-			MainClass.WIDTH = this.getWidth();
-			MainClass.HEIGHT = this.getHeight();
-			
 			repaint();
 
 			try {
@@ -176,10 +169,6 @@ public class MainClass extends Applet implements Runnable {
 
 	public static Background getBg2() {
 		return bg2;
-	}
-
-	public static URL getBase() {
-		return base;
 	}
 
 	public static Player getPlayer() {
@@ -273,6 +262,16 @@ public class MainClass extends Applet implements Runnable {
 			System.out.println("X/Y: " + tmpX + "/ " + tmpY);
 			player.setCenterX(tmpX);
 			player.setCenterY(tmpY);
+		}
+		
+	}
+	
+	class ClassComponentListener extends ComponentAdapter {
+
+		public void componentResized(ComponentEvent e) {
+			resized = true;
+			MainClass.WIDTH = getWidth();
+			MainClass.HEIGHT = getHeight();
 		}
 		
 	}

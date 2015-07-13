@@ -38,7 +38,7 @@ public class LevelReader {
 	 * Reads image RGB values.
 	 */
 	private void readImage() {
-		level = MainClass.getImage("data/level/" + levelName + ".png");
+		level = MainClass.getImage("\\data\\level\\" + levelName + ".png");
 		
 		for(int x = 0; x < level.getWidth(); x++) {
 			for(int y = 0; y < level.getHeight(); y++) {
