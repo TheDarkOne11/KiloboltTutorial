@@ -3,11 +3,11 @@ package enemy;
 import java.awt.Color;
 import java.awt.Rectangle;
 
-import projectile.Projectile;
 import animation.Animation;
 import animation.Animation_Heliboy;
 import core.MainClass;
 import core.Player;
+import projectile.Projectile;
 
 public class Enemy_Heliboy extends Enemy {
 	final static int MAXHP = 20;

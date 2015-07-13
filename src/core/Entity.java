@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-import projectile.Projectile;
 import animation.Animation;
+import projectile.Projectile;
 
 /**
  * Parent class for all entities.

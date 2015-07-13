@@ -6,11 +6,11 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
-import projectile.Projectile;
 import animation.Animation;
 import core.Background;
 import core.Entity;
 import core.MainClass;
+import projectile.Projectile;
 
 /** Super class for all enemies. */
 public abstract class Enemy extends Entity implements Cloneable{

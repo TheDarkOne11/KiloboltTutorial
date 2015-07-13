@@ -7,11 +7,11 @@ import java.awt.Image;
 import java.awt.Panel;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -48,11 +48,13 @@ public class MainClass extends Panel implements Runnable {
 	private static ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
 	public MainClass(FrameClass frameClass) {
-		frameClass.setSize(WIDTH, HEIGHT);
-		frameClass.addComponentListener(new ClassComponentListener());
+		this.addComponentListener(new ClassComponentListener());
+		this.addMouseListener(new ClassMouseListener());
+		this.addKeyListener(new ClassKeyListener());
 		frameClass.addKeyListener(new ClassKeyListener());
-		frameClass.addMouseListener(new ClassMouseListener());
 		frameClass.setBackground(new Color(102, 226, 255));
+		frameClass.setSize(WIDTH, HEIGHT);
+		frameClass.add(this);
 		
 		cam = new Camera(0, 0);
 		gamePath = System.getProperty("user.dir") + "\\src";

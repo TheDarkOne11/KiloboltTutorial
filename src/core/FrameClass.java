@@ -1,10 +1,9 @@
 package core;
 
+import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 /**
@@ -13,7 +12,7 @@ import javax.swing.SwingUtilities;
  * @author Petr
  * 
  */
-public class FrameClass extends JFrame {
+public class FrameClass extends Frame {
 	public static void main(String[] args) {
 		// Ochrana proti obèasné bílé obrazovce
 		SwingUtilities.invokeLater(new Runnable() {
@@ -25,15 +24,13 @@ public class FrameClass extends JFrame {
 
 	public FrameClass() {
 		this.setTitle("KiloboltTutorial");
-		this.setExtendedState(MAXIMIZED_BOTH);
+		//this.setExtendedState(MAXIMIZED_BOTH);
 		//this.setUndecorated(true);
 		this.setVisible(true);
 		this.setFocusable(true);
 		this.addWindowListener(new CloseWindow_WindowAdapter());
 
 		MainClass mainClass = new MainClass(this);
-
-		this.add(mainClass);
 	}
 
 	class CloseWindow_WindowAdapter extends WindowAdapter {

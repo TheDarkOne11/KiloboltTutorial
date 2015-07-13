@@ -4,11 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
+import animation.Animation_Player;
 import level.LevelReader;
 import level.Tile;
 import level.TileSpawn;
 import projectile.Projectile;
-import animation.Animation_Player;
 
 //TODO Pohrát si s velikostí nepøátel a hráèe vùèi Tile.
 public class Player extends Entity {
