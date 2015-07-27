@@ -33,6 +33,9 @@ public class MainClass extends Panel implements Runnable {
 	public static int WIDTH = 800;
 	public static int HEIGHT = 480;
 	
+	public boolean ingame = false;
+	public boolean inmenu = true;
+	
 	private boolean resized = true;
 	private int updatesPerSec = 60;
 	private static Entity player;
@@ -55,7 +58,25 @@ public class MainClass extends Panel implements Runnable {
 		frameClass.setBackground(new Color(102, 226, 255));
 		frameClass.setSize(WIDTH, HEIGHT);
 		frameClass.add(this);
+		/*
+		if(ingame) {
+			cam = new Camera(0, 0);
+			gamePath = System.getProperty("user.dir") + "\\src";
+			background = new ImageIcon(gamePath + "\\data\\background.png").getImage();
+			bg1 = new Background(0, 0);
+			bg2 = new Background(2160, 0);
+			player = new Player(this);
+			Enemy.setMainClass(this);
+			lvl = new LevelReader("demo");
+			lvl.init();
+			((Player) player).addPlayer();	// Player init must be before lvl.init and adding Player must be behind it.
+		}*/
 		
+		Thread mainThread = new Thread(this);
+		mainThread.start();
+	}
+	
+	private void startLevel() {
 		cam = new Camera(0, 0);
 		gamePath = System.getProperty("user.dir") + "\\src";
 		background = new ImageIcon(gamePath + "\\data\\background.png").getImage();
@@ -66,9 +87,6 @@ public class MainClass extends Panel implements Runnable {
 		lvl = new LevelReader("demo");
 		lvl.init();
 		((Player) player).addPlayer();	// Player init must be before lvl.init and adding Player must be behind it.
-		
-		Thread mainThread = new Thread(this);
-		mainThread.start();
 	}
 	
 	public static BufferedImage toBufferedImage(Image img)
@@ -97,64 +115,74 @@ public class MainClass extends Panel implements Runnable {
 
 	@Override
 	public void paint(Graphics g) {
-		if (resized) {
-			System.out.println(this.getWidth() + ", " +  this.getHeight());
-			image = createImage(this.getWidth(), this.getHeight());
-			second = image.getGraphics();
-			g2d = (Graphics2D) second;
-			resized = false;
+		if(inmenu) {
+			g.fillRect(100, 100, 20, 50);
 		}
 		
-		g2d.translate(cam.getX(), cam.getY());
-		//////////////////////////////////////////
-		// Místo na kreslení
-		g.drawImage(background, bg1.getBgX(), bg1.getBgY(), this);
-		g.drawImage(background, bg2.getBgX(), bg2.getBgY(), this);
-		lvl.paintTiles(g);
-		
-		player.paint(g);
-		
-		Projectile.paint(g, projectiles);
-		
-		for(int i = 0; i < Enemy.allEnemies.size(); i++) {
-			try {
-				Enemy.allEnemies.get(i).paint(g);
-			} catch(NullPointerException e) {
-				e.printStackTrace();
-				System.out.println("Enemy " + Enemy.allEnemies.get(i).getClass().getName() + " doesn't probably have animation.");
+		if(ingame) {
+			g2d.translate(cam.getX(), cam.getY());
+			//////////////////////////////////////////
+			// Místo na kreslení
+			g.drawImage(background, bg1.getBgX(), bg1.getBgY(), this);
+			g.drawImage(background, bg2.getBgX(), bg2.getBgY(), this);
+			lvl.paintTiles(g);
+			
+			player.paint(g);
+			
+			Projectile.paint(g, projectiles);
+			
+			for(int i = 0; i < Enemy.allEnemies.size(); i++) {
+				try {
+					Enemy.allEnemies.get(i).paint(g);
+				} catch(NullPointerException e) {
+					e.printStackTrace();
+					System.out.println("Enemy " + Enemy.allEnemies.get(i).getClass().getName() + " doesn't probably have animation.");
+				}
 			}
+			
+			///////////////////////////////////////////
+			g2d.translate(-cam.getX(), -cam.getY());
 		}
-		
-		///////////////////////////////////////////
-		g2d.translate(-cam.getX(), -cam.getY());
 	}
 
 	@Override
 	public void update(Graphics g) {
-		second.setColor(getBackground());
-		second.fillRect(0, 0, getWidth(), getHeight());
-		second.setColor(getForeground());
-		paint(second);
-
-		g.drawImage(image, 0, 0, this);
+		if(ingame) {
+			image = createImage(this.getWidth(), this.getHeight());
+			second = image.getGraphics();
+			g2d = (Graphics2D) second;
+			resized = false;
+			
+			second.setColor(getBackground());
+			second.fillRect(0, 0, getWidth(), getHeight());
+			second.setColor(getForeground());
+			paint(second);
+	
+			g.drawImage(image, 0, 0, this);
+		}
 	}
 	
 	@Override
 	public void run() {
 		while (true) {
-			player.update();
-			cam.update((Player) player);
-			
-			Projectile.update(projectiles);
-			
-			bg1.update();
-			bg2.update();
-			lvl.update();
-			
-			for(int i = 0; i < Enemy.allEnemies.size(); i++) {
-				Enemy.allEnemies.get(i).update();
+			if(inmenu) {
+				
 			}
 			
+			if(ingame) {
+				player.update();
+				cam.update((Player) player);
+				
+				Projectile.update(projectiles);
+				
+				bg1.update();
+				bg2.update();
+				lvl.update();
+				
+				for(int i = 0; i < Enemy.allEnemies.size(); i++) {
+					Enemy.allEnemies.get(i).update();
+				}
+			}
 			repaint();
 
 			try {
@@ -241,6 +269,9 @@ public class MainClass extends Panel implements Runnable {
 				break;
 	
 			case KeyEvent.VK_SPACE:
+				startLevel();
+				ingame = !ingame;
+				inmenu = !inmenu;
 				break;
 	
 			}
