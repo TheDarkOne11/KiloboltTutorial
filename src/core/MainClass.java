@@ -11,7 +11,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -33,8 +32,7 @@ public class MainClass extends Panel implements Runnable {
 	public static int WIDTH = 800;
 	public static int HEIGHT = 480;
 	
-	public boolean ingame = false;
-	public boolean inmenu = true;
+	public static GameState state = GameState.MENU;
 	
 	private boolean resized = true;
 	private int updatesPerSec = 60;
@@ -47,8 +45,11 @@ public class MainClass extends Panel implements Runnable {
 	private static Background bg1, bg2;
 	private Camera cam;
 	private LevelReader lvl;
+	
 	/** Stores all projectiles. */
-	private static ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+	private static ArrayList<Projectile> projectiles;
+	/** Stores every enemy that has been added to the current game.*/
+	public static ArrayList<Enemy> allEnemies;
 
 	public MainClass(FrameClass frameClass) {
 		this.addComponentListener(new ClassComponentListener());
@@ -77,6 +78,20 @@ public class MainClass extends Panel implements Runnable {
 	}
 	
 	private void startLevel() {
+		cam = null;
+		gamePath = null;
+		background = null;
+		bg1 = null;
+		bg2 = null;
+		player = null;
+		Enemy.setMainClass(null);
+		lvl = null;
+		
+		projectiles = new ArrayList<Projectile>();
+		allEnemies = new ArrayList<Enemy>();
+		if(!projectiles.isEmpty()) projectiles.clear();
+		if(!allEnemies.isEmpty()) allEnemies.clear();
+		
 		cam = new Camera(0, 0);
 		gamePath = System.getProperty("user.dir") + "\\src";
 		background = new ImageIcon(gamePath + "\\data\\background.png").getImage();
@@ -115,11 +130,11 @@ public class MainClass extends Panel implements Runnable {
 
 	@Override
 	public void paint(Graphics g) {
-		if(inmenu) {
+		if(state == GameState.MENU) {
 			g.fillRect(100, 100, 20, 50);
 		}
 		
-		if(ingame) {
+		if(state == GameState.RUNNING) {
 			g2d.translate(cam.getX(), cam.getY());
 			//////////////////////////////////////////
 			// Místo na kreslení
@@ -131,12 +146,12 @@ public class MainClass extends Panel implements Runnable {
 			
 			Projectile.paint(g, projectiles);
 			
-			for(int i = 0; i < Enemy.allEnemies.size(); i++) {
+			for(int i = 0; i < MainClass.allEnemies.size(); i++) {
 				try {
-					Enemy.allEnemies.get(i).paint(g);
+					MainClass.allEnemies.get(i).paint(g);
 				} catch(NullPointerException e) {
 					e.printStackTrace();
-					System.out.println("Enemy " + Enemy.allEnemies.get(i).getClass().getName() + " doesn't probably have animation.");
+					System.out.println("Enemy " + MainClass.allEnemies.get(i).getClass().getName() + " doesn't probably have animation.");
 				}
 			}
 			
@@ -147,29 +162,28 @@ public class MainClass extends Panel implements Runnable {
 
 	@Override
 	public void update(Graphics g) {
-		if(ingame) {
-			image = createImage(this.getWidth(), this.getHeight());
-			second = image.getGraphics();
-			g2d = (Graphics2D) second;
-			resized = false;
-			
-			second.setColor(getBackground());
-			second.fillRect(0, 0, getWidth(), getHeight());
-			second.setColor(getForeground());
-			paint(second);
-	
-			g.drawImage(image, 0, 0, this);
-		}
+		image = createImage(this.getWidth(), this.getHeight());
+		second = image.getGraphics();
+		g2d = (Graphics2D) second;
+		resized = false;
+		
+		second.setColor(getBackground());
+		second.fillRect(0, 0, getWidth(), getHeight());
+		second.setColor(getForeground());
+		paint(second);
+
+		g.drawImage(image, 0, 0, this);
+		
 	}
 	
 	@Override
 	public void run() {
 		while (true) {
-			if(inmenu) {
+			if(state == GameState.MENU) {
 				
 			}
 			
-			if(ingame) {
+			if(state == GameState.RUNNING) {
 				player.update();
 				cam.update((Player) player);
 				
@@ -179,8 +193,8 @@ public class MainClass extends Panel implements Runnable {
 				bg2.update();
 				lvl.update();
 				
-				for(int i = 0; i < Enemy.allEnemies.size(); i++) {
-					Enemy.allEnemies.get(i).update();
+				for(int i = 0; i < MainClass.allEnemies.size(); i++) {
+					MainClass.allEnemies.get(i).update();
 				}
 			}
 			repaint();
@@ -269,9 +283,13 @@ public class MainClass extends Panel implements Runnable {
 				break;
 	
 			case KeyEvent.VK_SPACE:
-				startLevel();
-				ingame = !ingame;
-				inmenu = !inmenu;
+				if(state == GameState.RUNNING) {
+					player.die();
+					state = GameState.MENU;
+				} else {
+					startLevel();
+					state = GameState.RUNNING;
+				}
 				break;
 	
 			}
@@ -307,6 +325,11 @@ public class MainClass extends Panel implements Runnable {
 			MainClass.HEIGHT = getHeight();
 		}
 		
+	}
+	
+	enum GameState {
+		MENU,
+		RUNNING; 
 	}
 
 }

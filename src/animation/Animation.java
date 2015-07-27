@@ -12,6 +12,7 @@ public abstract class Animation implements Cloneable {
 
 	public Animation() {
 		frames = new ArrayList<AnimFrame>();
+		if(!frames.isEmpty()) frames.clear();
 		totalDuration = 0;
 
 		synchronized (this) {

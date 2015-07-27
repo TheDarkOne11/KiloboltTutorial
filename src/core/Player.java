@@ -19,6 +19,7 @@ public class Player extends Entity {
 	private final static int WIDTH = 128;
 	private final static int HEIGHT = 128;
 	
+	public static boolean dead;
 	private int backgroundStartMove = 200;
 	private boolean isMovingLeft = false;
 	private boolean isMovingRight = false;
@@ -44,10 +45,10 @@ public class Player extends Entity {
 	/** Rectangular radius where collisions are turned on. */
 	private Rectangle recRadius = new Rectangle();
 	
+	
 	public Player(MainClass mainClass) {
 		super(100, WIDTH, HEIGHT, 60, MOVESPEED, new Projectile(5, Color.black, 7));
 		this.mainClass = mainClass;
-		this.height = 128;
 	}
 	
 	public void addPlayer() {
@@ -82,7 +83,12 @@ public class Player extends Entity {
 		recHandR.setRect(centerX + 34, centerY - 32, 30, 20);
 		recHandL.setRect(centerX - 64, centerY - 32, 30, 20);
 		recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
-		anim.update();
+		
+		try {
+			anim.update();
+		} catch(NullPointerException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void  collision() {
@@ -118,7 +124,10 @@ public class Player extends Entity {
 				}
 				
 				if(recFootL.intersects(e.getRecCollision())) {
-					centerX += 5;					
+					System.out.println(centerX);
+					centerX += 5;
+					System.out.println(centerX);
+					System.out.println();
 				}
 				
 				if(recFootR.intersects(e.getRecCollision())) {
@@ -153,6 +162,7 @@ public class Player extends Entity {
 
 	public void die() {	
 		System.out.println("Player dead");
+		this.dead = true;
 	}
 
 	public void attack() {

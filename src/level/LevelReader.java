@@ -15,9 +15,9 @@ import core.MainClass;
 public class LevelReader {
 	private static BufferedImage level;
 	/** Stores all subclasses of Tile (TileGrass). */
-	private static ArrayList<Tile> tileClasses = new ArrayList<Tile>();
+	private static ArrayList<Tile> tileClasses;
 	/** Stores all tiles in the map. */
-	private static ArrayList<Tile> allTiles = new ArrayList<Tile>();
+	private static ArrayList<Tile> allTiles;
 	private String levelName;
 	
 	public LevelReader(String levelName) {
@@ -25,6 +25,12 @@ public class LevelReader {
 	}
 
 	public void init() {
+		tileClasses = new ArrayList<Tile>();
+		allTiles = new ArrayList<Tile>();
+		
+		if(!tileClasses.isEmpty()) tileClasses.clear();
+		if(!allTiles.isEmpty()) allTiles.clear();
+		
 		// TileTypes array initialization
 		tileClasses.add(new TileBrick());
 		tileClasses.add(new TileGrass());

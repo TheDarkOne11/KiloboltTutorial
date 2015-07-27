@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.util.ArrayList;
 
 import animation.Animation;
 import core.Background;
@@ -20,8 +19,6 @@ public abstract class Enemy extends Entity implements Cloneable{
 	private Background bg = MainClass.getBg1();
 	/** Stores time of a projectile shooting. */
 	private long time;
-	/** Stores every enemy that has been added to the current game.*/
-	public static ArrayList<Enemy> allEnemies = new ArrayList<Enemy>();
 	/** For flipping images.*/
 	protected boolean movingRight = false;
 	
@@ -45,7 +42,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 		this.setCenterY(centerY);
 		this.anim = (Animation) anim.clone();
 		this.anim.init();
-		Enemy.allEnemies.add((Enemy) this.clone());
+		mainClass.allEnemies.add((Enemy) this.clone());
 	}
 
 	/**
@@ -85,7 +82,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 	}
 	
 	public void die() {
-		Enemy.allEnemies.remove(this);
+		mainClass.allEnemies.remove(this);
 		System.out.println(this.getClass().getSimpleName() + ": DEAD");
 	}
 
