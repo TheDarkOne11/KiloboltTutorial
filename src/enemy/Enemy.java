@@ -42,7 +42,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 		this.setCenterY(centerY);
 		this.anim = (Animation) anim.clone();
 		this.anim.init();
-		mainClass.allEnemies.add((Enemy) this.clone());
+		MainClass.allEnemies.add((Enemy) this.clone());
 	}
 
 	/**
@@ -82,7 +82,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 	}
 	
 	public void die() {
-		mainClass.allEnemies.remove(this);
+		MainClass.allEnemies.remove(this);
 		System.out.println(this.getClass().getSimpleName() + ": DEAD");
 	}
 

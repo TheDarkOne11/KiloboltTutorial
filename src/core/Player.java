@@ -19,7 +19,7 @@ public class Player extends Entity {
 	private final static int WIDTH = 128;
 	private final static int HEIGHT = 128;
 	
-	public static boolean dead;
+	public boolean dead;
 	private int backgroundStartMove = 200;
 	private boolean isMovingLeft = false;
 	private boolean isMovingRight = false;
@@ -124,10 +124,7 @@ public class Player extends Entity {
 				}
 				
 				if(recFootL.intersects(e.getRecCollision())) {
-					System.out.println(centerX);
 					centerX += 5;
-					System.out.println(centerX);
-					System.out.println();
 				}
 				
 				if(recFootR.intersects(e.getRecCollision())) {
