@@ -1,5 +1,6 @@
 package core;
 
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -22,19 +23,22 @@ import projectile.Projectile;
 
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
 
+//TODO Menu, ukládání a naèítání levelù. Dodìlat Javovská tlaèítka.
+
 //TODO Základní umìlá inteligence, spoleèná pro všechny nepøátele (napø. chození k hráèi, otáèení se)
 //TODO Umìlá inteligence v samostatném (možná vnoøeném) objektu - létání, palba po hráèi.
 //TODO Funkènost štítù hráèe, vytvoøení samostatného objektu a obrázku pro štít.
-//TODO Menu, ukládání a naèítání levelù. Pokusit se využít Enum.
 
 /** Main class of the Applet. */
 public class MainClass extends Panel implements Runnable {
 	public static int WIDTH = 800;
 	public static int HEIGHT = 480;
-	
 	public static GameState state = GameState.MENU;
-	
 	private boolean resized = true;
+	
+	private Panel panel;
+	private Button btContinue, btNewGame, btLevels, btExit;
+	
 	private int updatesPerSec = 60;
 	private static Entity player;
 	public static String gamePath;
@@ -52,41 +56,40 @@ public class MainClass extends Panel implements Runnable {
 	public static ArrayList<Enemy> allEnemies;
 
 	public MainClass(FrameClass frameClass) {
-		this.addComponentListener(new ClassComponentListener());
-		this.addMouseListener(new ClassMouseListener());
-		this.addKeyListener(new ClassKeyListener());
+		// Set game panel in window
 		frameClass.addKeyListener(new ClassKeyListener());
 		frameClass.setBackground(new Color(102, 226, 255));
 		frameClass.setSize(WIDTH, HEIGHT);
 		frameClass.add(this);
-		/*
-		if(ingame) {
-			cam = new Camera(0, 0);
-			gamePath = System.getProperty("user.dir") + "\\src";
-			background = new ImageIcon(gamePath + "\\data\\background.png").getImage();
-			bg1 = new Background(0, 0);
-			bg2 = new Background(2160, 0);
-			player = new Player(this);
-			Enemy.setMainClass(this);
-			lvl = new LevelReader("demo");
-			lvl.init();
-			((Player) player).addPlayer();	// Player init must be before lvl.init and adding Player must be behind it.
-		}*/
 		
+		// Menu
+		panel = new Panel();
+		btContinue = new Button("Continue");
+		btNewGame = new Button("New game");
+		btLevels = new Button("Levels");
+		btExit = new Button("Exit");
+		
+		panel.add(btContinue);
+		panel.add(btNewGame);
+		panel.add(btLevels);
+		panel.add(btExit);
+		this.add(panel);
+		panel.setBackground(Color.red);
+
+		// Listeners
+		this.addComponentListener(new ClassComponentListener());
+		this.addMouseListener(new ClassMouseListener());
+		this.addKeyListener(new ClassKeyListener());
+		
+		// Start game
 		Thread mainThread = new Thread(this);
 		mainThread.start();
 	}
 	
-	private void startLevel() {
-		cam = null;
-		gamePath = null;
-		background = null;
-		bg1 = null;
-		bg2 = null;
-		player = null;
-		Enemy.setMainClass(null);
-		lvl = null;
-		
+	/**
+	 * Inicialization of variables needed at the start of Running state.
+	 */
+	private void startLevel() {		
 		projectiles = new ArrayList<Projectile>();
 		allEnemies = new ArrayList<Enemy>();
 		if(!projectiles.isEmpty()) projectiles.clear();
@@ -130,11 +133,17 @@ public class MainClass extends Panel implements Runnable {
 
 	@Override
 	public void paint(Graphics g) {
+		// Menu
 		if(state == GameState.MENU) {
 			g.fillRect(100, 100, 20, 50);
+			
+			if(!panel.isVisible()) panel.setVisible(true);
 		}
 		
+		// Game
 		if(state == GameState.RUNNING) {
+			if(panel.isVisible()) panel.setVisible(false);
+			
 			g2d.translate(cam.getX(), cam.getY());
 			//////////////////////////////////////////
 			// Místo na kreslení
@@ -308,11 +317,13 @@ public class MainClass extends Panel implements Runnable {
 	 */
 	class ClassMouseListener extends MouseAdapter {
 		public void mousePressed(MouseEvent e) {
-			int tmpX = player.getCenterX() - MainClass.WIDTH/2 + e.getX();
-			int tmpY = player.getCenterY() - 3*MainClass.HEIGHT/4 + e.getY();
-			System.out.println("X/Y: " + tmpX + "/ " + tmpY);
-			player.setCenterX(tmpX);
-			player.setCenterY(tmpY);
+			if(state == GameState.RUNNING) {
+				int tmpX = player.getCenterX() - MainClass.WIDTH/2 + e.getX();
+				int tmpY = player.getCenterY() - 3*MainClass.HEIGHT/4 + e.getY();
+				System.out.println("X/Y: " + tmpX + "/ " + tmpY);
+				player.setCenterX(tmpX);
+				player.setCenterY(tmpY);
+			}
 		}
 		
 	}
