@@ -4,8 +4,13 @@ import java.awt.Button;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
@@ -24,6 +29,7 @@ import projectile.Projectile;
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
 
 //TODO Menu, ukládání a naèítání levelù. Dodìlat Javovská tlaèítka.
+//TODO Dodat LayoutManager do menu, zvìtšit tlaèítka.
 
 //TODO Základní umìlá inteligence, spoleèná pro všechny nepøátele (napø. chození k hráèi, otáèení se)
 //TODO Umìlá inteligence v samostatném (možná vnoøeném) objektu - létání, palba po hráèi.
@@ -34,13 +40,14 @@ public class MainClass extends Panel implements Runnable {
 	public static int WIDTH = 800;
 	public static int HEIGHT = 480;
 	public static GameState state = GameState.MENU;
-	private boolean resized = true;
 	
-	private Panel panel;
-	private Button btContinue, btNewGame, btLevels, btExit;
+	/** Menu panel. */
+	private Panel panelMenu;
+	GridBagLayout gbl;
+	GridBagConstraints gbc;
 	
 	private int updatesPerSec = 60;
-	private static Entity player;
+	private static Player player;
 	public static String gamePath;
 	private Image image;
 	private Image background;
@@ -52,34 +59,51 @@ public class MainClass extends Panel implements Runnable {
 	
 	/** Stores all projectiles. */
 	private static ArrayList<Projectile> projectiles;
+	/** Stores all panels in menu. */
+	private static ArrayList<Panel> panels;
 	/** Stores every enemy that has been added to the current game.*/
 	public static ArrayList<Enemy> allEnemies;
 
 	public MainClass(FrameClass frameClass) {
 		// Set game panel in window
-		frameClass.addKeyListener(new ClassKeyListener());
 		frameClass.setBackground(new Color(102, 226, 255));
 		frameClass.setSize(WIDTH, HEIGHT);
 		frameClass.add(this);
 		
-		// Menu
-		panel = new Panel();
-		btContinue = new Button("Continue");
-		btNewGame = new Button("New game");
-		btLevels = new Button("Levels");
-		btExit = new Button("Exit");
+		// Menu section
+		panels = new ArrayList<Panel>();
+		gbl = new GridBagLayout();
+		gbc = new GridBagConstraints();
+		this.setLayout(gbl);
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1.0;
 		
-		panel.add(btContinue);
-		panel.add(btNewGame);
-		panel.add(btLevels);
-		panel.add(btExit);
-		this.add(panel);
-		panel.setBackground(Color.red);
-
+		Panel panel2 = new MenuPanel();	// Je zde, aby byl panelMenu uprostøed
+		Panel panel3 = new MenuPanel();
+		
+		panelMenu = new MenuPanel();
+			panelMenu.setLayout(new GridLayout(4, 1, 10, 10));
+			new MenuButton("Continue", panelMenu);
+			new MenuButton("New game", panelMenu);
+			new MenuButton("Levels", panelMenu);
+			new MenuButton("Exit", panelMenu);
+		
+		gbc.gridx = 1;
+		gbl.setConstraints(panel2, gbc);
+		gbc.gridx = 2;
+		gbl.setConstraints(panelMenu, gbc);
+		gbc.gridx = 3;
+		gbl.setConstraints(panel3, gbc);
+		
+		this.add(panel2);
+		this.add(panelMenu);
+		this.add(panel3);
+		
 		// Listeners
 		this.addComponentListener(new ClassComponentListener());
 		this.addMouseListener(new ClassMouseListener());
 		this.addKeyListener(new ClassKeyListener());
+		frameClass.addKeyListener(new ClassKeyListener());
 		
 		// Start game
 		Thread mainThread = new Thread(this);
@@ -135,15 +159,11 @@ public class MainClass extends Panel implements Runnable {
 	public void paint(Graphics g) {
 		// Menu
 		if(state == GameState.MENU) {
-			g.fillRect(100, 100, 20, 50);
 			
-			if(!panel.isVisible()) panel.setVisible(true);
 		}
 		
 		// Game
-		if(state == GameState.RUNNING) {
-			if(panel.isVisible()) panel.setVisible(false);
-			
+		if(state == GameState.RUNNING) {			
 			g2d.translate(cam.getX(), cam.getY());
 			//////////////////////////////////////////
 			// Místo na kreslení
@@ -174,8 +194,6 @@ public class MainClass extends Panel implements Runnable {
 		image = createImage(this.getWidth(), this.getHeight());
 		second = image.getGraphics();
 		g2d = (Graphics2D) second;
-		resized = false;
-		
 		second.setColor(getBackground());
 		second.fillRect(0, 0, getWidth(), getHeight());
 		second.setColor(getForeground());
@@ -189,10 +207,24 @@ public class MainClass extends Panel implements Runnable {
 	public void run() {
 		while (true) {
 			if(state == GameState.MENU) {
-				
+				if(!panelMenu.isVisible()) {
+					for(Panel tmp : panels) {
+						tmp.setVisible(true);
+					}
+					this.validate();
+				}
 			}
 			
 			if(state == GameState.RUNNING) {
+				if(player.dead) state = GameState.MENU;
+				
+				if(panelMenu.isVisible()) {
+					for(Panel tmp : panels) {
+						tmp.setVisible(false);
+					}
+					this.validate();
+				}
+				
 				player.update();
 				cam.update((Player) player);
 				
@@ -230,6 +262,24 @@ public class MainClass extends Panel implements Runnable {
 
 	public static ArrayList<Projectile> getProjectiles() {
 		return projectiles;
+	}
+	
+	class MenuPanel extends Panel {
+		
+		public MenuPanel() {
+			super();
+			panels.add(this);
+		}
+	}
+	
+	class MenuButton extends Button {
+
+		private MenuButton(String label, Panel panel) {
+			super(label);
+			panel.add(this);
+			this.addActionListener(new ClassMenuButtonListeners());
+		}
+		
 	}
 	
 	class ClassKeyListener implements KeyListener {
@@ -293,7 +343,6 @@ public class MainClass extends Panel implements Runnable {
 	
 			case KeyEvent.VK_SPACE:
 				if(state == GameState.RUNNING) {
-					player.die();
 					state = GameState.MENU;
 				} else {
 					startLevel();
@@ -331,9 +380,26 @@ public class MainClass extends Panel implements Runnable {
 	class ClassComponentListener extends ComponentAdapter {
 
 		public void componentResized(ComponentEvent e) {
-			resized = true;
 			MainClass.WIDTH = getWidth();
 			MainClass.HEIGHT = getHeight();
+		}
+		
+	}
+	
+	class ClassMenuButtonListeners implements ActionListener {
+
+		public void actionPerformed(ActionEvent e) {
+			if(e.getActionCommand().equals("Continue")) {
+				startLevel();
+				state = GameState.RUNNING;
+				
+			} else if(e.getActionCommand().equals("New Game")) {
+				
+			} else if(e.getActionCommand().equals("Levels")) {
+				
+			} else if(e.getActionCommand().equals("Exit")) {
+				
+			}
 		}
 		
 	}

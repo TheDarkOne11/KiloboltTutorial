@@ -22,6 +22,7 @@ public class Enemy_Heliboy extends Enemy {
 	final static Projectile PROJECTILE = new Projectile(DAMAGE, Color.red, WEAPON_SPEED_X);
 	final static Animation ANIM = new Animation_Heliboy();
 	
+	@SuppressWarnings("unused")
 	private Player player = MainClass.getPlayer();
 	
 	// Collision rectangles

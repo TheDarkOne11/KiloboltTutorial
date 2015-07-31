@@ -30,7 +30,7 @@ public class FrameClass extends Frame {
 		this.setFocusable(true);
 		this.addWindowListener(new CloseWindow_WindowAdapter());
 
-		MainClass mainClass = new MainClass(this);
+		new MainClass(this);
 	}
 
 	class CloseWindow_WindowAdapter extends WindowAdapter {
