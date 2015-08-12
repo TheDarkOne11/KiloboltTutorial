@@ -1,5 +1,6 @@
 package core;
 
+import java.awt.AWTEvent;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -29,7 +30,6 @@ public class FrameClass extends Frame {
 		this.setVisible(true);
 		this.setFocusable(true);
 		this.addWindowListener(new CloseWindow_WindowAdapter());
-
 		new MainClass(this);
 	}
 
@@ -38,5 +38,12 @@ public class FrameClass extends Frame {
 		public void windowClosing(WindowEvent e) {
 			System.exit(0);
 		}
+	}
+
+
+
+	@Override
+	public void processEvent(AWTEvent e) {
+		super.processEvent(e);
 	}
 }

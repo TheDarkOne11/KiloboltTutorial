@@ -17,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -28,8 +29,7 @@ import projectile.Projectile;
 
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
 
-//TODO Menu, ukládání a naèítání levelù. Dodìlat Javovská tlaèítka.
-//TODO Dodat LayoutManager do menu, zvìtšit tlaèítka.
+//TODO Menu, ukládání a naèítání levelù. Naèítání a ukládání udìlat pomocí FileDialog.
 
 //TODO Základní umìlá inteligence, spoleèná pro všechny nepøátele (napø. chození k hráèi, otáèení se)
 //TODO Umìlá inteligence v samostatném (možná vnoøeném) objektu - létání, palba po hráèi.
@@ -43,8 +43,8 @@ public class MainClass extends Panel implements Runnable {
 	
 	/** Menu panel. */
 	private Panel panelMenu;
-	GridBagLayout gbl;
-	GridBagConstraints gbc;
+	private GridBagLayout gbl;
+	private GridBagConstraints gbc;
 	
 	private int updatesPerSec = 60;
 	private static Player player;
@@ -56,6 +56,7 @@ public class MainClass extends Panel implements Runnable {
 	private static Background bg1, bg2;
 	private Camera cam;
 	private LevelReader lvl;
+	private FrameClass frameClass;
 	
 	/** Stores all projectiles. */
 	private static ArrayList<Projectile> projectiles;
@@ -66,6 +67,7 @@ public class MainClass extends Panel implements Runnable {
 
 	public MainClass(FrameClass frameClass) {
 		// Set game panel in window
+		this.frameClass = frameClass;
 		frameClass.setBackground(new Color(102, 226, 255));
 		frameClass.setSize(WIDTH, HEIGHT);
 		frameClass.add(this);
@@ -113,7 +115,7 @@ public class MainClass extends Panel implements Runnable {
 	/**
 	 * Inicialization of variables needed at the start of Running state.
 	 */
-	private void startLevel() {		
+	private void loadLevel() {		
 		projectiles = new ArrayList<Projectile>();
 		allEnemies = new ArrayList<Enemy>();
 		if(!projectiles.isEmpty()) projectiles.clear();
@@ -345,7 +347,7 @@ public class MainClass extends Panel implements Runnable {
 				if(state == GameState.RUNNING) {
 					state = GameState.MENU;
 				} else {
-					startLevel();
+					loadLevel();
 					state = GameState.RUNNING;
 				}
 				break;
@@ -390,7 +392,7 @@ public class MainClass extends Panel implements Runnable {
 
 		public void actionPerformed(ActionEvent e) {
 			if(e.getActionCommand().equals("Continue")) {
-				startLevel();
+				loadLevel();
 				state = GameState.RUNNING;
 				
 			} else if(e.getActionCommand().equals("New Game")) {
@@ -398,7 +400,7 @@ public class MainClass extends Panel implements Runnable {
 			} else if(e.getActionCommand().equals("Levels")) {
 				
 			} else if(e.getActionCommand().equals("Exit")) {
-				
+				frameClass.processEvent(new WindowEvent(frameClass, 201));
 			}
 		}
 		
