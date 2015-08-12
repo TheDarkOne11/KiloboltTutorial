@@ -6,7 +6,6 @@ import java.awt.Rectangle;
 import animation.Animation;
 import animation.Animation_Heliboy;
 import core.MainClass;
-import core.Player;
 import projectile.Projectile;
 
 public class Enemy_Heliboy extends Enemy {
@@ -22,9 +21,6 @@ public class Enemy_Heliboy extends Enemy {
 	final static Projectile PROJECTILE = new Projectile(DAMAGE, Color.red, WEAPON_SPEED_X);
 	final static Animation ANIM = new Animation_Heliboy();
 	
-	@SuppressWarnings("unused")
-	private Player player = MainClass.getPlayer();
-	
 	// Collision rectangles
 	private Rectangle recCollision;
 
@@ -34,7 +30,7 @@ public class Enemy_Heliboy extends Enemy {
 	}
 	
 	public void AI() {
-		/*
+		
 		// Pohyb k hr·Ëi.
 			int distance = 200;
 			if(this.centerX < player.getCenterX() - distance) {
@@ -66,7 +62,7 @@ public class Enemy_Heliboy extends Enemy {
 			if(centerY > player.getCenterY() - player.getHeight()/2 && centerY < player.getCenterY() + player.getHeight()/2) {
 				attack();
 			}
-			*/
+			
 	}
 
 	public void collision() {
@@ -87,6 +83,5 @@ public class Enemy_Heliboy extends Enemy {
 	public void updateRec() {
 		recCollision.x = this.centerX - 38;
 		recCollision.y = this.centerY - 28;
-		AI();
 	}
 }

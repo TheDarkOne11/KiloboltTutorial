@@ -9,11 +9,13 @@ import animation.Animation;
 import core.Background;
 import core.Entity;
 import core.MainClass;
+import core.Player;
 import projectile.Projectile;
 
 /** Super class for all enemies. */
 public abstract class Enemy extends Entity implements Cloneable{
 	protected static MainClass mainClass;
+	protected static Player player;
 	/** Difference between center and weapon coordinates. */
 	private int weaponDiffX, weaponDiffY;
 	private Background bg = MainClass.getBg1();
@@ -59,6 +61,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 		anim.update();
 		updateRec();
 		collision();
+		AI();
 	}
 	
 	/**
@@ -108,6 +111,14 @@ public abstract class Enemy extends Entity implements Cloneable{
 	 */
 	public abstract void AI();
 	
+	public static void setMainClass(MainClass mainClass) {
+		Enemy.mainClass = mainClass;
+	}
+	
+	public static void setPlayer(Player player) {
+		Enemy.player = player;
+	}
+
 	/**
 	 * Potøeba, jinak by nepøátelé sdíleli souøadnice.
 	 */
@@ -118,10 +129,6 @@ public abstract class Enemy extends Entity implements Cloneable{
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	public static void setMainClass(MainClass mainClass) {
-		Enemy.mainClass = mainClass;
 	}
 	
 }

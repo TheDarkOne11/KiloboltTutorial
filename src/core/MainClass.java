@@ -30,11 +30,12 @@ import projectile.Projectile;
 
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
 
-//TODO Menu: ukládání a naèítání her. Uložit serializované arrayListy a hráèe.
+//TODO Hráè bude støílet za pomoci myši. Jeho pistole bude støílet tam, kam myš zamíøí.
+//TODO Funkènost štítù hráèe, vytvoøení samostatného objektu a obrázku pro štít.
 
 //TODO Základní umìlá inteligence, spoleèná pro všechny nepøátele (napø. chození k hráèi, otáèení se)
 //TODO Umìlá inteligence v samostatném (možná vnoøeném) objektu - létání, palba po hráèi.
-//TODO Funkènost štítù hráèe, vytvoøení samostatného objektu a obrázku pro štít.
+
 
 /** Main class of the Applet. */
 public class MainClass extends Panel implements Runnable {
@@ -43,7 +44,6 @@ public class MainClass extends Panel implements Runnable {
 	public static GameState state = GameState.MAIN_MENU;
 	
 	private FrameClass frameClass;
-	private FileDialog fileDialog;
 	
 	/** Menu panel. */
 	private Panel panelMainMenu, panelGameMenu;
@@ -76,7 +76,6 @@ public class MainClass extends Panel implements Runnable {
 		frameClass.add(this);
 		
 		// Menu section
-		fileDialog = new FileDialog(frameClass, "Load level", FileDialog.LOAD);
 		panels = new ArrayList<MenuPanel>();
 		gbl = new GridBagLayout();
 		gbc = new GridBagConstraints();
@@ -90,17 +89,15 @@ public class MainClass extends Panel implements Runnable {
 		Panel panel5 = new MenuPanel(GameState.GAME_MENU);
 		
 		panelGameMenu = new MenuPanel(GameState.GAME_MENU);
-			panelGameMenu.setLayout(new GridLayout(4, 1, 10, 10));
+			panelGameMenu.setLayout(new GridLayout(3, 1, 10, 10));
 			new MenuButton("Continue", panelGameMenu);
-			new MenuButton("Save Game", panelGameMenu);
 			new MenuButton("Exit Level", panelGameMenu);
 			new MenuButton("Exit Game", panelGameMenu);
 		
 		panelMainMenu = new MenuPanel(GameState.MAIN_MENU);
-			panelMainMenu.setLayout(new GridLayout(4, 1, 10, 10));
+			panelMainMenu.setLayout(new GridLayout(3, 1, 10, 10));
 			new MenuButton("New Game", panelMainMenu);
-			new MenuButton("Load Game", panelMainMenu);
-			new MenuButton("Levels", panelMainMenu);
+			new MenuButton("Load Level", panelMainMenu);
 			new MenuButton("Exit", panelMainMenu);
 		
 		gbc.gridx = 1;
@@ -128,7 +125,6 @@ public class MainClass extends Panel implements Runnable {
 		
 		// Start game
 		gamePath = System.getProperty("user.dir") + "\\src";
-		Enemy.setMainClass(this);
 		Thread mainThread = new Thread(this);
 		mainThread.start();
 	}
@@ -146,34 +142,12 @@ public class MainClass extends Panel implements Runnable {
 		background = new ImageIcon(gamePath + "\\data\\background.png").getImage();
 		bg1 = new Background(0, 0);
 		bg2 = new Background(2160, 0);
+		Enemy.setMainClass(this);
 		
 		lvl = new LevelReader(levelName);
 		lvl.init();
 		player = new Player(this);
-	}
-	
-	public static BufferedImage toBufferedImage(Image img)
-	{
-	    if (img instanceof BufferedImage)
-	    {
-	        return (BufferedImage) img;
-	    }
-
-	    // Create a buffered image with transparency
-	    BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-
-	    // Draw the image on to the buffered image
-	    Graphics2D bGr = bimage.createGraphics();
-	    bGr.drawImage(img, 0, 0, null);
-	    bGr.dispose();
-
-	    // Return the buffered image
-	    return bimage;
-	}
-	
-	public static BufferedImage getImage(String path) {
-		BufferedImage buff = toBufferedImage(new ImageIcon(gamePath + path).getImage());
-		return buff;
+		Enemy.setPlayer(player);;
 	}
 
 	@Override
@@ -262,6 +236,30 @@ public class MainClass extends Panel implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public static BufferedImage toBufferedImage(Image img)
+	{
+	    if (img instanceof BufferedImage)
+	    {
+	        return (BufferedImage) img;
+	    }
+	
+	    // Create a buffered image with transparency
+	    BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+	
+	    // Draw the image on to the buffered image
+	    Graphics2D bGr = bimage.createGraphics();
+	    bGr.drawImage(img, 0, 0, null);
+	    bGr.dispose();
+	
+	    // Return the buffered image
+	    return bimage;
+	}
+
+	public static BufferedImage getImage(String path) {
+		BufferedImage buff = toBufferedImage(new ImageIcon(gamePath + path).getImage());
+		return buff;
 	}
 
 	public static Background getBg1() {
@@ -428,13 +426,14 @@ public class MainClass extends Panel implements Runnable {
 				loadLevel("demo.png");
 				state = GameState.RUNNING;
 				
-			} else if(e.getActionCommand().equals("Load Game")) {
-				
-			} else if(e.getActionCommand().equals("Levels")) {
+			} else if(e.getActionCommand().equals("Load Level")) {
+				FileDialog fileDialog = new FileDialog(frameClass, "Load level", FileDialog.LOAD);
 				fileDialog.setDirectory(gamePath + "\\data\\level");
 				fileDialog.setVisible(true);
+				if(fileDialog.getFile() != null) {
 				loadLevel(fileDialog.getFile());
 				state = GameState.RUNNING;
+				}
 				
 			} else if(e.getActionCommand().equals("Exit")) {
 				frameClass.processEvent(new WindowEvent(frameClass, 201));
@@ -443,8 +442,6 @@ public class MainClass extends Panel implements Runnable {
 			// Game Menu buttons
 			if(e.getActionCommand().equals("Continue")) {
 				state = GameState.RUNNING;
-			} else if(e.getActionCommand().equals("Save Game")) {
-				
 			} else if(e.getActionCommand().equals("Exit Level")) {
 				state = GameState.MAIN_MENU;
 			} else if(e.getActionCommand().equals("Exit Game")) {
