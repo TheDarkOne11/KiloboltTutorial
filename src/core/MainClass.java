@@ -46,7 +46,7 @@ public class MainClass extends Panel implements Runnable {
 	private FileDialog fileDialog;
 	
 	/** Menu panel. */
-	private Panel panelMainMenu;
+	private Panel panelMainMenu, panelGameMenu;
 	private GridBagLayout gbl;
 	private GridBagConstraints gbc;
 	
@@ -84,12 +84,20 @@ public class MainClass extends Panel implements Runnable {
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1.0;
 		
-		Panel panel2 = new MenuPanel(GameState.MAIN_MENU);	// Je zde, aby byl panelMenu uprostøed
-		Panel panel3 = new MenuPanel(GameState.MAIN_MENU);
+		Panel panel2 = new MenuPanel(GameState.MAIN_MENU);	// Empty panels used to position
+		Panel panel3 = new MenuPanel(GameState.MAIN_MENU);	// full panels in the middle.
+		Panel panel4 = new MenuPanel(GameState.GAME_MENU);
+		Panel panel5 = new MenuPanel(GameState.GAME_MENU);
+		
+		panelGameMenu = new MenuPanel(GameState.GAME_MENU);
+			panelGameMenu.setLayout(new GridLayout(4, 1, 10, 10));
+			new MenuButton("Continue", panelGameMenu);
+			new MenuButton("Save Game", panelGameMenu);
+			new MenuButton("Exit Level", panelGameMenu);
+			new MenuButton("Exit Game", panelGameMenu);
 		
 		panelMainMenu = new MenuPanel(GameState.MAIN_MENU);
-			panelMainMenu.setLayout(new GridLayout(5, 1, 10, 10));
-			new MenuButton("Continue", panelMainMenu);
+			panelMainMenu.setLayout(new GridLayout(4, 1, 10, 10));
 			new MenuButton("New Game", panelMainMenu);
 			new MenuButton("Load Game", panelMainMenu);
 			new MenuButton("Levels", panelMainMenu);
@@ -97,14 +105,20 @@ public class MainClass extends Panel implements Runnable {
 		
 		gbc.gridx = 1;
 		gbl.setConstraints(panel2, gbc);
+		gbl.setConstraints(panel4, gbc);
 		gbc.gridx = 2;
 		gbl.setConstraints(panelMainMenu, gbc);
+		gbl.setConstraints(panelGameMenu, gbc);
 		gbc.gridx = 3;
 		gbl.setConstraints(panel3, gbc);
+		gbl.setConstraints(panel5, gbc);
 		
 		this.add(panel2);
+		this.add(panel4);
 		this.add(panelMainMenu);
+		this.add(panelGameMenu);
 		this.add(panel3);
+		this.add(panel5);
 		
 		// Listeners
 		this.addComponentListener(new ClassComponentListener());
@@ -213,10 +227,12 @@ public class MainClass extends Panel implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
+			// Takes care of visibility of all panels
 			for(MenuPanel tmp : panels) {
 				tmp.setVisible();
 			}
 			this.validate();
+			
 			
 			if(state == GameState.MAIN_MENU) {
 				
@@ -336,6 +352,14 @@ public class MainClass extends Panel implements Runnable {
 					state = GameState.MAIN_MENU;
 				}
 				break;
+			
+			case KeyEvent.VK_ESCAPE:
+				if(state == GameState.RUNNING) {
+					state = GameState.GAME_MENU;
+				} else if(state == GameState.GAME_MENU) {
+					state = GameState.RUNNING;
+				}
+				break;
 	
 			}
 		}
@@ -399,9 +423,8 @@ public class MainClass extends Panel implements Runnable {
 	class ClassMenuButtonListeners implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			if(e.getActionCommand().equals("Continue")) {
-				
-			} else if(e.getActionCommand().equals("New Game")) {
+			// Main Menu buttons
+			if(e.getActionCommand().equals("New Game")) {
 				loadLevel("demo.png");
 				state = GameState.RUNNING;
 				
@@ -414,6 +437,17 @@ public class MainClass extends Panel implements Runnable {
 				state = GameState.RUNNING;
 				
 			} else if(e.getActionCommand().equals("Exit")) {
+				frameClass.processEvent(new WindowEvent(frameClass, 201));
+			}
+			
+			// Game Menu buttons
+			if(e.getActionCommand().equals("Continue")) {
+				state = GameState.RUNNING;
+			} else if(e.getActionCommand().equals("Save Game")) {
+				
+			} else if(e.getActionCommand().equals("Exit Level")) {
+				state = GameState.MAIN_MENU;
+			} else if(e.getActionCommand().equals("Exit Game")) {
 				frameClass.processEvent(new WindowEvent(frameClass, 201));
 			}
 		}
