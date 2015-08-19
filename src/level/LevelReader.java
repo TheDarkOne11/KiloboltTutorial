@@ -36,6 +36,7 @@ public class LevelReader {
 		tileClasses.add(new TileGrass());
 		tileClasses.add(new TileSpawn());
 		tileClasses.add(new TileHeliboy());
+		tileClasses.add(new TileWin());
 		
 		this.readImage();
 	}
@@ -72,8 +73,8 @@ public class LevelReader {
 				for(Tile e : tileClasses) {
 					if(color.equals(e.getColor())) {
 						if(e.getTileType() == TileType.TERRAIN) {
-							allTiles.add((Tile) e.clone());
 							e.setPosition(x, y);
+							allTiles.add((Tile) e.clone());
 						} else if(e.getTileType() == TileType.ENEMY) {
 							e.getEnemyType().add(x*Tile.getWidth(), y*Tile.getHeight());
 							
@@ -85,22 +86,9 @@ public class LevelReader {
 					} 
 				}
 				System.out.println("Unknown Tile, color: " + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue());
+				System.out.println("Position: " + x + ", " + y);
 			}
 		} 
-	}
-	
-	/**
-	 * Updates tile movement and removal.
-	 */
-	public void update() {
-		for(int i = 0; i < allTiles.size(); i++) {
-			allTiles.get(i).update();
-			
-			// Removes tiles that player already went past.
-			/*if(MainClass.getPlayer().getCenterX() - MainClass.getPlayer().getBackgroundStartMove() - Tile.getWidth() > allTiles.get(i).getX()) {
-				allTiles.remove(i);
-			}*/
-		}
 	}
 
 	public void paintTiles(Graphics g) {
