@@ -5,7 +5,6 @@ import java.awt.Color;
 import enemy.Enemy_Heliboy;
 
 public class TileHeliboy extends Tile {
-	public static int x, y;
 	public final static Color color = new Color(255, 0, 0);
 
 	public TileHeliboy() {

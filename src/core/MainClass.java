@@ -3,12 +3,14 @@ package core;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.FileDialog;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Label;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,12 +43,12 @@ import projectile.Projectile;
 public class MainClass extends Panel implements Runnable {
 	public static int WIDTH = 800;
 	public static int HEIGHT = 480;
-	public static GameState state = GameState.MAIN_MENU;
-	
+	private static GameState state = GameState.MAIN_MENU;
 	private FrameClass frameClass;
+	private static Color backgroundColor = new Color(102, 226, 255);
 	
 	/** Menu panel. */
-	private Panel panelMainMenu, panelGameMenu;
+	private Panel panelMainMenu, panelGameMenu, panelWin, panelLose;
 	private GridBagLayout gbl;
 	private GridBagConstraints gbc;
 	
@@ -71,7 +73,7 @@ public class MainClass extends Panel implements Runnable {
 	public MainClass(FrameClass frameClass) {
 		// Set game panel in window
 		this.frameClass = frameClass;
-		frameClass.setBackground(new Color(102, 226, 255));
+		frameClass.setBackground(backgroundColor);
 		frameClass.setSize(WIDTH, HEIGHT);
 		frameClass.add(this);
 		
@@ -99,6 +101,22 @@ public class MainClass extends Panel implements Runnable {
 			new MenuButton("New Game", panelMainMenu);
 			new MenuButton("Load Level", panelMainMenu);
 			new MenuButton("Exit", panelMainMenu);
+			
+		panelWin = new MenuPanel(GameState.WIN);
+			panelWin.setLayout(new GridLayout(2, 1, 10, 10));
+			panelWin.setBackground(Color.green);
+			Label labWin = new Label("You Win!");
+			labWin.setFont(new Font(Font.SERIF, Font.BOLD, 50));
+			panelWin.add(labWin);
+			new MenuButton("To Main Menu", panelWin);
+			
+		panelLose = new MenuPanel(GameState.LOSE);
+			panelLose.setLayout(new GridLayout(2, 1, 10, 10));
+			panelLose.setBackground(Color.red);
+			Label labLose = new Label("You Lose");
+			labLose.setFont(new Font(Font.SERIF, Font.BOLD, 50));
+			panelLose.add(labLose);
+			new MenuButton("To Main Menu", panelLose);
 		
 		gbc.gridx = 1;
 		gbl.setConstraints(panel2, gbc);
@@ -114,6 +132,8 @@ public class MainClass extends Panel implements Runnable {
 		this.add(panel4);
 		this.add(panelMainMenu);
 		this.add(panelGameMenu);
+		this.add(panelLose);
+		this.add(panelWin);
 		this.add(panel3);
 		this.add(panel5);
 		
@@ -152,11 +172,6 @@ public class MainClass extends Panel implements Runnable {
 
 	@Override
 	public void paint(Graphics g) {
-		// Menu
-		if(state == GameState.MAIN_MENU) {
-			
-		}
-		
 		// Game
 		if(state == GameState.RUNNING) {			
 			g2d.translate(cam.getX(), cam.getY());
@@ -208,12 +223,16 @@ public class MainClass extends Panel implements Runnable {
 			this.validate();
 			
 			
-			if(state == GameState.MAIN_MENU) {
-				
+			if(state == GameState.WIN) {
+				frameClass.setBackground(Color.green);
+			}
+			
+			if(state == GameState.LOSE) {
+				frameClass.setBackground(Color.red);
 			}
 			
 			if(state == GameState.RUNNING) {
-				if(player.dead) state = GameState.MAIN_MENU;
+				if(player.dead) state = GameState.LOSE;
 				
 				player.update();
 				cam.update((Player) player);
@@ -222,7 +241,6 @@ public class MainClass extends Panel implements Runnable {
 				
 				bg1.update();
 				bg2.update();
-				lvl.update();
 				
 				for(int i = 0; i < MainClass.allEnemies.size(); i++) {
 					MainClass.allEnemies.get(i).update();
@@ -344,12 +362,6 @@ public class MainClass extends Panel implements Runnable {
 					player.attack();
 				}
 				break;
-				
-			case KeyEvent.VK_SPACE:
-				if(state == GameState.RUNNING) {
-					state = GameState.MAIN_MENU;
-				}
-				break;
 			
 			case KeyEvent.VK_ESCAPE:
 				if(state == GameState.RUNNING) {
@@ -447,6 +459,12 @@ public class MainClass extends Panel implements Runnable {
 			} else if(e.getActionCommand().equals("Exit Game")) {
 				frameClass.processEvent(new WindowEvent(frameClass, 201));
 			}
+			
+			// Win/Lose buttons
+			if(e.getActionCommand().equals("To Main Menu")) {
+				state = GameState.MAIN_MENU;
+				frameClass.setBackground(backgroundColor);
+			}
 		}
 		
 	}
@@ -454,6 +472,8 @@ public class MainClass extends Panel implements Runnable {
 	enum GameState {
 		MAIN_MENU,
 		RUNNING,
+		WIN,
+		LOSE,
 		GAME_MENU; 
 	}
 

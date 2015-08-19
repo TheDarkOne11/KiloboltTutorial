@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.Rectangle;
 
-import core.MainClass;
 import enemy.Enemy;
 
 public class Tile implements Cloneable {
@@ -48,11 +47,6 @@ public class Tile implements Cloneable {
 		this.x = x*width;
 		this.y = y*height;
 		this.recCollision = new Rectangle(this.x, this.y, Tile.width, Tile.height);
-	}
-	
-	public void update() {
-		this.x += MainClass.getBg1().getSpeedX();
-		this.recCollision.setRect(this.x, this.y, Tile.width, Tile.height);
 	}
 
 	public Object clone() {

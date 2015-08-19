@@ -145,8 +145,8 @@ public class Player extends Entity {
 		g.drawImage(anim.getCurrentImage(), getCenterX() - anim.getCurrentImage().getWidth(mainClass) / 2, getCenterY() - anim.getCurrentImage().getHeight(mainClass) / 2, mainClass);
 		super.paintHpBar(g);
 		
-		/*
-		g.setColor(Color.red);
+		
+		/*g.setColor(Color.red);
 		g.drawRect(recBodyL.x, recBodyL.y, recBodyL.width, recBodyL.height);
 		g.drawRect(recBodyU.x, recBodyU.y, recBodyU.width, recBodyU.height);
 		g.drawRect(recFootL.x, recFootL.y, recFootL.width, recFootL.height);
