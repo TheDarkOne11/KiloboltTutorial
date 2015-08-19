@@ -30,15 +30,17 @@ public class Enemy_Heliboy extends Enemy {
 	}
 	
 	public void AI() {
-		/*
+		
 		// Pohyb k hr·Ëi.
 			int distance = 200;
+			
+			if(this.centerX < player.getCenterX()) movingRight = true;
+			else movingRight = false;
+			
 			if(this.centerX < player.getCenterX() - distance) {
 				this.centerX += this.movespeed;
-				movingRight = true;
 			} else if(this.centerX > player.getCenterX() + distance) {
 				this.centerX -= this.movespeed;
-				movingRight = false;
 			}
 			
 			if(this.centerY < player.getCenterY()) {
@@ -57,12 +59,12 @@ public class Enemy_Heliboy extends Enemy {
 					this.centerY = player.getCenterY();
 				}
 			}
-			
+			/*
 			//Palba
 			if(centerY > player.getCenterY() - player.getHeight()/2 && centerY < player.getCenterY() + player.getHeight()/2) {
 				attack();
-			}
-			*/
+			}*/
+			
 	}
 
 	public void collision() {

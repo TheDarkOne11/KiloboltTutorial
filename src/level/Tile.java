@@ -48,7 +48,7 @@ public class Tile implements Cloneable {
 		this.y = y*height;
 		this.recCollision = new Rectangle(this.x, this.y, Tile.width, Tile.height);
 	}
-
+	
 	public Object clone() {
 		try {
 			return super.clone();

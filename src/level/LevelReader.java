@@ -6,6 +6,11 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import core.MainClass;
+import level.tileTypes.TileBrick;
+import level.tileTypes.TileGrass;
+import level.tileTypes.TileHeliboy;
+import level.tileTypes.TileSpawn;
+import level.tileTypes.TileWin;
 
 /**
  * Reads data from image and creates level according to it.
@@ -72,7 +77,7 @@ public class LevelReader {
 				// Projde všechny typy
 				for(Tile e : tileClasses) {
 					if(color.equals(e.getColor())) {
-						if(e.getTileType() == TileType.TERRAIN) {
+						if(e.getTileType() == TileType.TERRAIN || e.getTileType() == TileType.USABLE_TERRAIN) {
 							e.setPosition(x, y);
 							allTiles.add((Tile) e.clone());
 						} else if(e.getTileType() == TileType.ENEMY) {
@@ -99,5 +104,9 @@ public class LevelReader {
 
 	public static ArrayList<Tile> getAllTiles() {
 		return allTiles;
+	}
+
+	public static ArrayList<Tile> getTileClasses() {
+		return tileClasses;
 	}
 }

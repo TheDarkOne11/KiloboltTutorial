@@ -7,7 +7,9 @@ import java.awt.Rectangle;
 import animation.Animation_Player;
 import level.LevelReader;
 import level.Tile;
-import level.TileSpawn;
+import level.TileType;
+import level.TileUsable;
+import level.tileTypes.TileSpawn;
 import projectile.Projectile;
 
 //TODO Pohrát si s velikostí nepøátel a hráèe vùèi Tile.
@@ -44,6 +46,8 @@ public class Player extends Entity {
 	private Rectangle recHandL = new Rectangle();
 	/** Rectangular radius where collisions are turned on. */
 	private Rectangle recRadius = new Rectangle();
+	/** Rectanguler radius where player is able to use Usable terrain. */
+	private Rectangle recUseRadius = new Rectangle();
 	
 	
 	public Player(MainClass mainClass) {
@@ -80,7 +84,9 @@ public class Player extends Entity {
 		
 		recHandR.setRect(centerX + 34, centerY - 32, 30, 20);
 		recHandL.setRect(centerX - 64, centerY - 32, 30, 20);
+		
 		recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
+		recUseRadius.setRect(centerX - 70, centerY - 70, 140, 140);
 		
 		try {
 			anim.update();
@@ -105,8 +111,13 @@ public class Player extends Entity {
 		// Terrain collision
 		for(Tile e : LevelReader.getAllTiles()) {
 			if(recRadius.intersects(e.getRecCollision())) {
-				
 				// Kolize s tøídou Tile
+				if(recUseRadius.intersects(e.getRecCollision())) {
+					if(e.getTileType() == TileType.USABLE_TERRAIN) {
+						((TileUsable) e).action();
+					}
+				}
+				
 				if(recBodyU.intersects(e.getRecCollision())) {
 					centerY = e.getY()+Tile.getHeight()+recBodyU.height;
 					speedY = 0;
@@ -136,7 +147,6 @@ public class Player extends Entity {
 				if(recHandR.intersects(e.getRecCollision())) {
 					centerX -= 5;
 				}
-				
 			}
 		}
 	}
@@ -146,14 +156,15 @@ public class Player extends Entity {
 		super.paintHpBar(g);
 		
 		
-		/*g.setColor(Color.red);
-		g.drawRect(recBodyL.x, recBodyL.y, recBodyL.width, recBodyL.height);
+		g.setColor(Color.red);
+		/*g.drawRect(recBodyL.x, recBodyL.y, recBodyL.width, recBodyL.height);
 		g.drawRect(recBodyU.x, recBodyU.y, recBodyU.width, recBodyU.height);
 		g.drawRect(recFootL.x, recFootL.y, recFootL.width, recFootL.height);
 		g.drawRect(recFootR.x, recFootR.y, recFootR.width, recFootR.height);
 		g.drawRect(recHandR.x, recHandR.y, recHandR.width, recHandR.height);
 		g.drawRect(recHandL.x, recHandL.y, recHandL.width, recHandL.height);
-		g.drawRect(recRadius.x, recRadius.y, recRadius.width, recRadius.height);*/
+		g.drawRect(recRadius.x, recRadius.y, recRadius.width, recRadius.height);
+		g.drawRect(recUseRadius.x, recUseRadius.y, recUseRadius.width, recUseRadius.height);*/
 	}
 
 	public void die() {	

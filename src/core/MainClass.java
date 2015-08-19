@@ -37,13 +37,14 @@ import projectile.Projectile;
 
 //TODO Základní umìlá inteligence, spoleèná pro všechny nepøátele (napø. chození k hráèi, otáèení se)
 //TODO Umìlá inteligence v samostatném (možná vnoøeném) objektu - létání, palba po hráèi.
+//TODO EnemyHeliboy kolize mezi sebou za pomoci kružnicových kolizí.
 
 
 /** Main class of the Applet. */
 public class MainClass extends Panel implements Runnable {
 	public static int WIDTH = 800;
 	public static int HEIGHT = 480;
-	private static GameState state = GameState.MAIN_MENU;
+	public static GameState state = GameState.MAIN_MENU;
 	private FrameClass frameClass;
 	private static Color backgroundColor = new Color(102, 226, 255);
 	
@@ -469,7 +470,7 @@ public class MainClass extends Panel implements Runnable {
 		
 	}
 	
-	enum GameState {
+	public enum GameState {
 		MAIN_MENU,
 		RUNNING,
 		WIN,

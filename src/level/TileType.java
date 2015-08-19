@@ -8,5 +8,6 @@ package level;
 public enum TileType {
 	PLAYER,
 	TERRAIN,
+	USABLE_TERRAIN,
 	ENEMY;
 }

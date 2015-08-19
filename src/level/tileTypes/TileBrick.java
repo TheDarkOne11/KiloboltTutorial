@@ -1,9 +1,11 @@
-package level;
+package level.tileTypes;
 
 import java.awt.Color;
 import java.awt.Image;
 
 import core.MainClass;
+import level.Tile;
+import level.TileType;
 
 public class TileBrick extends Tile {
 	public final static Color color = new Color(255, 106, 0);
