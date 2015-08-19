@@ -48,23 +48,6 @@ public abstract class Enemy extends Entity implements Cloneable{
 	}
 
 	/**
-	 * Updates current enemy.
-	 */
-	public void update() {
-		centerX += speedX;
-		speedX = bg.getSpeedX();
-		recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
-		
-		this.weaponX = movingRight ? this.centerX - this.weaponDiffX : this.centerX + this.weaponDiffX;
-		this.weaponY = this.centerY + this.weaponDiffY;
-		
-		anim.update();
-		updateRec();
-		collision();
-		AI();
-	}
-	
-	/**
 	 * Paints all enemies that have been added.
 	 * @param g
 	 * @param mainClass 
@@ -99,6 +82,23 @@ public abstract class Enemy extends Entity implements Cloneable{
 			
 			time = System.currentTimeMillis();
 		}
+	}
+
+	/**
+	 * Updates current enemy.
+	 */
+	public void update() {
+		centerX += speedX;
+		speedX = bg.getSpeedX();
+		recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
+		
+		this.weaponX = movingRight ? this.centerX - this.weaponDiffX : this.centerX + this.weaponDiffX;
+		this.weaponY = this.centerY + this.weaponDiffY;
+		
+		anim.update();
+		updateRec();
+		collision();
+		AI();
 	}
 
 	/**

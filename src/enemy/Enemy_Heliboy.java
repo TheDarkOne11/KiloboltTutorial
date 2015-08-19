@@ -1,6 +1,7 @@
 package enemy;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Rectangle;
 
 import animation.Animation;
@@ -23,47 +24,54 @@ public class Enemy_Heliboy extends Enemy {
 	
 	// Collision rectangles
 	private Rectangle recCollision;
+	
+	// AI
+	private int Max;
+	private int Min;
+	private int distance = 0;
 
 	public Enemy_Heliboy() {
 		super(MAXHP, WIDTH, HEIGHT, RATE_OF_FIRE, MOVESPEED, PROJECTILE, ANIM, WEAPON_DIFF_X, WEAPON_DIFF_Y);
-		recCollision = new Rectangle(this.centerX - 38, this.centerY - 28, 63, 68);
+		Min = 100;
+		Max = 300;
 	}
 	
 	public void AI() {
 		
-		// Pohyb k hr·Ëi.
-			int distance = 200;
+		// Pohyb k hr·Ëi.	
 			
-			if(this.centerX < player.getCenterX()) movingRight = true;
-			else movingRight = false;
-			
-			if(this.centerX < player.getCenterX() - distance) {
-				this.centerX += this.movespeed;
-			} else if(this.centerX > player.getCenterX() + distance) {
-				this.centerX -= this.movespeed;
+		if(distance == 0) distance = Min + (int)(Math.random() * ((Max - Min) + 1));
+
+		if(this.centerX < player.getCenterX()) movingRight = true;
+		else movingRight = false;
+		
+		if(this.centerX < player.getCenterX() - distance) {
+			this.centerX += this.movespeed;
+		} else if(this.centerX > player.getCenterX() + distance) {
+			this.centerX -= this.movespeed;
+		}
+		
+		if(this.centerY < player.getCenterY()) {
+			this.centerY += this.movespeed;
+		} else if(this.centerY > player.getCenterY()) {
+			this.centerY -= this.movespeed;
+		}
+		
+		// Pokud jsou p¯Ìmo u hr·Ëe.
+		if(!player.isMovingLeft()&!player.isMovingRight()&!player.isJumping()) {
+			if(this.movespeed >= Math.abs(player.getCenterX() -this.centerX)){
+				this.centerX = player.getCenterX();
 			}
 			
-			if(this.centerY < player.getCenterY()) {
-				this.centerY += this.movespeed;
-			} else if(this.centerY > player.getCenterY()) {
-				this.centerY -= this.movespeed;
+			if(this.movespeed >= Math.abs(player.getCenterY() - this.centerY)) {
+				this.centerY = player.getCenterY();
 			}
-			
-			// Pokud jsou p¯Ìmo u hr·Ëe.
-			if(!player.isMovingLeft()&!player.isMovingRight()&!player.isJumping()) {
-				if(this.movespeed >= Math.abs(player.getCenterX() -this.centerX)){
-					this.centerX = player.getCenterX();
-				}
-				
-				if(this.movespeed >= Math.abs(player.getCenterY() - this.centerY)) {
-					this.centerY = player.getCenterY();
-				}
-			}
-			/*
-			//Palba
-			if(centerY > player.getCenterY() - player.getHeight()/2 && centerY < player.getCenterY() + player.getHeight()/2) {
-				attack();
-			}*/
+		}
+		/*
+		//Palba
+		if(centerY > player.getCenterY() - player.getHeight()/2 && centerY < player.getCenterY() + player.getHeight()/2) {
+			attack();
+		}*/
 			
 	}
 
@@ -79,11 +87,26 @@ public class Enemy_Heliboy extends Enemy {
 				}
 			}
 		}
-		
 	}
 	
 	public void updateRec() {
-		recCollision.x = this.centerX - 38;
-		recCollision.y = this.centerY - 28;
+		recCollision = new Rectangle(this.centerX - 38, this.centerY - 28, 63, 68);
+		/*recNorth = new Rectangle(this.centerX - 28, this.centerY - 38, 53, 5);
+		recSouth = new Rectangle(this.centerX - 28, this.centerY + 38, 53, 5);
+		recEast = new Rectangle(this.centerX + 28, this.centerY - 28, 5, 63);
+		recWest = new Rectangle(this.centerX - 38, this.centerY - 28, 5, 63);*/
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+		/*g.drawRect(recNorth.x, recNorth.y, recNorth.width, recNorth.height);
+		g.drawRect(recSouth.x, recSouth.y, recSouth.width, recSouth.height);
+		g.drawRect(recEast.x, recEast.y, recEast.width, recEast.height);
+		g.drawRect(recWest.x, recWest.y, recWest.width, recWest.height);*/
+	}
+
+	public Rectangle getRecCollision() {
+		return recCollision;
 	}
 }
