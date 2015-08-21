@@ -1,8 +1,7 @@
 package enemy;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 
 import animation.Animation;
@@ -36,12 +35,11 @@ public abstract class Enemy extends Entity implements Cloneable{
 	
 	/**
 	 * Adds an enemy to the game.
-	 * @param centerX
-	 * @param centerY
+	 * @param centerPoint.x
+	 * @param centerPoint.y
 	 */
 	public void add(int centerX, int centerY) {
-		this.setCenterX(centerX);
-		this.setCenterY(centerY);
+		super.setCenterPoint(new Point(centerX, centerY));
 		this.anim = (Animation) anim.clone();
 		this.anim.init();
 		MainClass.allEnemies.add((Enemy) this.clone());
@@ -54,17 +52,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 	 */
 	public void paint(Graphics g) {
 		super.paintHpBar(g);
-		
-		Graphics2D g2d = (Graphics2D) g;
-		Image tmpImage = anim.getCurrentImage();
-		
-		if(movingRight) {
-			int tmpX = this.getCenterX() - tmpImage.getWidth(mainClass) / 2;
-			int tmpY = this.getCenterY() - tmpImage.getHeight(mainClass) / 2;
-			g2d.drawImage(tmpImage, tmpX+tmpImage.getWidth(mainClass), tmpY, -tmpImage.getWidth(mainClass), tmpImage.getHeight(mainClass), mainClass);
-		} else {
-			g2d.drawImage(tmpImage, this.getCenterX() - tmpImage.getWidth(mainClass) / 2, this.getCenterY() - tmpImage.getHeight(mainClass) / 2, mainClass);
-		}
+		super.drawEntity(g, movingRight);
 	}
 	
 	public void die() {
@@ -74,7 +62,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 
 	public void attack() {
 		if((this.time + (60*1000)/this.rateOfFire) < System.currentTimeMillis() | this.time == 0) {
-			if(this.centerX < MainClass.getPlayer().getCenterX()) {
+			if(pointCenter.x < MainClass.getPlayer().getCenterPoint().x) {
 				this.projectile.spawnProjectile(this, true);
 			} else {
 				this.projectile.spawnProjectile(this, false);
@@ -88,12 +76,11 @@ public abstract class Enemy extends Entity implements Cloneable{
 	 * Updates current enemy.
 	 */
 	public void update() {
-		centerX += speedX;
+		pointCenter.x += speedX;
 		speedX = bg.getSpeedX();
-		recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
+		recRadius.setRect(pointCenter.x - 112, pointCenter.y - 112, 224, 224);
 		
-		this.weaponX = movingRight ? this.centerX - this.weaponDiffX : this.centerX + this.weaponDiffX;
-		this.weaponY = this.centerY + this.weaponDiffY;
+		super.setWeaponPoint(new Point(movingRight ? pointCenter.x - this.weaponDiffX : pointCenter.x + this.weaponDiffX, this.pointCenter.y + this.weaponDiffY));
 		
 		anim.update();
 		updateRec();

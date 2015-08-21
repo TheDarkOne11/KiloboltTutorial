@@ -66,6 +66,13 @@ public abstract class Animation implements Cloneable {
 		}
 	}
 	
+	public abstract void init();
+	public abstract void update();
+
+	private AnimFrame getFrame(int i) {
+		return frames.get(i);
+	}
+
 	@Override
 	public Object clone() {
 		try {
@@ -74,13 +81,6 @@ public abstract class Animation implements Cloneable {
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	public abstract void init();
-	public abstract void update();
-
-	private AnimFrame getFrame(int i) {
-		return frames.get(i);
 	}
 
 	private class AnimFrame {

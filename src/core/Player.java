@@ -2,6 +2,7 @@ package core;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
 
 import animation.Animation_Player;
@@ -21,17 +22,20 @@ public class Player extends Entity {
 	private final static int WIDTH = 128;
 	private final static int HEIGHT = 128;
 	
+	/** Mouse position. */
+	public Point mouse;
+	
 	public boolean dead;
 	private int backgroundStartMove = 200;
 	private boolean isMovingLeft = false;
 	private boolean isMovingRight = false;
 	private boolean isCovered = false;
 	private boolean isFalling = true;
+	public boolean isAttacking = false;
 	/** Used for animations.*/
 	private boolean isJumping = false;
 	/** Used to correct collision. Otherwise he wouldn't jump. */
 	private boolean jumped = false;
-	private MainClass mainClass;
 	/** Stores time of shooting projectile. */
 	private long time;
 	
@@ -50,20 +54,20 @@ public class Player extends Entity {
 	private Rectangle recUseRadius = new Rectangle();
 	
 	
-	public Player(MainClass mainClass) {
+	public Player() {
 		super(30, WIDTH, HEIGHT, 60, MOVESPEED, new Projectile(5, Color.black, 7));
-		this.mainClass = mainClass;
-		
-		centerX = TileSpawn.x;
-		centerY = TileSpawn.y;
+		setCenterPoint(new Point(TileSpawn.x, TileSpawn.y));
+		pointWeapon = new Point(pointCenter.x+64, pointCenter.y-25);
+		mouse = new Point(pointCenter.x+10, pointCenter.y);
 		this.anim = new Animation_Player();
 		this.anim.init();
 	}
 	
 	public void update() {
 		collision();
-		centerX += speedX;
-		centerY += speedY;
+		pointCenter.x += speedX;
+		pointCenter.y += speedY;
+		mouse.x += speedX;
 
 		// Gravitace
 		if(isFalling || jumped) {
@@ -72,21 +76,21 @@ public class Player extends Entity {
 			else speedY = MAXFALLSPEED;
 		}
 		
-		weaponX = centerX + 50;
-		weaponY = centerY - 25;
+		super.setWeaponPoint(new Point((mouse.x > pointCenter.x) ? pointCenter.x+64 : pointCenter.x-64, this.pointCenter.y-25));
+		attack();
 		
 		// Collision Rectangles
-		recBodyU.setRect(centerX - 28, centerY - 64, 56, 64);
-		recBodyL.setRect(centerX - 26, centerY, 53, 64);
+		recBodyU.setRect(pointCenter.x - 28, pointCenter.y - 64, 56, 64);
+		recBodyL.setRect(pointCenter.x - 26, pointCenter.y, 53, 64);
 		
 		recFootR.setRect(recBodyL.x+recBodyL.width, recBodyL.y, 10, 55);
 		recFootL.setRect(recBodyL.x-10, recBodyL.y, 10, 55);
 		
-		recHandR.setRect(centerX + 34, centerY - 32, 30, 20);
-		recHandL.setRect(centerX - 64, centerY - 32, 30, 20);
+		recHandR.setRect(pointCenter.x + 34, pointCenter.y - 32, 30, 20);
+		recHandL.setRect(pointCenter.x - 64, pointCenter.y - 32, 30, 20);
 		
-		recRadius.setRect(centerX - 112, centerY - 112, 224, 224);
-		recUseRadius.setRect(centerX - 70, centerY - 70, 140, 140);
+		recRadius.setRect(pointCenter.x - 112, pointCenter.y - 112, 224, 224);
+		recUseRadius.setRect(pointCenter.x - 70, pointCenter.y - 70, 140, 140);
 		
 		try {
 			anim.update();
@@ -119,13 +123,13 @@ public class Player extends Entity {
 				}
 				
 				if(recBodyU.intersects(e.getRecCollision())) {
-					centerY = e.getY()+Tile.getHeight()+recBodyU.height;
+					pointCenter.y = e.getY()+Tile.getHeight()+recBodyU.height;
 					speedY = 0;
 				} 
 				
 				if(recBodyL.intersects(e.getRecCollision()) && !jumped) {
 					speedY = 0f;
-					//centerY = e.getY()-recBodyL.height+1;
+					//centerPoint.y = e.getY()-recBodyL.height+1;
 					isFalling = false;
 					isJumping = false;
 				} else {
@@ -133,28 +137,27 @@ public class Player extends Entity {
 				}
 				
 				if(recFootL.intersects(e.getRecCollision())) {
-					centerX += 5;
+					pointCenter.x += 5;
 				}
 				
 				if(recFootR.intersects(e.getRecCollision())) {
-					centerX -= 5;
+					pointCenter.x -= 5;
 				}
 				
 				if(recHandL.intersects(e.getRecCollision())) {
-					centerX += 5;
+					pointCenter.x += 5;
 				}
 				
 				if(recHandR.intersects(e.getRecCollision())) {
-					centerX -= 5;
+					pointCenter.x -= 5;
 				}
 			}
 		}
 	}
 
 	public void paint(Graphics g) {
-		g.drawImage(anim.getCurrentImage(), getCenterX() - anim.getCurrentImage().getWidth(mainClass) / 2, getCenterY() - anim.getCurrentImage().getHeight(mainClass) / 2, mainClass);
 		super.paintHpBar(g);
-		
+		super.drawEntity(g, mouse.x < pointCenter.x);
 		
 		g.setColor(Color.red);
 		/*g.drawRect(recBodyL.x, recBodyL.y, recBodyL.width, recBodyL.height);
@@ -173,9 +176,14 @@ public class Player extends Entity {
 	}
 
 	public void attack() {
-		if((this.time + (60*1000)/this.rateOfFire) < System.currentTimeMillis() | this.time == 0) {
-			projectile.spawnProjectile(this, true);
-			time = System.currentTimeMillis();
+		if(isAttacking) {
+			if (!isCovered() && !isJumped()) {
+				if((this.time + (60*1000)/this.rateOfFire) < System.currentTimeMillis() | this.time == 0) {
+					boolean facingRight = mouse.x > (pointCenter.x) ? true : false;
+					projectile.spawnProjectile(this, facingRight);
+					time = System.currentTimeMillis();
+				}
+			}
 		}
 	}
 

@@ -2,6 +2,8 @@ package core;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 
 import animation.Animation;
@@ -13,7 +15,8 @@ import projectile.Projectile;
  *
  */
 public abstract class Entity {
-	protected int maxHp, currHp, centerX, centerY, width, height, weaponX, weaponY;
+	protected int maxHp, currHp, width, height;
+	protected Point pointCenter, pointWeapon;
 	protected double rateOfFire;
 	protected float speedX, speedY, movespeed;
 	protected String hpCount;
@@ -31,9 +34,33 @@ public abstract class Entity {
 		this.projectile = projectile;
 	}
 	
+	public abstract void update();
+	public abstract void paint(Graphics g);
+	public abstract void die();
+	public abstract void attack();
+	public abstract void collision();
+	
+	/**
+	 * Draws entity(currentImage in anim) on screen.
+	 * Takes care of flipping the character - when character wants to turn around.
+	 * @param g
+	 * @param condition means under what condition should the image be flipped.
+	 */
+	public void drawEntity(Graphics g, boolean condition) {
+		Graphics2D g2d = (Graphics2D) g;
+		if(condition) {
+			int tmpX = pointCenter.x - anim.getCurrentImage().getWidth(null) / 2;
+			int tmpY = pointCenter.y - anim.getCurrentImage().getHeight(null) / 2;
+			g2d.drawImage(anim.getCurrentImage(), tmpX+anim.getCurrentImage().getWidth(null), tmpY, -anim.getCurrentImage().getWidth(null), anim.getCurrentImage().getHeight(null), null);
+		} else {
+			g2d.drawImage(anim.getCurrentImage(), pointCenter.x - anim.getCurrentImage().getWidth(null) / 2, pointCenter.y - anim.getCurrentImage().getHeight(null) / 2, null);
+		}
+	}
+	
+	
 	public void paintHpBar(Graphics g) {
 		hpCount = currHp + " HP";
-		hpBar = new Rectangle(this.centerX - width/2, this.centerY + 10 - 4*height/5, width, 20);
+		hpBar = new Rectangle(this.pointCenter.x - width/2, this.pointCenter.y + 10 - 4*height/5, width, 20);
 		g.setColor(Color.black);
 		g.drawString(hpCount, hpBar.x+hpBar.width/2 - g.getFontMetrics().stringWidth(hpCount)/2, hpBar.y + 2*hpBar.height/3);
 		
@@ -47,13 +74,7 @@ public abstract class Entity {
 		
 		g.fillRect(hpBar.x, hpBar.y, hpBar.width, hpBar.height);		
 	}
-	
-	public abstract void update();
-	public abstract void paint(Graphics g);
-	public abstract void die();
-	public abstract void attack();
-	public abstract void collision();
-	
+
 	public void hit(Projectile p) {
 		this.currHp -= p.getDamage();
 		p.setVisible(false);
@@ -69,18 +90,6 @@ public abstract class Entity {
 	public int getCurrHp() {
 		return currHp;
 	}
-	public int getCenterX() {
-		return centerX;
-	}
-	public int getCenterY() {
-		return centerY;
-	}
-	public int getWeaponX() {
-		return weaponX;
-	}
-	public int getWeaponY() {
-		return weaponY;
-	}
 	public float getSpeedX() {
 		return speedX;
 	}
@@ -92,18 +101,6 @@ public abstract class Entity {
 	}
 	public void setCurrHp(int currHp) {
 		this.currHp = currHp;
-	}
-	public void setCenterX(int centerX) {
-		this.centerX = centerX;
-	}
-	public void setCenterY(int centerY) {
-		this.centerY = centerY;
-	}
-	public void setWeaponX(int weaponX) {
-		this.weaponX = weaponX;
-	}
-	public void setWeaponY(int weaponY) {
-		this.weaponY = weaponY;
 	}
 	public void setSpeedX(float speedX) {
 		this.speedX = speedX;
@@ -118,5 +115,21 @@ public abstract class Entity {
 
 	public void setMovespeed(float movespeed) {
 		this.movespeed = movespeed;
+	}
+
+	public Point getCenterPoint() {
+		return pointCenter;
+	}
+
+	public Point getWeaponPoint() {
+		return pointWeapon;
+	}
+
+	public void setCenterPoint(Point centerPoint) {
+		this.pointCenter = centerPoint;
+	}
+
+	public void setWeaponPoint(Point weaponPoint) {
+		this.pointWeapon = weaponPoint;
 	}
 }

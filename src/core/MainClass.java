@@ -12,12 +12,13 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Label;
 import java.awt.Panel;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
@@ -32,7 +33,6 @@ import projectile.Projectile;
 
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
 
-//TODO Hráè bude støílet za pomoci myši. Jeho pistole bude støílet tam, kam myš zamíøí.
 //TODO Funkènost štítù hráèe, vytvoøení samostatného objektu a obrázku pro štít.
 
 //TODO Základní umìlá inteligence, spoleèná pro všechny nepøátele (napø. chození k hráèi, otáèení se)
@@ -45,7 +45,7 @@ public class MainClass extends Panel implements Runnable {
 	public static int WIDTH = 800;
 	public static int HEIGHT = 480;
 	public static GameState state = GameState.MAIN_MENU;
-	private FrameClass frameClass;
+	public FrameClass frameClass;
 	private static Color backgroundColor = new Color(102, 226, 255);
 	
 	/** Menu panel. */
@@ -77,6 +77,7 @@ public class MainClass extends Panel implements Runnable {
 		frameClass.setBackground(backgroundColor);
 		frameClass.setSize(WIDTH, HEIGHT);
 		frameClass.add(this);
+		
 		
 		// Menu section
 		panels = new ArrayList<MenuPanel>();
@@ -167,7 +168,7 @@ public class MainClass extends Panel implements Runnable {
 		
 		lvl = new LevelReader(levelName);
 		lvl.init();
-		player = new Player(this);
+		player = new Player();
 		Enemy.setPlayer(player);;
 	}
 
@@ -257,7 +258,7 @@ public class MainClass extends Panel implements Runnable {
 		}
 	}
 	
-	public static BufferedImage toBufferedImage(Image img)
+	private static BufferedImage toBufferedImage(Image img)
 	{
 	    if (img instanceof BufferedImage)
 	    {
@@ -328,7 +329,7 @@ public class MainClass extends Panel implements Runnable {
 		
 	}
 	
-	class ClassKeyListener implements KeyListener {
+	class ClassKeyListener extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			switch (e.getKeyCode()) {
@@ -358,12 +359,6 @@ public class MainClass extends Panel implements Runnable {
 				}
 				break;
 	
-			case KeyEvent.VK_CONTROL:
-				if (((Player) player).isCovered() == false && ((Player) player).isJumped() == false) {
-					player.attack();
-				}
-				break;
-			
 			case KeyEvent.VK_ESCAPE:
 				if(state == GameState.RUNNING) {
 					state = GameState.GAME_MENU;
@@ -398,10 +393,6 @@ public class MainClass extends Panel implements Runnable {
 			}
 		}
 	
-		public void keyTyped(KeyEvent e) {
-			
-		}
-	
 	}
 	
 	/**
@@ -412,11 +403,25 @@ public class MainClass extends Panel implements Runnable {
 	class ClassMouseListener extends MouseAdapter {
 		public void mousePressed(MouseEvent e) {
 			if(state == GameState.RUNNING) {
-				int tmpX = player.getCenterX() - MainClass.WIDTH/2 + e.getX();
-				int tmpY = player.getCenterY() - 3*MainClass.HEIGHT/4 + e.getY();
-				System.out.println("X/Y: " + tmpX + "/ " + tmpY);
-				player.setCenterX(tmpX);
-				player.setCenterY(tmpY);
+				// e.getX je x na obrazovce, tmpX je aktuální x ve høe(ovlivnìno posouváním screenu)
+				int tmpX = player.getCenterPoint().x - MainClass.WIDTH/2 + e.getX();
+				int tmpY = player.getCenterPoint().y - 3*MainClass.HEIGHT/4 + e.getY();
+				
+				if(e.getButton() == MouseEvent.BUTTON1) {
+					player.isAttacking = true;
+					player.mouse = new Point(tmpX, tmpY);
+				} else if(e.getButton() == MouseEvent.BUTTON3) {
+					System.out.println("X/Y: " + tmpX + "/ " + tmpY);
+					player.setCenterPoint(new Point(tmpX, tmpY));
+				}
+			}
+		}
+
+		public void mouseReleased(MouseEvent e) {
+			if(state == GameState.RUNNING) {
+				if(e.getButton() == MouseEvent.BUTTON1) {
+					player.isAttacking = false;
+				} 
 			}
 		}
 		

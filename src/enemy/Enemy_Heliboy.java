@@ -42,34 +42,34 @@ public class Enemy_Heliboy extends Enemy {
 			
 		if(distance == 0) distance = Min + (int)(Math.random() * ((Max - Min) + 1));
 
-		if(this.centerX < player.getCenterX()) movingRight = true;
+		if(pointCenter.x < player.getCenterPoint().x) movingRight = true;
 		else movingRight = false;
 		
-		if(this.centerX < player.getCenterX() - distance) {
-			this.centerX += this.movespeed;
-		} else if(this.centerX > player.getCenterX() + distance) {
-			this.centerX -= this.movespeed;
+		if(pointCenter.x < player.getCenterPoint().x - distance) {
+			pointCenter.x += this.movespeed;
+		} else if(pointCenter.x > player.getCenterPoint().x + distance) {
+			pointCenter.x -= this.movespeed;
 		}
 		
-		if(this.centerY < player.getCenterY()) {
-			this.centerY += this.movespeed;
-		} else if(this.centerY > player.getCenterY()) {
-			this.centerY -= this.movespeed;
+		if(pointCenter.y < player.getCenterPoint().y) {
+			pointCenter.y += this.movespeed;
+		} else if(pointCenter.y > player.getCenterPoint().y) {
+			pointCenter.y -= this.movespeed;
 		}
 		
 		// Pokud jsou pøímo u hráèe.
 		if(!player.isMovingLeft()&!player.isMovingRight()&!player.isJumping()) {
-			if(this.movespeed >= Math.abs(player.getCenterX() -this.centerX)){
-				this.centerX = player.getCenterX();
+			if(this.movespeed >= Math.abs(player.getCenterPoint().x -pointCenter.x)){
+				pointCenter.x = player.getCenterPoint().x;
 			}
 			
-			if(this.movespeed >= Math.abs(player.getCenterY() - this.centerY)) {
-				this.centerY = player.getCenterY();
+			if(this.movespeed >= Math.abs(player.getCenterPoint().y - pointCenter.y)) {
+				pointCenter.y = player.getCenterPoint().y;
 			}
 		}
 		/*
 		//Palba
-		if(centerY > player.getCenterY() - player.getHeight()/2 && centerY < player.getCenterY() + player.getHeight()/2) {
+		if(centerY > player.getCenterPoint().y - player.getHeight()/2 && centerY < player.getCenterPoint().y + player.getHeight()/2) {
 			attack();
 		}*/
 			
@@ -90,11 +90,11 @@ public class Enemy_Heliboy extends Enemy {
 	}
 	
 	public void updateRec() {
-		recCollision = new Rectangle(this.centerX - 38, this.centerY - 28, 63, 68);
-		/*recNorth = new Rectangle(this.centerX - 28, this.centerY - 38, 53, 5);
-		recSouth = new Rectangle(this.centerX - 28, this.centerY + 38, 53, 5);
-		recEast = new Rectangle(this.centerX + 28, this.centerY - 28, 5, 63);
-		recWest = new Rectangle(this.centerX - 38, this.centerY - 28, 5, 63);*/
+		recCollision = new Rectangle(pointCenter.x - 38, pointCenter.y - 28, 63, 68);
+		/*recNorth = new Rectangle(centerPoint.x - 28, centerPoint.y - 38, 53, 5);
+		recSouth = new Rectangle(centerPoint.x - 28, centerPoint.y + 38, 53, 5);
+		recEast = new Rectangle(centerPoint.x + 28, centerPoint.y - 28, 5, 63);
+		recWest = new Rectangle(centerPoint.x - 38, centerPoint.y - 28, 5, 63);*/
 	}
 
 	@Override

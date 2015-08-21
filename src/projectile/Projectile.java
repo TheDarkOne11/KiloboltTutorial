@@ -58,10 +58,10 @@ public class Projectile implements Cloneable{
 	public void spawnProjectile(Entity entity, boolean facingRight) {
 		Projectile tmp = (Projectile) this.clone();
 		tmp.entity = entity;
-		tmp.x = entity.getWeaponX();
-		tmp.y = entity.getWeaponY();
+		tmp.x = entity.getWeaponPoint().x;
+		tmp.y = entity.getWeaponPoint().y;
 		tmp.visible = true;
-		tmp.distance = entity.getCenterX() + 800;
+		tmp.distance = entity.getCenterPoint().x + 800;
 		tmp.speedX = facingRight ? speedX : -speedX;
 		MainClass.getProjectiles().add(tmp);
 	}
