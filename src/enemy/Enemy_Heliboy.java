@@ -42,36 +42,36 @@ public class Enemy_Heliboy extends Enemy {
 			
 		if(distance == 0) distance = Min + (int)(Math.random() * ((Max - Min) + 1));
 
-		if(pointCenter.x < player.getCenterPoint().x) movingRight = true;
+		if(pointCenter.x < player.getPointCenter().x) movingRight = true;
 		else movingRight = false;
 		
-		if(pointCenter.x < player.getCenterPoint().x - distance) {
+		if(pointCenter.x < player.getPointCenter().x - distance) {
 			pointCenter.x += this.movespeed;
-		} else if(pointCenter.x > player.getCenterPoint().x + distance) {
+		} else if(pointCenter.x > player.getPointCenter().x + distance) {
 			pointCenter.x -= this.movespeed;
 		}
 		
-		if(pointCenter.y < player.getCenterPoint().y) {
+		if(pointCenter.y < player.getPointCenter().y) {
 			pointCenter.y += this.movespeed;
-		} else if(pointCenter.y > player.getCenterPoint().y) {
+		} else if(pointCenter.y > player.getPointCenter().y) {
 			pointCenter.y -= this.movespeed;
 		}
 		
 		// Pokud jsou pøímo u hráèe.
 		if(!player.isMovingLeft()&!player.isMovingRight()&!player.isJumping()) {
-			if(this.movespeed >= Math.abs(player.getCenterPoint().x -pointCenter.x)){
-				pointCenter.x = player.getCenterPoint().x;
+			if(this.movespeed >= Math.abs(player.getPointCenter().x -pointCenter.x)){
+				pointCenter.x = player.getPointCenter().x;
 			}
 			
-			if(this.movespeed >= Math.abs(player.getCenterPoint().y - pointCenter.y)) {
-				pointCenter.y = player.getCenterPoint().y;
+			if(this.movespeed >= Math.abs(player.getPointCenter().y - pointCenter.y)) {
+				pointCenter.y = player.getPointCenter().y;
 			}
 		}
-		/*
+		
 		//Palba
-		if(centerY > player.getCenterPoint().y - player.getHeight()/2 && centerY < player.getCenterPoint().y + player.getHeight()/2) {
+		if(this.getPointCenter().y > player.getPointCenter().y - player.getHeight()/2 && this.getPointCenter().y < player.getPointCenter().y + player.getHeight()/2) {
 			attack();
-		}*/
+		}
 			
 	}
 

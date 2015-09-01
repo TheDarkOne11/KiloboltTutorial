@@ -117,19 +117,19 @@ public abstract class Entity {
 		this.movespeed = movespeed;
 	}
 
-	public Point getCenterPoint() {
+	public Point getPointCenter() {
 		return pointCenter;
 	}
 
-	public Point getWeaponPoint() {
+	public Point getPointWeapon() {
 		return pointWeapon;
 	}
 
-	public void setCenterPoint(Point centerPoint) {
+	public void setPointCenter(Point centerPoint) {
 		this.pointCenter = centerPoint;
 	}
 
-	public void setWeaponPoint(Point weaponPoint) {
+	public void setPointWeapon(Point weaponPoint) {
 		this.pointWeapon = weaponPoint;
 	}
 }

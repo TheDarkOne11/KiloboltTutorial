@@ -9,8 +9,8 @@ public class Camera {
 	}
 	
 	public void update(Player player) {
-		this.x = MainClass.WIDTH/2 - player.getCenterPoint().x;
-		this.y = 3*MainClass.HEIGHT/4 - player.getCenterPoint().y;
+		this.x = MainClass.WIDTH/2 - player.getPointCenter().x;
+		this.y = 3*MainClass.HEIGHT/4 - player.getPointCenter().y;
 	}
 
 	public float getX() {

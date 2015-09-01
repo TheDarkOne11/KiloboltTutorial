@@ -39,7 +39,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 	 * @param centerPoint.y
 	 */
 	public void add(int centerX, int centerY) {
-		super.setCenterPoint(new Point(centerX, centerY));
+		super.setPointCenter(new Point(centerX, centerY));
 		this.anim = (Animation) anim.clone();
 		this.anim.init();
 		MainClass.allEnemies.add((Enemy) this.clone());
@@ -62,7 +62,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 
 	public void attack() {
 		if((this.time + (60*1000)/this.rateOfFire) < System.currentTimeMillis() | this.time == 0) {
-			if(pointCenter.x < MainClass.getPlayer().getCenterPoint().x) {
+			if(pointCenter.x < MainClass.getPlayer().getPointCenter().x) {
 				this.projectile.spawnProjectile(this, true);
 			} else {
 				this.projectile.spawnProjectile(this, false);
@@ -80,7 +80,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 		speedX = bg.getSpeedX();
 		recRadius.setRect(pointCenter.x - 112, pointCenter.y - 112, 224, 224);
 		
-		super.setWeaponPoint(new Point(movingRight ? pointCenter.x - this.weaponDiffX : pointCenter.x + this.weaponDiffX, this.pointCenter.y + this.weaponDiffY));
+		super.setPointWeapon(new Point(movingRight ? pointCenter.x - this.weaponDiffX : pointCenter.x + this.weaponDiffX, this.pointCenter.y + this.weaponDiffY));
 		
 		anim.update();
 		updateRec();

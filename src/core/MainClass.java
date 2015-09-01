@@ -33,7 +33,7 @@ import projectile.Projectile;
 
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
 
-//TODO Funkènost štítù hráèe, vytvoøení samostatného objektu a obrázku pro štít.
+//TODO Vytvoøení samostatné tøídy kolizních Shapù. Pozice, velikost, kdy aktivní, LinkedList shapù stejné tøídy.
 
 //TODO Základní umìlá inteligence, spoleèná pro všechny nepøátele (napø. chození k hráèi, otáèení se)
 //TODO Umìlá inteligence v samostatném (možná vnoøeném) objektu - létání, palba po hráèi.
@@ -404,15 +404,15 @@ public class MainClass extends Panel implements Runnable {
 		public void mousePressed(MouseEvent e) {
 			if(state == GameState.RUNNING) {
 				// e.getX je x na obrazovce, tmpX je aktuální x ve høe(ovlivnìno posouváním screenu)
-				int tmpX = player.getCenterPoint().x - MainClass.WIDTH/2 + e.getX();
-				int tmpY = player.getCenterPoint().y - 3*MainClass.HEIGHT/4 + e.getY();
+				int tmpX = player.getPointCenter().x - MainClass.WIDTH/2 + e.getX();
+				int tmpY = player.getPointCenter().y - 3*MainClass.HEIGHT/4 + e.getY();
 				
 				if(e.getButton() == MouseEvent.BUTTON1) {
 					player.isAttacking = true;
 					player.mouse = new Point(tmpX, tmpY);
 				} else if(e.getButton() == MouseEvent.BUTTON3) {
 					System.out.println("X/Y: " + tmpX + "/ " + tmpY);
-					player.setCenterPoint(new Point(tmpX, tmpY));
+					player.setPointCenter(new Point(tmpX, tmpY));
 				}
 			}
 		}
