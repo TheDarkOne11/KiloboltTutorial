@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 
 import animation.Animation_Player;
 import level.LevelReader;
@@ -52,11 +54,12 @@ public class Player extends Entity {
 	private Rectangle recRadius = new Rectangle();
 	/** Rectanguler radius where player is able to use Usable terrain. */
 	private Rectangle recUseRadius = new Rectangle();
+	private Shape ellipseShieldRadius;
 	
 	
 	public Player() {
 		super(30, WIDTH, HEIGHT, 60, MOVESPEED, new Projectile(5, Color.black, 7));
-		setCenterPoint(new Point(TileSpawn.x, TileSpawn.y));
+		setPointCenter(new Point(TileSpawn.x, TileSpawn.y));
 		pointWeapon = new Point(pointCenter.x+64, pointCenter.y-25);
 		mouse = new Point(pointCenter.x+10, pointCenter.y);
 		this.anim = new Animation_Player();
@@ -76,7 +79,7 @@ public class Player extends Entity {
 			else speedY = MAXFALLSPEED;
 		}
 		
-		super.setWeaponPoint(new Point((mouse.x > pointCenter.x) ? pointCenter.x+64 : pointCenter.x-64, this.pointCenter.y-25));
+		super.setPointWeapon(new Point((mouse.x > pointCenter.x) ? pointCenter.x+64 : pointCenter.x-64, this.pointCenter.y-25));
 		attack();
 		
 		// Collision Rectangles
@@ -91,6 +94,7 @@ public class Player extends Entity {
 		
 		recRadius.setRect(pointCenter.x - 112, pointCenter.y - 112, 224, 224);
 		recUseRadius.setRect(pointCenter.x - 70, pointCenter.y - 70, 140, 140);
+		ellipseShieldRadius = new Ellipse2D.Float(pointCenter.x - 55, pointCenter.y-26, 110, 110);
 		
 		try {
 			anim.update();
@@ -104,6 +108,10 @@ public class Player extends Entity {
 		for(Projectile p : MainClass.getProjectiles()) {
 			if(!p.entity.equals(this)) {
 				if(p.getRec().intersects(recRadius)) {
+					if(ellipseShieldRadius.intersects(p.getRec()) && isCovered) {
+						p.setVisible(false);
+					}
+					
 					// If projectile hits any rectangle
 					if(p.getRec().intersects(recBodyL) || p.getRec().intersects(recBodyU) || p.getRec().intersects(recFootL) || p.getRec().intersects(recFootR) || p.getRec().intersects(recHandL) || p.getRec().intersects(recHandR)) {
 						this.hit(p);
@@ -167,7 +175,10 @@ public class Player extends Entity {
 		g.drawRect(recHandR.x, recHandR.y, recHandR.width, recHandR.height);
 		g.drawRect(recHandL.x, recHandL.y, recHandL.width, recHandL.height);
 		g.drawRect(recRadius.x, recRadius.y, recRadius.width, recRadius.height);
-		g.drawRect(recUseRadius.x, recUseRadius.y, recUseRadius.width, recUseRadius.height);*/
+		g.drawRect(recUseRadius.x, recUseRadius.y, recUseRadius.width, recUseRadius.height);
+		Graphics2D gd = (Graphics2D) g;
+		gd.draw(ellipseShieldRadius);*/
+
 	}
 
 	public void die() {	
