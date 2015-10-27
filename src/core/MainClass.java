@@ -2,6 +2,7 @@ package core;
 
 import java.awt.Button;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -70,6 +71,7 @@ public class MainClass extends Panel implements Runnable {
 	private static ArrayList<MenuPanel> panels;
 	/** Stores every enemy that has been added to the current game.*/
 	public static ArrayList<Enemy> allEnemies;
+	public static ArrayList<UsedKeys> allUsedKeys;
 
 	public MainClass(FrameClass frameClass) {
 		// Set game panel in window
@@ -92,40 +94,38 @@ public class MainClass extends Panel implements Runnable {
 		Panel panel4 = new MenuPanel(GameState.GAME_MENU);
 		Panel panel5 = new MenuPanel(GameState.GAME_MENU);
 		
+		// Main panels
 		panelGameMenu = new MenuPanel(GameState.GAME_MENU);
-			panelGameMenu.setLayout(new GridLayout(4, 1, 10, 10));
-			new MenuButton("Continue", panelGameMenu);
-			new MenuButton("Controls", panelGameMenu);
-			new MenuButton("Exit Level", panelGameMenu);
-			new MenuButton("Exit Game", panelGameMenu);
+			panelGameMenu.add(new MenuButton("Continue"));
+			panelGameMenu.add(new MenuButton("Controls"));
+			panelGameMenu.add(new MenuButton("Exit Level"));
+			panelGameMenu.add(new MenuButton("Exit Game"));
 		
 		panelMainMenu = new MenuPanel(GameState.MAIN_MENU);
-			panelMainMenu.setLayout(new GridLayout(4, 1, 10, 10));
-			new MenuButton("New Game", panelMainMenu);
-			new MenuButton("Load Level", panelMainMenu);
-			new MenuButton("Controls", panelMainMenu);
-			new MenuButton("Exit", panelMainMenu);
-		
-		panelControls = new MenuPanel(GameState.SUB_MENU);
-			panelControls.setLayout(new GridLayout(1, 1, 10, 10));
-			new MenuButton("Back", panelControls);
+			panelMainMenu.add(new MenuButton("New Game"));
+			panelMainMenu.add(new MenuButton("Load Level"));
+			panelMainMenu.add(new MenuButton("Controls"));
+			panelMainMenu.add(new MenuButton("Exit"));						
 			
 		panelWin = new MenuPanel(GameState.WIN);
-			panelWin.setLayout(new GridLayout(2, 1, 10, 10));
 			panelWin.setBackground(Color.green);
 			Label labWin = new Label("You Win!");
 			labWin.setFont(new Font(Font.SERIF, Font.BOLD, 50));
 			panelWin.add(labWin);
-			new MenuButton("To Main Menu", panelWin);
-			
+			panelWin.add(new MenuButton("To Main Menu"));
+		
 		panelLose = new MenuPanel(GameState.LOSE);
-			panelLose.setLayout(new GridLayout(2, 1, 10, 10));
 			panelLose.setBackground(Color.red);
 			Label labLose = new Label("You Lose");
 			labLose.setFont(new Font(Font.SERIF, Font.BOLD, 50));
 			panelLose.add(labLose);
-			new MenuButton("To Main Menu", panelLose);
+			panelLose.add(new MenuButton("To Main Menu"));
+			
+		// Sub-Menu panels
+		panelControls = new MenuPanel(GameState.SUB_MENU);
+			panelControls.add(new MenuButton("Back"));
 		
+		// Adding panels into the game
 		gbc.gridx = 1;
 		gbl.setConstraints(panel2, gbc);
 		gbl.setConstraints(panel4, gbc);
@@ -136,7 +136,6 @@ public class MainClass extends Panel implements Runnable {
 		gbl.setConstraints(panel3, gbc);
 		gbl.setConstraints(panel5, gbc);
 		
-		// Adding panels into the game panel.		
 		for(MenuPanel panel : panels) {
 			this.add(panel);
 		}
@@ -307,6 +306,8 @@ public class MainClass extends Panel implements Runnable {
 		GameState visibleState;
 		/** Used to determine which sub-menu is visible. */
 		private boolean submenuVisible;
+		/** How many components are in the menu panel. */
+		private int componentCount = 0;
 		
 		public MenuPanel(GameState visibleState) {
 			super();
@@ -329,6 +330,12 @@ public class MainClass extends Panel implements Runnable {
 			}
 		}
 
+		public Component add(Component comp) {
+			componentCount++;
+			this.setLayout(new GridLayout(componentCount, 1, 10, 10));
+			return super.add(comp);
+		}
+
 		public void setSubmenuVisible(boolean submenuVisible) {
 			this.submenuVisible = submenuVisible;
 		}
@@ -336,15 +343,21 @@ public class MainClass extends Panel implements Runnable {
 	
 	class MenuButton extends Button {
 
-		private MenuButton(String label, Panel panel) {
+		private MenuButton(String label) {
 			super(label);
-			panel.add(this);
 			this.addActionListener(new ClassMenuButtonListeners());
 		}
-		
 	}
 	
 	class ClassKeyListener extends KeyAdapter {
+		public ClassKeyListener() {
+			allUsedKeys.add(new UsedKeys(KeyEvent.getKeyText(KeyEvent.VK_UP), "Jump"));
+			allUsedKeys.add(new UsedKeys(KeyEvent.getKeyText(KeyEvent.VK_DOWN), "Shield"));
+			allUsedKeys.add(new UsedKeys(KeyEvent.getKeyText(KeyEvent.VK_LEFT), "Go left"));
+			allUsedKeys.add(new UsedKeys(KeyEvent.getKeyText(KeyEvent.VK_RIGHT), "Go right"));
+			allUsedKeys.add(new UsedKeys(KeyEvent.getKeyText(KeyEvent.VK_ESCAPE), "To Menu"));
+		}
+		
 		@Override
 		public void keyPressed(KeyEvent e) {
 			switch (e.getKeyCode()) {
@@ -416,6 +429,11 @@ public class MainClass extends Panel implements Runnable {
 	 *
 	 */
 	class ClassMouseListener extends MouseAdapter {
+		public ClassMouseListener() {
+			allUsedKeys.add(new UsedKeys("Mouse Button 1", "Shoot"));
+			allUsedKeys.add(new UsedKeys("Mouse Button 3", "Teleport(Developement only)"));
+		}
+		
 		public void mousePressed(MouseEvent e) {
 			if(state == GameState.RUNNING) {
 				// e.getX je x na obrazovce, tmpX je aktuální x ve høe(ovlivnìno posouváním screenu)
