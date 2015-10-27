@@ -34,22 +34,22 @@ import projectile.Projectile;
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
 
 //TODO Vytvoøení samostatné tøídy kolizních Shapù. Pozice, velikost, kdy aktivní, LinkedList shapù stejné tøídy.
+//TODO Zvuky.
 
 //TODO Základní umìlá inteligence, spoleèná pro všechny nepøátele (napø. chození k hráèi, otáèení se)
 //TODO Umìlá inteligence v samostatném (možná vnoøeném) objektu - létání, palba po hráèi.
-//TODO EnemyHeliboy kolize mezi sebou za pomoci kružnicových kolizí.
-
 
 /** Main class of the Applet. */
 public class MainClass extends Panel implements Runnable {
 	public static int WIDTH = 800;
 	public static int HEIGHT = 480;
 	public static GameState state = GameState.MAIN_MENU;
+	public static GameState lastState;
 	public FrameClass frameClass;
 	private static Color backgroundColor = new Color(102, 226, 255);
 	
 	/** Menu panel. */
-	private Panel panelMainMenu, panelGameMenu, panelWin, panelLose;
+	private MenuPanel panelMainMenu, panelGameMenu, panelControls, panelWin, panelLose;
 	private GridBagLayout gbl;
 	private GridBagConstraints gbc;
 	
@@ -66,7 +66,7 @@ public class MainClass extends Panel implements Runnable {
 	
 	/** Stores all projectiles. */
 	private static ArrayList<Projectile> projectiles;
-	/** Stores all panels in menu. */
+	/** Stores all menu panels. */
 	private static ArrayList<MenuPanel> panels;
 	/** Stores every enemy that has been added to the current game.*/
 	public static ArrayList<Enemy> allEnemies;
@@ -93,16 +93,22 @@ public class MainClass extends Panel implements Runnable {
 		Panel panel5 = new MenuPanel(GameState.GAME_MENU);
 		
 		panelGameMenu = new MenuPanel(GameState.GAME_MENU);
-			panelGameMenu.setLayout(new GridLayout(3, 1, 10, 10));
+			panelGameMenu.setLayout(new GridLayout(4, 1, 10, 10));
 			new MenuButton("Continue", panelGameMenu);
+			new MenuButton("Controls", panelGameMenu);
 			new MenuButton("Exit Level", panelGameMenu);
 			new MenuButton("Exit Game", panelGameMenu);
 		
 		panelMainMenu = new MenuPanel(GameState.MAIN_MENU);
-			panelMainMenu.setLayout(new GridLayout(3, 1, 10, 10));
+			panelMainMenu.setLayout(new GridLayout(4, 1, 10, 10));
 			new MenuButton("New Game", panelMainMenu);
 			new MenuButton("Load Level", panelMainMenu);
+			new MenuButton("Controls", panelMainMenu);
 			new MenuButton("Exit", panelMainMenu);
+		
+		panelControls = new MenuPanel(GameState.SUB_MENU);
+			panelControls.setLayout(new GridLayout(1, 1, 10, 10));
+			new MenuButton("Back", panelControls);
 			
 		panelWin = new MenuPanel(GameState.WIN);
 			panelWin.setLayout(new GridLayout(2, 1, 10, 10));
@@ -130,14 +136,10 @@ public class MainClass extends Panel implements Runnable {
 		gbl.setConstraints(panel3, gbc);
 		gbl.setConstraints(panel5, gbc);
 		
-		this.add(panel2);
-		this.add(panel4);
-		this.add(panelMainMenu);
-		this.add(panelGameMenu);
-		this.add(panelLose);
-		this.add(panelWin);
-		this.add(panel3);
-		this.add(panel5);
+		// Adding panels into the game panel.		
+		for(MenuPanel panel : panels) {
+			this.add(panel);
+		}
 		
 		// Listeners
 		this.addComponentListener(new ClassComponentListener());
@@ -219,11 +221,14 @@ public class MainClass extends Panel implements Runnable {
 	public void run() {
 		while (true) {
 			// Takes care of visibility of all panels
-			for(MenuPanel tmp : panels) {
-				tmp.setVisible();
+			for(MenuPanel panel : panels) {
+				panel.setVisible();
 			}
 			this.validate();
 			
+			if(state == GameState.GAME_MENU || state == GameState.MAIN_MENU) {
+				lastState = state;
+			}
 			
 			if(state == GameState.WIN) {
 				frameClass.setBackground(Color.green);
@@ -300,6 +305,8 @@ public class MainClass extends Panel implements Runnable {
 	
 	class MenuPanel extends Panel {
 		GameState visibleState;
+		/** Used to determine which sub-menu is visible. */
+		private boolean submenuVisible;
 		
 		public MenuPanel(GameState visibleState) {
 			super();
@@ -311,11 +318,19 @@ public class MainClass extends Panel implements Runnable {
 		 * Sets visibility of panel based on the Game State.
 		 */
 		protected void setVisible() {
-			if(visibleState.equals(state)) {
-				this.setVisible(true);
+			if(state.equals(GameState.SUB_MENU)) {
+				this.setVisible(submenuVisible);
 			} else {
-				this.setVisible(false);
+				if(visibleState.equals(state)) {
+					this.setVisible(true);
+				} else {
+					this.setVisible(false);
+				}
 			}
+		}
+
+		public void setSubmenuVisible(boolean submenuVisible) {
+			this.submenuVisible = submenuVisible;
 		}
 	}
 	
@@ -436,6 +451,11 @@ public class MainClass extends Panel implements Runnable {
 		
 	}
 	
+	/**
+	 * ActionListener for all MenuButtons.
+	 * @author Petr
+	 *
+	 */
 	class ClassMenuButtonListeners implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
@@ -449,8 +469,8 @@ public class MainClass extends Panel implements Runnable {
 				fileDialog.setDirectory(gamePath + "\\data\\level");
 				fileDialog.setVisible(true);
 				if(fileDialog.getFile() != null) {
-				loadLevel(fileDialog.getFile());
-				state = GameState.RUNNING;
+					loadLevel(fileDialog.getFile());
+					state = GameState.RUNNING;
 				}
 				
 			} else if(e.getActionCommand().equals("Exit")) {
@@ -466,6 +486,21 @@ public class MainClass extends Panel implements Runnable {
 				frameClass.processEvent(new WindowEvent(frameClass, 201));
 			}
 			
+			// Sub-Menu buttons
+			if(e.getActionCommand().equals("Controls")) {
+				panelControls.setSubmenuVisible(true);
+				state = GameState.SUB_MENU;
+			}
+			
+			if(e.getActionCommand().equals("Back")) {
+				/* Sets all sub-menus to invisible. */
+				for(MenuPanel panel : panels) {
+					panel.setSubmenuVisible(false);
+				}
+				
+				state = lastState;
+			}
+			
 			// Win/Lose buttons
 			if(e.getActionCommand().equals("To Main Menu")) {
 				state = GameState.MAIN_MENU;
@@ -477,6 +512,7 @@ public class MainClass extends Panel implements Runnable {
 	
 	public enum GameState {
 		MAIN_MENU,
+		SUB_MENU,
 		RUNNING,
 		WIN,
 		LOSE,
