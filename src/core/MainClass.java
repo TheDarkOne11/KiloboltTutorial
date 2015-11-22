@@ -2,7 +2,6 @@ package core;
 
 import java.awt.Button;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -34,7 +33,6 @@ import projectile.Projectile;
 
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
 
-//TODO Dodìlat pomocné menu. Menu bude mít 3 sloupce.
 //TODO Vytvoøení samostatné tøídy kolizních Shapù. Pozice, velikost, kdy aktivní, LinkedList shapù stejné tøídy.
 //TODO Zvuky.
 
@@ -72,6 +70,7 @@ public class MainClass extends Panel implements Runnable {
 	private static ArrayList<MenuPanel> panels;
 	/** Stores every enemy that has been added to the current game.*/
 	public static ArrayList<Enemy> allEnemies;
+	/** Stores all buttons which are used ingame and what they are used for. */
 	public static ArrayList<UsedKeys> allUsedKeys;
 
 	public MainClass(FrameClass frameClass) {
@@ -80,6 +79,14 @@ public class MainClass extends Panel implements Runnable {
 		frameClass.setBackground(backgroundColor);
 		frameClass.setSize(WIDTH, HEIGHT);
 		frameClass.add(this);
+		
+		allUsedKeys = new ArrayList<UsedKeys>();
+		
+		// Listeners
+		this.addComponentListener(new ClassComponentListener());
+		this.addMouseListener(new ClassMouseListener());
+		//this.addKeyListener(new ClassKeyListener());
+		frameClass.addKeyListener(new ClassKeyListener());
 		
 		
 		// Menu section
@@ -123,7 +130,11 @@ public class MainClass extends Panel implements Runnable {
 			panelLose.add(new MenuButton("To Main Menu"));
 			
 		// Sub-Menu panels
-		panelControls = new MenuPanel(GameState.SUB_MENU);
+		panelControls = new MenuPanel(GameState.SUB_MENU, 2);
+			for(UsedKeys key : allUsedKeys) {
+				panelControls.add(new Label(key.keyName));
+				panelControls.add(new Label(key.usage));
+			}
 			panelControls.add(new MenuButton("Back"));
 		
 		// Adding panels into the game
@@ -140,14 +151,6 @@ public class MainClass extends Panel implements Runnable {
 		for(MenuPanel panel : panels) {
 			this.add(panel);
 		}
-		
-		allUsedKeys = new ArrayList<UsedKeys>();
-		
-		// Listeners
-		this.addComponentListener(new ClassComponentListener());
-		this.addMouseListener(new ClassMouseListener());
-		this.addKeyListener(new ClassKeyListener());
-		frameClass.addKeyListener(new ClassKeyListener());
 		
 		// Start game
 		gamePath = System.getProperty("user.dir") + "\\src";
@@ -309,12 +312,15 @@ public class MainClass extends Panel implements Runnable {
 		GameState visibleState;
 		/** Used to determine which sub-menu is visible. */
 		private boolean submenuVisible;
-		/** How many components are in the menu panel. */
-		private int componentCount = 0;
 		
 		public MenuPanel(GameState visibleState) {
+			this(visibleState, 1);
+		}
+		
+		public MenuPanel(GameState visibleState, int colsCount) {
 			super();
 			this.visibleState = visibleState;
+			this.setLayout(new GridLayout(0, colsCount, 10, 10));
 			panels.add(this);
 		}
 		
@@ -332,13 +338,7 @@ public class MainClass extends Panel implements Runnable {
 				}
 			}
 		}
-
-		public Component add(Component comp) {
-			componentCount++;
-			this.setLayout(new GridLayout(componentCount, 1, 10, 10));
-			return super.add(comp);
-		}
-
+		
 		public void setSubmenuVisible(boolean submenuVisible) {
 			this.submenuVisible = submenuVisible;
 		}
