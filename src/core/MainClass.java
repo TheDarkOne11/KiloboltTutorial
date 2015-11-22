@@ -34,6 +34,7 @@ import projectile.Projectile;
 
 //TODO Udìlat double buffering dle http://stackoverflow.com/questions/2873506/how-to-use-double-buffering-inside-a-thread-and-applet
 
+//TODO Dodìlat pomocné menu. Menu bude mít 3 sloupce.
 //TODO Vytvoøení samostatné tøídy kolizních Shapù. Pozice, velikost, kdy aktivní, LinkedList shapù stejné tøídy.
 //TODO Zvuky.
 
@@ -139,6 +140,8 @@ public class MainClass extends Panel implements Runnable {
 		for(MenuPanel panel : panels) {
 			this.add(panel);
 		}
+		
+		allUsedKeys = new ArrayList<UsedKeys>();
 		
 		// Listeners
 		this.addComponentListener(new ClassComponentListener());
