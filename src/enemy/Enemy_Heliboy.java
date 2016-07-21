@@ -41,32 +41,7 @@ public class Enemy_Heliboy extends Enemy {
 		// Pohyb k hr·Ëi.	
 			
 		if(distance == 0) distance = Min + (int)(Math.random() * ((Max - Min) + 1));
-
-		if(pointCenter.x < player.getPointCenter().x) movingRight = true;
-		else movingRight = false;
-		
-		if(pointCenter.x < player.getPointCenter().x - distance) {
-			pointCenter.x += this.movespeed;
-		} else if(pointCenter.x > player.getPointCenter().x + distance) {
-			pointCenter.x -= this.movespeed;
-		}
-		
-		if(pointCenter.y < player.getPointCenter().y) {
-			pointCenter.y += this.movespeed;
-		} else if(pointCenter.y > player.getPointCenter().y) {
-			pointCenter.y -= this.movespeed;
-		}
-		
-		// Pokud jsou p¯Ìmo u hr·Ëe.
-		if(!player.isMovingLeft()&!player.isMovingRight()&!player.isJumping()) {
-			if(this.movespeed >= Math.abs(player.getPointCenter().x -pointCenter.x)){
-				pointCenter.x = player.getPointCenter().x;
-			}
-			
-			if(this.movespeed >= Math.abs(player.getPointCenter().y - pointCenter.y)) {
-				pointCenter.y = player.getPointCenter().y;
-			}
-		}
+		this.moveToPlayer(distance);
 		
 		//Palba
 		if(this.getPointCenter().y > player.getPointCenter().y - player.getHeight()/2 && this.getPointCenter().y < player.getPointCenter().y + player.getHeight()/2) {
@@ -76,7 +51,7 @@ public class Enemy_Heliboy extends Enemy {
 	}
 
 	public void collision() {
-		// Projectile collision
+		// Projectiles-shot-by-player collision
 		for(Projectile p : MainClass.getProjectiles()) {
 			if(p.entity.equals(MainClass.getPlayer())) {
 				if(p.getRec().intersects(recRadius)) {
@@ -91,19 +66,11 @@ public class Enemy_Heliboy extends Enemy {
 	
 	public void updateRec() {
 		recCollision = new Rectangle(pointCenter.x - 38, pointCenter.y - 28, 63, 68);
-		/*recNorth = new Rectangle(centerPoint.x - 28, centerPoint.y - 38, 53, 5);
-		recSouth = new Rectangle(centerPoint.x - 28, centerPoint.y + 38, 53, 5);
-		recEast = new Rectangle(centerPoint.x + 28, centerPoint.y - 28, 5, 63);
-		recWest = new Rectangle(centerPoint.x - 38, centerPoint.y - 28, 5, 63);*/
 	}
 
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		/*g.drawRect(recNorth.x, recNorth.y, recNorth.width, recNorth.height);
-		g.drawRect(recSouth.x, recSouth.y, recSouth.width, recSouth.height);
-		g.drawRect(recEast.x, recEast.y, recEast.width, recEast.height);
-		g.drawRect(recWest.x, recWest.y, recWest.width, recWest.height);*/
 	}
 
 	public Rectangle getRecCollision() {

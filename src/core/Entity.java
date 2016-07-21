@@ -49,6 +49,7 @@ public abstract class Entity {
 	public void drawEntity(Graphics g, boolean condition) {
 		Graphics2D g2d = (Graphics2D) g;
 		if(condition) {
+			// Entita se ot·ËÌ
 			int tmpX = pointCenter.x - anim.getCurrentImage().getWidth(null) / 2;
 			int tmpY = pointCenter.y - anim.getCurrentImage().getHeight(null) / 2;
 			g2d.drawImage(anim.getCurrentImage(), tmpX+anim.getCurrentImage().getWidth(null), tmpY, -anim.getCurrentImage().getWidth(null), anim.getCurrentImage().getHeight(null), null);

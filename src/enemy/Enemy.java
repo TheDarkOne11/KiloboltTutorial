@@ -82,8 +82,6 @@ public abstract class Enemy extends Entity implements Cloneable{
 		updateRec();
 		collision();
 		AI();
-		
-		System.out.println("X/ Y / SpeedX: " + pointCenter.x + "/ " + pointCenter.y + "/ " + speedX);
 	}
 
 	/**
@@ -96,6 +94,35 @@ public abstract class Enemy extends Entity implements Cloneable{
 	 */
 	public abstract void AI();
 	
+	public void moveToPlayer(int distance) {
+		// Pomocí movingRight se ovládá otáèení
+		if(pointCenter.x < player.getPointCenter().x) movingRight = true;
+		else movingRight = false;
+		
+		if(pointCenter.x < player.getPointCenter().x - distance) {
+			pointCenter.x += this.movespeed;
+		} else if(pointCenter.x > player.getPointCenter().x + distance) {
+			pointCenter.x -= this.movespeed;
+		}
+		
+		if(pointCenter.y < player.getPointCenter().y) {
+			pointCenter.y += this.movespeed;
+		} else if(pointCenter.y > player.getPointCenter().y) {
+			pointCenter.y -= this.movespeed;
+		}
+		
+		// Pokud jsou pøímo u hráèe.
+		if(!player.isMovingLeft()&!player.isMovingRight()&!player.isJumping()) {
+			if(this.movespeed >= Math.abs(player.getPointCenter().x -pointCenter.x)){
+				pointCenter.x = player.getPointCenter().x;
+			}
+			
+			if(this.movespeed >= Math.abs(player.getPointCenter().y - pointCenter.y)) {
+				pointCenter.y = player.getPointCenter().y;
+			}
+		}
+	}
+	
 	public static void setMainClass(MainClass mainClass) {
 		Enemy.mainClass = mainClass;
 	}
@@ -105,7 +132,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 	}
 
 	/**
-	 * Potøeba, jinak by nepøátelé sdíleli souøadnice.
+	 * Nezbytná metoda, jinak by nepøátelé sdíleli souøadnice.
 	 */
 	protected Object clone() {
 		try {
