@@ -4,10 +4,13 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import javax.sound.sampled.Clip;
+
 import animation.Animation;
 import core.Entity;
 import core.MainClass;
 import core.Player;
+import core.Sound;
 import projectile.Projectile;
 
 /** Super class for all enemies. */
@@ -23,6 +26,9 @@ public abstract class Enemy extends Entity implements Cloneable{
 	
 	/** Rectangular radius where collisions are turned on. */
 	protected Rectangle recRadius = new Rectangle();
+	
+	/** Sound */
+	protected Clip attackSound;
 
 	protected Enemy(int maxHp, int width, int height, double rateOfFire, float movespeed, Projectile projectile, Animation anim, int weaponDiffX, int weaponDiffY) {
 		super(maxHp, width, height, rateOfFire, movespeed, projectile);
@@ -54,6 +60,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 	}
 	
 	public void die() {
+		Sound.playClip(deathSound);
 		MainClass.allEnemies.remove(this);
 		System.out.println(this.getClass().getSimpleName() + ": DEAD");
 	}
@@ -66,6 +73,7 @@ public abstract class Enemy extends Entity implements Cloneable{
 				this.projectile.spawnProjectile(this, false);
 			}
 			
+			Sound.playClip(attackSound);
 			time = System.currentTimeMillis();
 		}
 	}

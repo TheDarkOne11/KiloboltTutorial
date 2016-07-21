@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import animation.Animation;
 import animation.Animation_Heliboy;
 import core.MainClass;
+import core.Sound;
 import projectile.Projectile;
 
 public class Enemy_Heliboy extends Enemy {
@@ -34,6 +35,10 @@ public class Enemy_Heliboy extends Enemy {
 		super(MAXHP, WIDTH, HEIGHT, RATE_OF_FIRE, MOVESPEED, PROJECTILE, ANIM, WEAPON_DIFF_X, WEAPON_DIFF_Y);
 		Min = 100;
 		Max = 300;
+		
+		// Sounds
+		this.attackSound = Sound.loadClip("heliboyAttack");
+		this.deathSound = Sound.loadClip("heliboyDeath");
 	}
 	
 	public void AI() {

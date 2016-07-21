@@ -6,6 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import javax.sound.sampled.Clip;
+
 import animation.Animation;
 import projectile.Projectile;
 
@@ -23,6 +25,7 @@ public abstract class Entity {
 	protected Rectangle hpBar;
 	protected Animation anim;
 	protected Projectile projectile;
+	protected Clip deathSound;
 	
 	public Entity(int maxHp, int width, int height, double rateOfFire, float movespeed, Projectile projectile) {
 		this.maxHp = maxHp;

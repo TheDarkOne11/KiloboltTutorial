@@ -163,7 +163,6 @@ public class MainClass extends Panel implements Runnable {
 		if(!allEnemies.isEmpty()) allEnemies.clear();
 		
 		cam = new Camera(0, 0);
-		new ImageIcon(gamePath + "\\data\\background.png").getImage();
 		Enemy.setMainClass(this);
 		
 		lvl = new LevelReader(levelName);
