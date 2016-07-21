@@ -5,7 +5,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 import animation.Animation;
-import core.Background;
 import core.Entity;
 import core.MainClass;
 import core.Player;
@@ -17,7 +16,6 @@ public abstract class Enemy extends Entity implements Cloneable{
 	protected static Player player;
 	/** Difference between center and weapon coordinates. */
 	private int weaponDiffX, weaponDiffY;
-	private Background bg = MainClass.getBg1();
 	/** Stores time of a projectile shooting. */
 	private long time;
 	/** For flipping images.*/
@@ -76,8 +74,6 @@ public abstract class Enemy extends Entity implements Cloneable{
 	 * Updates current enemy.
 	 */
 	public void update() {
-		pointCenter.x += speedX;
-		speedX = bg.getSpeedX();
 		recRadius.setRect(pointCenter.x - 112, pointCenter.y - 112, 224, 224);
 		
 		super.setPointWeapon(new Point(movingRight ? pointCenter.x - this.weaponDiffX : pointCenter.x + this.weaponDiffX, this.pointCenter.y + this.weaponDiffY));
@@ -86,6 +82,8 @@ public abstract class Enemy extends Entity implements Cloneable{
 		updateRec();
 		collision();
 		AI();
+		
+		System.out.println("X/ Y / SpeedX: " + pointCenter.x + "/ " + pointCenter.y + "/ " + speedX);
 	}
 
 	/**
