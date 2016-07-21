@@ -36,9 +36,6 @@ import projectile.Projectile;
 //TODO Vytvoøení samostatné tøídy kolizních Shapù. Pozice, velikost, kdy aktivní, LinkedList shapù stejné tøídy.
 //TODO Zvuky.
 
-//TODO Základní umìlá inteligence, spoleèná pro všechny nepøátele (napø. chození k hráèi, otáèení se)
-//TODO Umìlá inteligence v samostatném (možná vnoøeném) objektu - létání, palba po hráèi.
-
 /** Main class of the Applet. */
 public class MainClass extends Panel implements Runnable {
 	public static int WIDTH = 800;
@@ -57,10 +54,8 @@ public class MainClass extends Panel implements Runnable {
 	private static Player player;
 	public static String gamePath;
 	private Image image;
-	private Image background;
 	private Graphics second;
 	private Graphics2D g2d;
-	private static Background bg1, bg2;
 	private Camera cam;
 	private LevelReader lvl;
 	
@@ -168,9 +163,7 @@ public class MainClass extends Panel implements Runnable {
 		if(!allEnemies.isEmpty()) allEnemies.clear();
 		
 		cam = new Camera(0, 0);
-		background = new ImageIcon(gamePath + "\\data\\background.png").getImage();
-		bg1 = new Background(0, 0);
-		bg2 = new Background(2160, 0);
+		new ImageIcon(gamePath + "\\data\\background.png").getImage();
 		Enemy.setMainClass(this);
 		
 		lvl = new LevelReader(levelName);
@@ -186,8 +179,6 @@ public class MainClass extends Panel implements Runnable {
 			g2d.translate(cam.getX(), cam.getY());
 			//////////////////////////////////////////
 			// Místo na kreslení
-			g.drawImage(background, bg1.getBgX(), bg1.getBgY(), this);
-			g.drawImage(background, bg2.getBgX(), bg2.getBgY(), this);
 			lvl.paintTiles(g);
 			
 			player.paint(g);
@@ -250,10 +241,7 @@ public class MainClass extends Panel implements Runnable {
 				cam.update((Player) player);
 				
 				Projectile.update(projectiles);
-				
-				bg1.update();
-				bg2.update();
-				
+								
 				for(int i = 0; i < MainClass.allEnemies.size(); i++) {
 					MainClass.allEnemies.get(i).update();
 				}
@@ -290,14 +278,6 @@ public class MainClass extends Panel implements Runnable {
 	public static BufferedImage getImage(String path) {
 		BufferedImage buff = toBufferedImage(new ImageIcon(gamePath + path).getImage());
 		return buff;
-	}
-
-	public static Background getBg1() {
-		return bg1;
-	}
-
-	public static Background getBg2() {
-		return bg2;
 	}
 
 	public static Player getPlayer() {
